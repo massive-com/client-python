@@ -417,7 +417,7 @@ class FuturesAgg:
     close: Optional[float] = None
     high: Optional[float] = None
     low: Optional[float] = None
-    transaction_count: Optional[int] = None
+    transactions: Optional[int] = None
     start_timestamp: Optional[int] = None
     end_timestamp: Optional[int] = None
 
@@ -432,7 +432,7 @@ class FuturesAgg:
             close=d.get("c"),
             high=d.get("h"),
             low=d.get("l"),
-            transaction_count=d.get("n"),
+            transactions=d.get("n"),
             start_timestamp=d.get("s"),
             end_timestamp=d.get("e"),
         )
