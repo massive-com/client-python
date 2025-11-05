@@ -37,7 +37,7 @@ rest-spec:
 
 ## Update the WebSocket API spec
 ws-spec:
-	curl https://api.massive.io/specs/websocket.json > .massive/websocket.json
+	curl https://api.massive.com/specs/websocket.json > .massive/websocket.json
 
 test_rest:
 	poetry run python -m unittest discover -s test_rest
