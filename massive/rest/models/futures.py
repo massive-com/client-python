@@ -16,7 +16,7 @@ class FuturesAgg:
     close: Optional[float] = None
     volume: Optional[float] = None
     dollar_volume: Optional[float] = None
-    transaction_count: Optional[int] = None
+    transactions: Optional[int] = None
     window_start: Optional[int] = None
     session_end_date: Optional[str] = None
     settlement_price: Optional[float] = None
@@ -31,7 +31,7 @@ class FuturesAgg:
             close=d.get("close"),
             volume=d.get("volume"),
             dollar_volume=d.get("dollar_volume"),
-            transaction_count=d.get("transaction_count"),
+            transactions=d.get("transactions"),
             window_start=d.get("window_start"),
             session_end_date=d.get("session_end_date"),
             settlement_price=d.get("settlement_price"),
