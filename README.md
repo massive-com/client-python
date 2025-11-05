@@ -1,6 +1,6 @@
 # Massive (formerly Polygon.io) Python Client - WebSocket & RESTful APIs
 
-Welcome to the official Python client library for the [Massive](https://massive.io/) REST and WebSocket API. To get started, please see the [Getting Started](https://massive.io/docs/stocks/getting-started) section in our documentation, view the [examples](./examples/) directory for code snippets.
+Welcome to the official Python client library for the [Massive](https://massive.com/) REST and WebSocket API. To get started, please see the [Getting Started](https://massive.com/docs/stocks/getting-started) section in our documentation, view the [examples](./examples/) directory for code snippets.
 
 **Note:** Polygon.io has rebranded as [Massive.com](https://massive.com) on Oct 30, 2025. Existing API keys, accounts, and integrations continue to work exactly as before. The only change in this SDK is that it now defaults to the new API base at `api.massive.com`, while `api.polygon.io` remains supported for an extended period.
 
@@ -19,16 +19,16 @@ pip install -U massive
 
 ## Getting started
 
-To get started, please see the [Getting Started](https://massive.io/docs/stocks/getting-started) section in our docs, view the [examples](./examples) directory for code snippets.
+To get started, please see the [Getting Started](https://massive.com/docs/stocks/getting-started) section in our docs, view the [examples](./examples) directory for code snippets.
 
-The free tier of our API comes with usage limitations, potentially leading to rate limit errors if these are exceeded. For uninterrupted access and to support larger data requirements, we recommend reviewing our [subscription plans](https://massive.io/pricing), which are tailored for a wide range of needs from development to high-demand applications. Refer to our pricing page for detailed information on limits and features to ensure a seamless experience, especially for real-time data processing.
+The free tier of our API comes with usage limitations, potentially leading to rate limit errors if these are exceeded. For uninterrupted access and to support larger data requirements, we recommend reviewing our [subscription plans](https://massive.com/pricing), which are tailored for a wide range of needs from development to high-demand applications. Refer to our pricing page for detailed information on limits and features to ensure a seamless experience, especially for real-time data processing.
 
 ## REST API Client
 Import the RESTClient.
 ```python
 from massive import RESTClient
 ```
-Create a new client with your [API key](https://massive.io/dashboard/api-keys)
+Create a new client with your [API key](https://massive.com/dashboard/api-keys)
 ```python
 client = RESTClient(api_key="<API_KEY>")
 ```
@@ -148,7 +148,7 @@ When debug mode is enabled, the client will print out useful debugging informati
 For instance, if you made a request for `TSLA` data for the date `2023-08-01`, you would see debug output similar to the following:
 
 ```
-Request URL: https://api.massive.io/v2/aggs/ticker/TSLA/range/1/minute/2023-08-01/2023-08-01?limit=50000
+Request URL: https://api.massive.com/v2/aggs/ticker/TSLA/range/1/minute/2023-08-01/2023-08-01?limit=50000
 Request Headers: {'Authorization': 'Bearer REDACTED', 'Accept-Encoding': 'gzip', 'User-Agent': 'Massive.com PythonClient/1.12.4'}
 Response Headers: {'Server': 'nginx/1.19.2', 'Date': 'Tue, 05 Sep 2023 23:07:02 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Content-Encoding': 'gzip', 'Vary': 'Accept-Encoding', 'X-Request-Id': '727c82feed3790b44084c3f4cae1d7d4', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains'}
 ```
@@ -164,7 +164,7 @@ from massive.websocket.models import WebSocketMessage
 from typing import List
 ```
 ### Using the client
-Create a new client with your [API key](https://massive.io/dashboard/api-keys) and subscription options.
+Create a new client with your [API key](https://massive.com/dashboard/api-keys) and subscription options.
 ```python
 # Note: Multiple subscriptions can be added to the array 
 # For example, if you want to subscribe to AAPL and META,
