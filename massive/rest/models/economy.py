@@ -60,3 +60,28 @@ class FedInflation:
             pce_core=d.get("pce_core"),
             pce_spending=d.get("pce_spending"),
         )
+
+
+@modelclass
+class FedInflationExpectations:
+    date: Optional[str] = None
+    forward_years_5_to_10: Optional[float] = None
+    market_10_year: Optional[float] = None
+    market_5_year: Optional[float] = None
+    model_10_year: Optional[float] = None
+    model_1_year: Optional[float] = None
+    model_30_year: Optional[float] = None
+    model_5_year: Optional[float] = None
+
+    @staticmethod
+    def from_dict(d):
+        return FedInflationExpectations(
+            date=d.get("date"),
+            forward_years_5_to_10=d.get("forward_years_5_to_10"),
+            market_10_year=d.get("market_10_year"),
+            market_5_year=d.get("market_5_year"),
+            model_10_year=d.get("model_10_year"),
+            model_1_year=d.get("model_1_year"),
+            model_30_year=d.get("model_30_year"),
+            model_5_year=d.get("model_5_year"),
+        )
