@@ -12,6 +12,7 @@ from .models.futures import (
     FuturesSchedule,
     FuturesMarketStatus,
     FuturesSnapshot,
+    FuturesExchange,
 )
 from .models.common import Sort
 from .models.request import RequestOptionBuilder
@@ -330,5 +331,26 @@ class FuturesClient(BaseClient):
             params=self._get_params(self.get_futures_snapshot, locals()),
             raw=raw,
             deserializer=FuturesSnapshot.from_dict,
+            options=options,
+        )
+
+    def list_futures_exchanges(
+        self,
+        limit: Optional[int] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[FuturesExchange], HTTPResponse]:
+        """
+        Endpoint: GET /futures/vX/exchanges
+
+        US futures exchanges and trading venues including major derivatives exchanges (CME, CBOT, NYMEX, COMEX) and other futures market infrastructure for commodity, financial, and other derivative contract trading.
+        """
+        url = "/futures/vX/exchanges"
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_futures_exchanges, locals()),
+            raw=raw,
+            deserializer=FuturesExchange.from_dict,
             options=options,
         )
