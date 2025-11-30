@@ -1,5 +1,6 @@
 import certifi
 import json
+import os
 import urllib3
 import inspect
 from urllib3.util.retry import Retry
@@ -73,7 +74,7 @@ class BaseClient:
 
         # https://urllib3.readthedocs.io/en/stable/reference/urllib3.poolmanager.html
         # https://urllib3.readthedocs.io/en/stable/reference/urllib3.connectionpool.html#urllib3.HTTPConnectionPool
-        self.client = urllib3.PoolManager(
+        pool_kwargs = dict(
             num_pools=num_pools,
             headers=self.headers,  # default headers sent with each request.
             ca_certs=certifi.where(),
@@ -81,6 +82,14 @@ class BaseClient:
             retries=retry_strategy,  # use the customized Retry instance
             timeout=self.timeout,  # set timeout for each request
         )
+
+        # Check for proxy environment variables (HTTPS_PROXY or HTTP_PROXY)
+        proxy_url = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy") \
+                    or os.environ.get("HTTP_PROXY") or os.environ.get("http_proxy")
+        if proxy_url:
+            self.client = urllib3.ProxyManager(proxy_url, **pool_kwargs)
+        else:
+            self.client = urllib3.PoolManager(**pool_kwargs)
 
         if verbose:
             logger.setLevel(logging.DEBUG)
