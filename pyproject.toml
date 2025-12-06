@@ -31,7 +31,7 @@ certifi = ">=2022.5.18,<2026.0.0"
 
 [tool.poetry.dev-dependencies]
 black = "^24.8.0"
-mypy = "^1.18"
+mypy = "^1.19"
 types-urllib3 = "^1.26.25"
 Sphinx = "^7.4.7"
 sphinx-rtd-theme = "^3.0.2"
