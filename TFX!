@@ -1,0 +1,73 @@
+import pandas as pd
+import numpy as np
+
+# --- 1. 策略參數定義 ---
+LONG_MA_PERIOD = 60         # 60MA
+ENTRY_OFFSET_PCT = 0.0011   # 開盤價上漲 0.11%
+TAKE_PROFIT_PTS = 150       # 獲利 150 點
+
+def generate_signals_day_trade(df):
+    
+    # 1. 計算日線 60MA
+    # 注意：MA 計算在當日 K 棒結束時才確定
+    df['MA_60'] = df['Close'].rolling(window=LONG_MA_PERIOD).mean()
+    
+    # 2. 趨勢篩選 (多頭行情)
+    # 判斷依據：昨日 Close 必須 > 昨日 MA_60
+    # 我們使用 .shift(1) 來確保使用前一日數據
+    df['Trend_OK'] = (df['Close'].shift(1) > df['MA_60'].shift(1))
+
+    # 3. 初始化交易記錄
+    df['Signal'] = 0 
+    df['Entry_Price'] = np.nan
+    df['Exit_Price'] = np.nan
+    df['Exit_Type'] = np.nan
+    
+    # 4. 逐日回測與交易執行
+    # 從足夠計算 MA 的索引開始迭代
+    for i in range(LONG_MA_PERIOD, len(df)): 
+        current_day = df.iloc[i]
+        
+        # --- 條件 1: 趨勢篩選 ---
+        # 判斷是否為多頭趨勢 (Trend_OK 在前面已用 shift(1) 判斷完)
+        if current_day['Trend_OK'] == True:
+            
+            # 計算進場目標價
+            entry_target = current_day['Open'] * (1 + ENTRY_OFFSET_PCT)
+            
+            # --- 條件 2: 判斷進場 (當日高價觸及進場目標) ---
+            if current_day['High'] >= entry_target:
+                
+                entry_price = entry_target
+                tp_price = entry_price + TAKE_PROFIT_PTS
+                
+                # *** 修正未來函數 *** # sl_price_ma 應使用前一日的 MA_60 作為止損基準
+                # current_day['MA_60'] 已經是當日 MA，而我們需要前一日的
+                # 但因為我們在 for 迴圈內，最簡單的方式是：
+                sl_price_ma = df.loc[i-1, 'MA_60'] 
+                
+                # --- 條件 3 & 4: 判斷當日獲利/止損 ---
+                
+                # A. 判斷是否先觸發止盈 (150 點)
+                if current_day['High'] >= tp_price:
+                    df.loc[i, 'Exit_Price'] = tp_price
+                    df.loc[i, 'Exit_Type'] = 'TP'
+                    
+                # B. 判斷是否觸發 MA 止損 (假設止盈未觸發時，才判斷止損)
+                elif current_day['Low'] <= sl_price_ma:
+                    df.loc[i, 'Exit_Price'] = sl_price_ma
+                    df.loc[i, 'Exit_Type'] = 'MA_SL'
+                
+                # C. 未觸發止盈/止損，則收盤平倉
+                else:
+                    df.loc[i, 'Exit_Price'] = current_day['Close']
+                    df.loc[i, 'Exit_Type'] = 'EOD_Close' 
+
+                # 只有進場了才記錄這些數據
+                df.loc[i, 'Entry_Price'] = entry_price
+                df.loc[i, 'Signal'] = 1
+                
+    # 計算當日盈虧 (點數)
+    df['Profit_Pts'] = (df['Exit_Price'] - df['Entry_Price']) * df['Signal']
+    
+    return df
