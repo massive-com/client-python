@@ -68,6 +68,9 @@ class BaseClient:
             backoff_factor=0.1,  # [0.0s, 0.2s, 0.4s, 0.8s, 1.6s, ...]
         )
 
+        # https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html#urllib3.util.Timeout
+        timeout = urllib3.Timeout(connect=connect_timeout, read=read_timeout)
+
         # https://urllib3.readthedocs.io/en/stable/reference/urllib3.poolmanager.html
         # https://urllib3.readthedocs.io/en/stable/reference/urllib3.connectionpool.html#urllib3.HTTPConnectionPool
         self.client = urllib3.PoolManager(
@@ -76,9 +79,8 @@ class BaseClient:
             ca_certs=certifi.where(),
             cert_reqs="CERT_REQUIRED",
             retries=retry_strategy,  # use the customized Retry instance
+            timeout=timeout,  # set timeout for each request
         )
-
-        self.timeout = urllib3.Timeout(connect=connect_timeout, read=read_timeout)
 
         if verbose:
             logger.setLevel(logging.DEBUG)
