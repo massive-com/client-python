@@ -112,7 +112,7 @@ class TickersClient(BaseClient):
         :param date: Specify a point in time to retrieve tickers available on that date. Defaults to the most recent available date.
         :param search: Search for terms within the ticker and/or company name.
         :param active: Specify if the tickers returned should be actively traded on the queried date. Default is true.
-        :param limit: Limit the size of the response per-page, default is 100 and max is 1000.
+        :param limit: Limit the size of the response per-page, default is 10 and max is 1000.
         :param sort: The field to sort the results on. Default is ticker. If the search query parameter is present, sort is ignored and results are ordered by relevance.
         :param order: The order to sort the results on. Default is asc (ascending).
         :param params: Any additional query params.
