@@ -34,7 +34,7 @@ black = "^24.8.0"
 mypy = "^1.19"
 types-urllib3 = "^1.26.25"
 Sphinx = "^7.4.7"
-sphinx-rtd-theme = "^3.0.2"
+sphinx-rtd-theme = "^3.1.0"
 # keep this in sync with docs/requirements.txt for readthedocs.org
 sphinx-autodoc-typehints = "^2.3.0"
 types-certifi = "^2021.10.8"
