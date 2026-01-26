@@ -129,7 +129,6 @@ class EconomyClient(BaseClient):
             options=options,
         )
 
-
     def list_labor_market_indicators(
         self,
         date: Optional[str] = None,

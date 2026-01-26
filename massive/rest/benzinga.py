@@ -481,7 +481,6 @@ class BenzingaClient(BaseClient):
             options=options,
         )
 
-
     def list_benzinga_bulls_bears_say(
         self,
         ticker: Optional[str] = None,
