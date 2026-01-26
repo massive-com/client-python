@@ -50,7 +50,7 @@ class FuturesContract:
     trading_venue: Optional[str] = None
     name: Optional[str] = None
     type: Optional[str] = None
-    as_of: Optional[str] = None
+    date: Optional[str] = None
     active: Optional[bool] = None
     first_trade_date: Optional[str] = None
     last_trade_date: Optional[str] = None
@@ -61,7 +61,7 @@ class FuturesContract:
     settlement_tick_size: Optional[float] = None
     spread_tick_size: Optional[float] = None
     trade_tick_size: Optional[float] = None
-    maturity: Optional[str] = None
+    group_code: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
@@ -71,7 +71,7 @@ class FuturesContract:
             trading_venue=d.get("trading_venue"),
             name=d.get("name"),
             type=d.get("type"),
-            as_of=d.get("as_of"),
+            date=d.get("date"),
             active=d.get("active"),
             first_trade_date=d.get("first_trade_date"),
             last_trade_date=d.get("last_trade_date"),
@@ -82,7 +82,7 @@ class FuturesContract:
             settlement_tick_size=d.get("settlement_tick_size"),
             spread_tick_size=d.get("spread_tick_size"),
             trade_tick_size=d.get("trade_tick_size"),
-            maturity=d.get("maturity"),
+            group_code=d.get("group_code"),
         )
 
 
@@ -95,11 +95,10 @@ class FuturesProduct:
 
     product_code: Optional[str] = None
     name: Optional[str] = None
-    as_of: Optional[str] = None
+    date: Optional[str] = None
     trading_venue: Optional[str] = None
     asset_class: Optional[str] = None
     asset_sub_class: Optional[str] = None
-    clearing_channel: Optional[str] = None
     sector: Optional[str] = None
     sub_sector: Optional[str] = None
     type: Optional[str] = None
@@ -110,17 +109,16 @@ class FuturesProduct:
     settlement_type: Optional[str] = None
     trade_currency_code: Optional[str] = None
     unit_of_measure: Optional[str] = None
-    unit_of_measure_quantity: Optional[float] = None
+    unit_of_measure_qty: Optional[float] = None
 
     @staticmethod
     def from_dict(d):
         return FuturesProduct(
             product_code=d.get("product_code"),
             name=d.get("name"),
-            as_of=d.get("as_of"),
+            date=d.get("date"),
             trading_venue=d.get("trading_venue"),
             asset_class=d.get("asset_class"),
-            clearing_channel=d.get("clearing_channel"),
             asset_sub_class=d.get("asset_sub_class"),
             sector=d.get("sector"),
             sub_sector=d.get("sub_sector"),
@@ -132,7 +130,7 @@ class FuturesProduct:
             settlement_type=d.get("settlement_type"),
             trade_currency_code=d.get("trade_currency_code"),
             unit_of_measure=d.get("unit_of_measure"),
-            unit_of_measure_quantity=d.get("unit_of_measure_quantity"),
+            unit_of_measure_qty=d.get("unit_of_measure_qty"),
         )
 
 
@@ -193,62 +191,49 @@ class FuturesTrade:
 
 
 @modelclass
-class FuturesScheduleEvent:
+class FuturesSchedule:
     """
-    Represents a single market event for a schedule (preopen, open, closed, etc.).
+    Represents a single schedule event for a given session_end_date and product.
+    Corresponds to /futures/vX/schedules
     """
 
     event: Optional[str] = None
     timestamp: Optional[str] = None
-
-    @staticmethod
-    def from_dict(d):
-        return FuturesScheduleEvent(
-            event=d.get("event"),
-            timestamp=d.get("timestamp"),
-        )
-
-
-@modelclass
-class FuturesSchedule:
-    """
-    Represents a single schedule for a given session_end_date, with events.
-    Corresponds to /futures/vX/schedules, /futures/vX/schedules/{product_code}
-    """
-
     session_end_date: Optional[str] = None
     product_code: Optional[str] = None
     trading_venue: Optional[str] = None
     product_name: Optional[str] = None
-    schedule: Optional[List[FuturesScheduleEvent]] = None
 
     @staticmethod
     def from_dict(d):
         return FuturesSchedule(
+            event=d.get("event"),
+            timestamp=d.get("timestamp"),
             session_end_date=d.get("session_end_date"),
             product_code=d.get("product_code"),
             trading_venue=d.get("trading_venue"),
             product_name=d.get("product_name"),
-            schedule=[
-                FuturesScheduleEvent.from_dict(ev) for ev in d.get("schedule", [])
-            ],
         )
 
 
 @modelclass
 class FuturesMarketStatus:
-    trading_venue: Optional[str] = None
-    market_status: Optional[str] = (
-        None  # Enum: pre_open, open, close, pause, post_close_pre_open
-    )
+    market_event: Optional[str] = None
+    name: Optional[str] = None
     product_code: Optional[str] = None
+    session_end_date: Optional[str] = None
+    timestamp: Optional[str] = None
+    trading_venue: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
         return FuturesMarketStatus(
-            trading_venue=d.get("trading_venue"),
-            market_status=d.get("market_status"),
+            market_event=d.get("market_event"),
+            name=d.get("name"),
             product_code=d.get("product_code"),
+            session_end_date=d.get("session_end_date"),
+            timestamp=d.get("timestamp"),
+            trading_venue=d.get("trading_venue"),
         )
 
 
@@ -256,6 +241,13 @@ class FuturesMarketStatus:
 class FuturesSnapshotDetails:
     open_interest: Optional[int] = None
     settlement_date: Optional[int] = None
+
+    @staticmethod
+    def from_dict(d):
+        return FuturesSnapshotDetails(
+            open_interest=d.get("open_interest"),
+            settlement_date=d.get("settlement_date"),
+        )
 
 
 @modelclass

@@ -322,3 +322,22 @@ class BenzingaRating:
             ticker=d.get("ticker"),
             time=d.get("time"),
         )
+
+
+@modelclass
+class BenzingaBullsBearsSay:
+    bear_case: Optional[str] = None
+    benzinga_id: Optional[str] = None
+    bull_case: Optional[str] = None
+    last_updated: Optional[str] = None
+    ticker: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d):
+        return BenzingaBullsBearsSay(
+            bear_case=d.get("bear_case"),
+            benzinga_id=d.get("benzinga_id"),
+            bull_case=d.get("bull_case"),
+            last_updated=d.get("last_updated"),
+            ticker=d.get("ticker"),
+        )

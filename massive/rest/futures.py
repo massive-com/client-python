@@ -59,14 +59,38 @@ class FuturesClient(BaseClient):
 
     def list_futures_contracts(
         self,
+        date: Optional[str] = None,
+        date_gt: Optional[str] = None,
+        date_gte: Optional[str] = None,
+        date_lt: Optional[str] = None,
+        date_lte: Optional[str] = None,
         product_code: Optional[str] = None,
-        first_trade_date: Optional[Union[str, date]] = None,
-        last_trade_date: Optional[Union[str, date]] = None,
-        as_of: Optional[Union[str, date]] = None,
-        active: Optional[str] = None,
+        product_code_any_of: Optional[str] = None,
+        product_code_gt: Optional[str] = None,
+        product_code_gte: Optional[str] = None,
+        product_code_lt: Optional[str] = None,
+        product_code_lte: Optional[str] = None,
+        ticker: Optional[str] = None,
+        ticker_any_of: Optional[str] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        active: Optional[bool] = None,
         type: Optional[str] = None,
+        type_any_of: Optional[str] = None,
+        first_trade_date: Optional[str] = None,
+        first_trade_date_gt: Optional[str] = None,
+        first_trade_date_gte: Optional[str] = None,
+        first_trade_date_lt: Optional[str] = None,
+        first_trade_date_lte: Optional[str] = None,
+        last_trade_date: Optional[str] = None,
+        last_trade_date_gt: Optional[str] = None,
+        last_trade_date_gte: Optional[str] = None,
+        last_trade_date_lt: Optional[str] = None,
+        last_trade_date_lte: Optional[str] = None,
         limit: Optional[int] = None,
-        sort: Optional[Union[str, Sort]] = None,
+        sort: Optional[str] = None,
         params: Optional[Dict[str, Any]] = None,
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
@@ -85,43 +109,43 @@ class FuturesClient(BaseClient):
             options=options,
         )
 
-    def get_futures_contract_details(
-        self,
-        ticker: str,
-        as_of: Optional[Union[str, date]] = None,
-        params: Optional[Dict[str, Any]] = None,
-        raw: bool = False,
-        options: Optional[RequestOptionBuilder] = None,
-    ) -> Union[FuturesContract, HTTPResponse]:
-        """
-        Endpoint: GET /futures/vX/contracts/{ticker}
-
-        Returns details for a single contract at a specified point in time.
-        (No next_url in the response -> just a single get).
-        """
-        url = f"/futures/vX/contracts/{ticker}"
-        return self._get(
-            path=url,
-            params=self._get_params(self.get_futures_contract_details, locals()),
-            deserializer=FuturesContract.from_dict,
-            raw=raw,
-            result_key="results",
-            options=options,
-        )
-
     def list_futures_products(
         self,
         name: Optional[str] = None,
-        name_search: Optional[str] = None,
-        as_of: Optional[Union[str, date]] = None,
+        name_any_of: Optional[str] = None,
+        name_gt: Optional[str] = None,
+        name_gte: Optional[str] = None,
+        name_lt: Optional[str] = None,
+        name_lte: Optional[str] = None,
+        product_code: Optional[str] = None,
+        product_code_any_of: Optional[str] = None,
+        product_code_gt: Optional[str] = None,
+        product_code_gte: Optional[str] = None,
+        product_code_lt: Optional[str] = None,
+        product_code_lte: Optional[str] = None,
+        date: Optional[str] = None,
+        date_gt: Optional[str] = None,
+        date_gte: Optional[str] = None,
+        date_lt: Optional[str] = None,
+        date_lte: Optional[str] = None,
         trading_venue: Optional[str] = None,
+        trading_venue_any_of: Optional[str] = None,
+        trading_venue_gt: Optional[str] = None,
+        trading_venue_gte: Optional[str] = None,
+        trading_venue_lt: Optional[str] = None,
+        trading_venue_lte: Optional[str] = None,
         sector: Optional[str] = None,
+        sector_any_of: Optional[str] = None,
         sub_sector: Optional[str] = None,
+        sub_sector_any_of: Optional[str] = None,
         asset_class: Optional[str] = None,
+        asset_class_any_of: Optional[str] = None,
         asset_sub_class: Optional[str] = None,
+        asset_sub_class_any_of: Optional[str] = None,
         type: Optional[str] = None,
+        type_any_of: Optional[str] = None,
         limit: Optional[int] = None,
-        sort: Optional[Union[str, Sort]] = None,
+        sort: Optional[str] = None,
         params: Optional[Dict[str, Any]] = None,
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
@@ -137,31 +161,6 @@ class FuturesClient(BaseClient):
             params=self._get_params(self.list_futures_products, locals()),
             raw=raw,
             deserializer=FuturesProduct.from_dict,
-            options=options,
-        )
-
-    def get_futures_product_details(
-        self,
-        product_code: str,
-        type: Optional[str] = None,
-        as_of: Optional[Union[str, date]] = None,
-        params: Optional[Dict[str, Any]] = None,
-        raw: bool = False,
-        options: Optional[RequestOptionBuilder] = None,
-    ) -> Union[FuturesProduct, HTTPResponse]:
-        """
-        Endpoint: GET /futures/vX/products/{product_code}
-
-        Returns the details for a single product as it was at a specific day.
-        (No next_url -> single get).
-        """
-        url = f"/futures/vX/products/{product_code}"
-        return self._get(
-            path=url,
-            params=self._get_params(self.get_futures_product_details, locals()),
-            deserializer=FuturesProduct.from_dict,
-            raw=raw,
-            result_key="results",
             options=options,
         )
 
@@ -233,10 +232,26 @@ class FuturesClient(BaseClient):
 
     def list_futures_schedules(
         self,
+        product_code: Optional[str] = None,
+        product_code_any_of: Optional[str] = None,
+        product_code_gt: Optional[str] = None,
+        product_code_gte: Optional[str] = None,
+        product_code_lt: Optional[str] = None,
+        product_code_lte: Optional[str] = None,
         session_end_date: Optional[str] = None,
+        session_end_date_any_of: Optional[str] = None,
+        session_end_date_gt: Optional[str] = None,
+        session_end_date_gte: Optional[str] = None,
+        session_end_date_lt: Optional[str] = None,
+        session_end_date_lte: Optional[str] = None,
         trading_venue: Optional[str] = None,
+        trading_venue_any_of: Optional[str] = None,
+        trading_venue_gt: Optional[str] = None,
+        trading_venue_gte: Optional[str] = None,
+        trading_venue_lt: Optional[str] = None,
+        trading_venue_lte: Optional[str] = None,
         limit: Optional[int] = None,
-        sort: Optional[Union[str, Sort]] = None,
+        sort: Optional[str] = None,
         params: Optional[Dict[str, Any]] = None,
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
@@ -256,42 +271,15 @@ class FuturesClient(BaseClient):
             options=options,
         )
 
-    def list_futures_schedules_by_product_code(
-        self,
-        product_code: str,
-        session_end_date: Optional[str] = None,
-        session_end_date_lt: Optional[str] = None,
-        session_end_date_lte: Optional[str] = None,
-        session_end_date_gt: Optional[str] = None,
-        session_end_date_gte: Optional[str] = None,
-        limit: Optional[int] = None,
-        sort: Optional[Union[str, Sort]] = None,
-        params: Optional[Dict[str, Any]] = None,
-        raw: bool = False,
-        options: Optional[RequestOptionBuilder] = None,
-    ) -> Union[Iterator[FuturesSchedule], HTTPResponse]:
-        """
-        Endpoint: GET /futures/vX/products/{product_code}/schedules
-
-        Returns schedule data for a single product across (potentially) many trading dates.
-        """
-        url = f"/futures/vX/products/{product_code}/schedules"
-        return self._paginate(
-            path=url,
-            params=self._get_params(
-                self.list_futures_schedules_by_product_code, locals()
-            ),
-            raw=raw,
-            deserializer=FuturesSchedule.from_dict,
-            options=options,
-        )
-
     def list_futures_market_statuses(
         self,
-        product_code_any_of: Optional[str] = None,
         product_code: Optional[str] = None,
+        product_code_any_of: Optional[str] = None,
+        product_code_gt: Optional[str] = None,
+        product_code_gte: Optional[str] = None,
+        product_code_lt: Optional[str] = None,
+        product_code_lte: Optional[str] = None,
         limit: Optional[int] = None,
-        sort: Optional[Union[str, Sort]] = None,
         params: Optional[Dict[str, Any]] = None,
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
@@ -320,7 +308,7 @@ class FuturesClient(BaseClient):
         product_code_lt: Optional[str] = None,
         product_code_lte: Optional[str] = None,
         limit: Optional[int] = None,
-        sort: Optional[Union[str, Sort]] = None,
+        sort: Optional[str] = None,
         params: Optional[Dict[str, Any]] = None,
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
