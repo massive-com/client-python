@@ -12,6 +12,7 @@ from .models.benzinga import (
     BenzingaGuidance,
     BenzingaNews,
     BenzingaRating,
+    BenzingaBullsBearsSay,
 )
 from .models.common import Sort
 from .models.request import RequestOptionBuilder
@@ -477,5 +478,45 @@ class BenzingaClient(BaseClient):
             params=self._get_params(self.list_benzinga_ratings, locals()),
             raw=raw,
             deserializer=BenzingaRating.from_dict,
+            options=options,
+        )
+
+
+    def list_benzinga_bulls_bears_say(
+        self,
+        ticker: Optional[str] = None,
+        ticker_any_of: Optional[str] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        benzinga_id: Optional[str] = None,
+        benzinga_id_any_of: Optional[str] = None,
+        benzinga_id_gt: Optional[str] = None,
+        benzinga_id_gte: Optional[str] = None,
+        benzinga_id_lt: Optional[str] = None,
+        benzinga_id_lte: Optional[str] = None,
+        last_updated: Optional[str] = None,
+        last_updated_gt: Optional[str] = None,
+        last_updated_gte: Optional[str] = None,
+        last_updated_lt: Optional[str] = None,
+        last_updated_lte: Optional[str] = None,
+        limit: Optional[int] = None,
+        sort: Optional[str] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[BenzingaBullsBearsSay], HTTPResponse]:
+        """
+        Endpoint: GET /benzinga/v1/bulls-bears-say
+
+        A comprehensive database of analyst bull and bear case summaries for publicly traded companies, providing concise summaries of both bullish and bearish investment arguments to help investors see both sides of the story before making investment decisions.
+        """
+        url = "/benzinga/v1/bulls-bears-say"
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_benzinga_bulls_bears_say, locals()),
+            raw=raw,
+            deserializer=BenzingaBullsBearsSay.from_dict,
             options=options,
         )
