@@ -150,6 +150,8 @@ class FuturesQuote:
     bid_price: Optional[float] = None
     bid_size: Optional[float] = None
     bid_timestamp: Optional[int] = None
+    report_sequence: Optional[int] = None
+    sequence_number: Optional[int] = None
 
     @staticmethod
     def from_dict(d):
@@ -163,6 +165,8 @@ class FuturesQuote:
             bid_price=d.get("bid_price"),
             bid_size=d.get("bid_size"),
             bid_timestamp=d.get("bid_timestamp"),
+            report_sequence=d.get("report_sequence"),
+            sequence_number=d.get("sequence_number"),
         )
 
 
@@ -178,6 +182,8 @@ class FuturesTrade:
     session_end_date: Optional[str] = None
     price: Optional[float] = None
     size: Optional[float] = None
+    report_sequence: Optional[int] = None
+    sequence_number: Optional[int] = None
 
     @staticmethod
     def from_dict(d):
@@ -187,6 +193,8 @@ class FuturesTrade:
             session_end_date=d.get("session_end_date"),
             price=d.get("price"),
             size=d.get("size"),
+            report_sequence=d.get("report_sequence"),
+            sequence_number=d.get("sequence_number"),
         )
 
 
