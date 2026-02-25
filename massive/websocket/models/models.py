@@ -86,6 +86,7 @@ class EquityTrade:
     tape: Optional[int] = None
     price: Optional[float] = None
     size: Optional[int] = None
+    fractional_shares: Optional[str] = None
     conditions: Optional[List[int]] = None
     timestamp: Optional[int] = None
     sequence_number: Optional[int] = None
