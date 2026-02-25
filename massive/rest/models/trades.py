@@ -50,7 +50,7 @@ class LastTrade:
             d.get("q", None),
             d.get("t", None),
             d.get("y", None),
-            d.get("c", None),            
+            d.get("c", None),
             d.get("e", None),
             d.get("i", None),
             d.get("p", None),
