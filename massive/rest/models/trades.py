@@ -17,6 +17,7 @@ class Trade:
     tape: Optional[int] = None
     trf_id: Optional[int] = None
     trf_timestamp: Optional[int] = None
+    decimal_size: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
@@ -39,6 +40,7 @@ class LastTrade:
     size: Optional[float] = None
     exchange: Optional[int] = None
     tape: Optional[int] = None
+    fractional_shares: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
@@ -56,6 +58,7 @@ class LastTrade:
             d.get("s", None),
             d.get("x", None),
             d.get("z", None),
+            d.get("ds", None),
         )
 
 

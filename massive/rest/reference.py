@@ -14,7 +14,9 @@ from .models import (
     AssetClass,
     Locale,
     Split,
+    StockSplit,
     Dividend,
+    StockDividend,
     DividendType,
     Frequency,
     Condition,
@@ -24,6 +26,8 @@ from .models import (
     OptionsContract,
     ShortInterest,
     ShortVolume,
+    RiskFactor,
+    RiskFactorTaxonomy,
 )
 from urllib3 import HTTPResponse
 from datetime import date
@@ -693,5 +697,159 @@ class ContractsClient(BaseClient):
             deserializer=ShortVolume.from_dict,
             raw=raw,
             result_key="results",
+            options=options,
+        )
+
+    # Add these functions to financials.py in the FinancialsClient class
+
+    def list_stocks_splits(
+        self,
+        ticker: Optional[str] = None,
+        ticker_any_of: Optional[str] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        execution_date: Optional[Union[str, date]] = None,
+        execution_date_gt: Optional[Union[str, date]] = None,
+        execution_date_gte: Optional[Union[str, date]] = None,
+        execution_date_lt: Optional[Union[str, date]] = None,
+        execution_date_lte: Optional[Union[str, date]] = None,
+        adjustment_type: Optional[str] = None,
+        adjustment_type_any_of: Optional[str] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[StockSplit], HTTPResponse]:
+        """
+        Endpoint: GET /stocks/v1/splits
+        """
+        url = "/stocks/v1/splits"
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_splits, locals()),
+            raw=raw,
+            deserializer=StockSplit.from_dict,
+            options=options,
+        )
+
+    def list_stocks_dividends(
+        self,
+        ticker: Optional[str] = None,
+        ticker_any_of: Optional[str] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        ex_dividend_date: Optional[Union[str, date]] = None,
+        ex_dividend_date_gt: Optional[Union[str, date]] = None,
+        ex_dividend_date_gte: Optional[Union[str, date]] = None,
+        ex_dividend_date_lt: Optional[Union[str, date]] = None,
+        ex_dividend_date_lte: Optional[Union[str, date]] = None,
+        frequency: Optional[int] = None,
+        frequency_gt: Optional[int] = None,
+        frequency_gte: Optional[int] = None,
+        frequency_lt: Optional[int] = None,
+        frequency_lte: Optional[int] = None,
+        distribution_type: Optional[str] = None,
+        distribution_type_any_of: Optional[str] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[StockDividend], HTTPResponse]:
+        """
+        Endpoint: GET /stocks/v1/dividends
+        """
+        url = "/stocks/v1/dividends"
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_dividends, locals()),
+            raw=raw,
+            deserializer=StockDividend.from_dict,
+            options=options,
+        )
+
+    def list_stocks_filings_risk_factors(
+        self,
+        filing_date: Optional[Union[str, date]] = None,
+        filing_date_any_of: Optional[str] = None,
+        filing_date_gt: Optional[Union[str, date]] = None,
+        filing_date_gte: Optional[Union[str, date]] = None,
+        filing_date_lt: Optional[Union[str, date]] = None,
+        filing_date_lte: Optional[Union[str, date]] = None,
+        ticker: Optional[str] = None,
+        ticker_any_of: Optional[str] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        cik: Optional[str] = None,
+        cik_any_of: Optional[str] = None,
+        cik_gt: Optional[str] = None,
+        cik_gte: Optional[str] = None,
+        cik_lt: Optional[str] = None,
+        cik_lte: Optional[str] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[RiskFactor], HTTPResponse]:
+        """
+        Endpoint: GET /stocks/filings/vX/risk-factors
+        """
+        url = "/stocks/filings/vX/risk-factors"
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_filings_risk_factors, locals()),
+            raw=raw,
+            deserializer=RiskFactor.from_dict,
+            options=options,
+        )
+
+    def list_stocks_taxonomies_risk_factors(
+        self,
+        taxonomy: Optional[float] = None,
+        taxonomy_gt: Optional[float] = None,
+        taxonomy_gte: Optional[float] = None,
+        taxonomy_lt: Optional[float] = None,
+        taxonomy_lte: Optional[float] = None,
+        primary_category: Optional[str] = None,
+        primary_category_any_of: Optional[str] = None,
+        primary_category_gt: Optional[str] = None,
+        primary_category_gte: Optional[str] = None,
+        primary_category_lt: Optional[str] = None,
+        primary_category_lte: Optional[str] = None,
+        secondary_category: Optional[str] = None,
+        secondary_category_any_of: Optional[str] = None,
+        secondary_category_gt: Optional[str] = None,
+        secondary_category_gte: Optional[str] = None,
+        secondary_category_lt: Optional[str] = None,
+        secondary_category_lte: Optional[str] = None,
+        tertiary_category: Optional[str] = None,
+        tertiary_category_any_of: Optional[str] = None,
+        tertiary_category_gt: Optional[str] = None,
+        tertiary_category_gte: Optional[str] = None,
+        tertiary_category_lt: Optional[str] = None,
+        tertiary_category_lte: Optional[str] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[RiskFactorTaxonomy], HTTPResponse]:
+        """
+        Endpoint: GET /stocks/taxonomies/vX/risk-factors
+        """
+        url = "/stocks/taxonomies/vX/risk-factors"
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_taxonomies_risk_factors, locals()),
+            raw=raw,
+            deserializer=RiskFactorTaxonomy.from_dict,
             options=options,
         )

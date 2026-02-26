@@ -27,18 +27,18 @@ packages = [
 python = "^3.9"
 urllib3 = ">=1.26.9"
 websockets = ">=14.0"
-certifi = ">=2022.5.18,<2026.0.0"
+certifi = ">=2022.5.18,<2027.0.0"
 
 [tool.poetry.dev-dependencies]
 black = "^24.8.0"
 mypy = "^1.19"
 types-urllib3 = "^1.26.25"
 Sphinx = "^7.4.7"
-sphinx-rtd-theme = "^3.0.2"
+sphinx-rtd-theme = "^3.1.0"
 # keep this in sync with docs/requirements.txt for readthedocs.org
 sphinx-autodoc-typehints = "^2.3.0"
 types-certifi = "^2021.10.8"
-types-setuptools = "^80.9.0"
+types-setuptools = "^81.0.0"
 pook = "^2.1.4"
 orjson = "^3.11.5"
 

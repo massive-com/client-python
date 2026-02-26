@@ -85,3 +85,22 @@ class FedInflationExpectations:
             model_30_year=d.get("model_30_year"),
             model_5_year=d.get("model_5_year"),
         )
+
+
+@modelclass
+class FedLaborMarket:
+    avg_hourly_earnings: Optional[float] = None
+    date: Optional[str] = None
+    job_openings: Optional[float] = None
+    labor_force_participation_rate: Optional[float] = None
+    unemployment_rate: Optional[float] = None
+
+    @staticmethod
+    def from_dict(d):
+        return FedLaborMarket(
+            avg_hourly_earnings=d.get("avg_hourly_earnings"),
+            date=d.get("date"),
+            job_openings=d.get("job_openings"),
+            labor_force_participation_rate=d.get("labor_force_participation_rate"),
+            unemployment_rate=d.get("unemployment_rate"),
+        )

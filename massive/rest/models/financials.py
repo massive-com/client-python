@@ -861,3 +861,62 @@ class FinancialRatio:
             return_on_equity=d.get("return_on_equity"),
             ticker=d.get("ticker"),
         )
+
+
+@modelclass
+class FinancialFloat:
+    effective_date: Optional[str] = None
+    free_float: Optional[int] = None
+    free_float_percent: Optional[float] = None
+    ticker: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d):
+        return FinancialFloat(
+            effective_date=d.get("effective_date"),
+            free_float=d.get("free_float"),
+            free_float_percent=d.get("free_float_percent"),
+            ticker=d.get("ticker"),
+        )
+
+
+@modelclass
+class RiskFactor:
+    cik: Optional[str] = None
+    filing_date: Optional[str] = None
+    primary_category: Optional[str] = None
+    secondary_category: Optional[str] = None
+    supporting_text: Optional[str] = None
+    tertiary_category: Optional[str] = None
+    ticker: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d):
+        return RiskFactor(
+            cik=d.get("cik"),
+            filing_date=d.get("filing_date"),
+            primary_category=d.get("primary_category"),
+            secondary_category=d.get("secondary_category"),
+            supporting_text=d.get("supporting_text"),
+            tertiary_category=d.get("tertiary_category"),
+            ticker=d.get("ticker"),
+        )
+
+
+@modelclass
+class RiskFactorTaxonomy:
+    description: Optional[str] = None
+    primary_category: Optional[str] = None
+    secondary_category: Optional[str] = None
+    taxonomy: Optional[float] = None
+    tertiary_category: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d):
+        return RiskFactorTaxonomy(
+            description=d.get("description"),
+            primary_category=d.get("primary_category"),
+            secondary_category=d.get("secondary_category"),
+            taxonomy=d.get("taxonomy"),
+            tertiary_category=d.get("tertiary_category"),
+        )
