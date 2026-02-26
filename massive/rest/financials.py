@@ -9,6 +9,7 @@ from .models.financials import (
     FinancialCashFlowStatement,
     FinancialIncomeStatement,
     FinancialRatio,
+    FinancialFloat,
 )
 from .models.common import Sort
 from .models.request import RequestOptionBuilder
@@ -316,5 +317,36 @@ class FinancialsClient(BaseClient):
             params=self._get_params(self.list_financials_ratios, locals()),
             raw=raw,
             deserializer=FinancialRatio.from_dict,
+            options=options,
+        )
+
+    def list_stocks_floats(
+        self,
+        ticker: Optional[str] = None,
+        ticker_any_of: Optional[str] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        free_float_percent: Optional[float] = None,
+        free_float_percent_gt: Optional[float] = None,
+        free_float_percent_gte: Optional[float] = None,
+        free_float_percent_lt: Optional[float] = None,
+        free_float_percent_lte: Optional[float] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[FinancialFloat], HTTPResponse]:
+        """
+        Endpoint: GET /stocks/vX/float
+        """
+        url = "/stocks/vX/float"
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_floats, locals()),
+            raw=raw,
+            deserializer=FinancialFloat.from_dict,
             options=options,
         )
