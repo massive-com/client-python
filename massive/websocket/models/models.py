@@ -22,6 +22,8 @@ class EquityAgg:
     start_timestamp: Optional[int] = None
     end_timestamp: Optional[int] = None
     otc: Optional[bool] = None
+    fractional_volume: Optional[str] = None
+    fractional_accumulated_volume: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
@@ -41,6 +43,8 @@ class EquityAgg:
             d.get("s", None),
             d.get("e", None),
             d.get("otc", None),
+            d.get("dv", None),
+            d.get("dav", None),
         )
 
 

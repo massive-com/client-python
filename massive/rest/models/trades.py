@@ -26,7 +26,8 @@ class Trade:
 
 @modelclass
 class LastTrade:
-    "Contains data for the most recent trade for a given ticker symbol."
+    """Contains data for the most recent trade for a given ticker symbol."""
+
     ticker: Optional[str] = None
     trf_timestamp: Optional[int] = None
     sequence_number: Optional[float] = None
@@ -40,25 +41,25 @@ class LastTrade:
     size: Optional[float] = None
     exchange: Optional[int] = None
     tape: Optional[int] = None
-    fractional_shares: Optional[str] = None
+    fractional_size: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
         return LastTrade(
-            d.get("T", None),
-            d.get("f", None),
-            d.get("q", None),
-            d.get("t", None),
-            d.get("y", None),
-            d.get("c", None),
-            d.get("e", None),
-            d.get("i", None),
-            d.get("p", None),
-            d.get("r", None),
-            d.get("s", None),
-            d.get("x", None),
-            d.get("z", None),
-            d.get("ds", None),
+            ticker=d.get("T"),
+            trf_timestamp=d.get("f"),
+            sequence_number=d.get("q"),
+            sip_timestamp=d.get("t"),
+            participant_timestamp=d.get("y"),
+            conditions=d.get("c"),
+            correction=d.get("e"),
+            id=d.get("i"),
+            price=d.get("p"),
+            trf_id=d.get("r"),
+            size=d.get("s"),
+            exchange=d.get("x"),
+            tape=d.get("z"),
+            fractional_size=d.get("ds"),
         )
 
 

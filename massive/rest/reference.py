@@ -28,6 +28,9 @@ from .models import (
     ShortVolume,
     RiskFactor,
     RiskFactorTaxonomy,
+    FilingSection,
+    Filing8K,
+    FilingIndex,
 )
 from urllib3 import HTTPResponse
 from datetime import date
@@ -773,7 +776,7 @@ class ContractsClient(BaseClient):
             options=options,
         )
 
-    def list_stocks_filings_risk_factors(
+    def list_stocks_taxonomies_risk_factors(
         self,
         filing_date: Optional[Union[str, date]] = None,
         filing_date_any_of: Optional[str] = None,
@@ -793,63 +796,154 @@ class ContractsClient(BaseClient):
         cik_gte: Optional[str] = None,
         cik_lt: Optional[str] = None,
         cik_lte: Optional[str] = None,
-        limit: Optional[int] = None,
-        sort: Optional[Union[str, Sort]] = None,
+        limit: Optional[int] = 100,
+        sort: Optional[Union[str, Sort]] = "filing_date.desc",
         params: Optional[Dict[str, Any]] = None,
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
     ) -> Union[Iterator[RiskFactor], HTTPResponse]:
         """
-        Endpoint: GET /stocks/filings/vX/risk-factors
+        Get categorized risk factors from 10-K filings.
         """
         url = "/stocks/filings/vX/risk-factors"
         return self._paginate(
             path=url,
-            params=self._get_params(self.list_stocks_filings_risk_factors, locals()),
-            raw=raw,
+            params=self._get_params(self.list_stocks_taxonomies_risk_factors, locals()),
+            result_key="results",
             deserializer=RiskFactor.from_dict,
+            raw=raw,
             options=options,
         )
 
-    def list_stocks_taxonomies_risk_factors(
+    def list_stocks_filings_10k_sections(
         self,
-        taxonomy: Optional[float] = None,
-        taxonomy_gt: Optional[float] = None,
-        taxonomy_gte: Optional[float] = None,
-        taxonomy_lt: Optional[float] = None,
-        taxonomy_lte: Optional[float] = None,
-        primary_category: Optional[str] = None,
-        primary_category_any_of: Optional[str] = None,
-        primary_category_gt: Optional[str] = None,
-        primary_category_gte: Optional[str] = None,
-        primary_category_lt: Optional[str] = None,
-        primary_category_lte: Optional[str] = None,
-        secondary_category: Optional[str] = None,
-        secondary_category_any_of: Optional[str] = None,
-        secondary_category_gt: Optional[str] = None,
-        secondary_category_gte: Optional[str] = None,
-        secondary_category_lt: Optional[str] = None,
-        secondary_category_lte: Optional[str] = None,
-        tertiary_category: Optional[str] = None,
-        tertiary_category_any_of: Optional[str] = None,
-        tertiary_category_gt: Optional[str] = None,
-        tertiary_category_gte: Optional[str] = None,
-        tertiary_category_lt: Optional[str] = None,
-        tertiary_category_lte: Optional[str] = None,
-        limit: Optional[int] = None,
-        sort: Optional[Union[str, Sort]] = None,
+        cik: Optional[str] = None,
+        cik_any_of: Optional[str] = None,
+        cik_gt: Optional[str] = None,
+        cik_gte: Optional[str] = None,
+        cik_lt: Optional[str] = None,
+        cik_lte: Optional[str] = None,
+        ticker: Optional[str] = None,
+        ticker_any_of: Optional[str] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        section: Optional[str] = None,
+        section_any_of: Optional[str] = None,
+        filing_date: Optional[Union[str, date]] = None,
+        filing_date_gt: Optional[Union[str, date]] = None,
+        filing_date_gte: Optional[Union[str, date]] = None,
+        filing_date_lt: Optional[Union[str, date]] = None,
+        filing_date_lte: Optional[Union[str, date]] = None,
+        period_end: Optional[Union[str, date]] = None,
+        period_end_gt: Optional[Union[str, date]] = None,
+        period_end_gte: Optional[Union[str, date]] = None,
+        period_end_lt: Optional[Union[str, date]] = None,
+        period_end_lte: Optional[Union[str, date]] = None,
+        limit: Optional[int] = 100,
+        sort: Optional[Union[str, Sort]] = "period_end.desc",
         params: Optional[Dict[str, Any]] = None,
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
-    ) -> Union[Iterator[RiskFactorTaxonomy], HTTPResponse]:
+    ) -> Union[Iterator[FilingSection], HTTPResponse]:
         """
-        Endpoint: GET /stocks/taxonomies/vX/risk-factors
+        Get raw text sections from 10-K/10-Q filings (business, risk_factors, etc.).
         """
-        url = "/stocks/taxonomies/vX/risk-factors"
+        url = "/stocks/filings/10-K/vX/sections"
         return self._paginate(
             path=url,
-            params=self._get_params(self.list_stocks_taxonomies_risk_factors, locals()),
+            params=self._get_params(self.list_stocks_filings_10k_sections, locals()),
+            result_key="results",
+            deserializer=FilingSection.from_dict,
             raw=raw,
-            deserializer=RiskFactorTaxonomy.from_dict,
+            options=options,
+        )
+
+    def list_stocks_filings_8k_text(
+        self,
+        cik: Optional[str] = None,
+        cik_any_of: Optional[str] = None,
+        cik_gt: Optional[str] = None,
+        cik_gte: Optional[str] = None,
+        cik_lt: Optional[str] = None,
+        cik_lte: Optional[str] = None,
+        ticker: Optional[str] = None,
+        ticker_any_of: Optional[str] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        form_type: Optional[str] = None,
+        form_type_any_of: Optional[str] = None,
+        form_type_gt: Optional[str] = None,
+        form_type_gte: Optional[str] = None,
+        form_type_lt: Optional[str] = None,
+        form_type_lte: Optional[str] = None,
+        filing_date: Optional[Union[str, date]] = None,
+        filing_date_gt: Optional[Union[str, date]] = None,
+        filing_date_gte: Optional[Union[str, date]] = None,
+        filing_date_lt: Optional[Union[str, date]] = None,
+        filing_date_lte: Optional[Union[str, date]] = None,
+        limit: Optional[int] = 100,
+        sort: Optional[Union[str, Sort]] = "filing_date.desc",
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[Filing8K], HTTPResponse]:
+        """
+        Get parsed 8-K filings (earnings, acquisitions, executive changes, etc.).
+        """
+        url = "/stocks/filings/8-K/vX/text"
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_filings_8k_text, locals()),
+            result_key="results",
+            deserializer=Filing8K.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_stocks_filings_index(
+        self,
+        cik: Optional[str] = None,
+        cik_any_of: Optional[str] = None,
+        cik_gt: Optional[str] = None,
+        cik_gte: Optional[str] = None,
+        cik_lt: Optional[str] = None,
+        cik_lte: Optional[str] = None,
+        ticker: Optional[str] = None,
+        ticker_any_of: Optional[str] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        form_type: Optional[str] = None,
+        form_type_any_of: Optional[str] = None,
+        form_type_gt: Optional[str] = None,
+        form_type_gte: Optional[str] = None,
+        form_type_lt: Optional[str] = None,
+        form_type_lte: Optional[str] = None,
+        filing_date: Optional[Union[str, date]] = None,
+        filing_date_gt: Optional[Union[str, date]] = None,
+        filing_date_gte: Optional[Union[str, date]] = None,
+        filing_date_lt: Optional[Union[str, date]] = None,
+        filing_date_lte: Optional[Union[str, date]] = None,
+        limit: Optional[int] = 1000,
+        sort: Optional[Union[str, Sort]] = "filing_date.desc",
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[FilingIndex], HTTPResponse]:
+        """
+        Get the master index of all SEC filings (10-K, 8-K, 10-Q, S-1, 4, etc.).
+        """
+        url = "/stocks/filings/vX/index"
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_filings_index, locals()),
+            result_key="results",
+            deserializer=FilingIndex.from_dict,
+            raw=raw,
             options=options,
         )

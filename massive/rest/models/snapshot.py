@@ -7,7 +7,8 @@ from ...modelclass import modelclass
 
 @modelclass
 class MinuteSnapshot:
-    "Most recent minute bar."
+    """Most recent minute bar."""
+
     accumulated_volume: Optional[float] = None
     open: Optional[float] = None
     high: Optional[float] = None
@@ -18,20 +19,24 @@ class MinuteSnapshot:
     otc: Optional[bool] = None
     timestamp: Optional[int] = None
     transactions: Optional[int] = None
+    fractional_volume: Optional[str] = None
+    fractional_accumulated_volume: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
         return MinuteSnapshot(
-            d.get("av", None),
-            d.get("o", None),
-            d.get("h", None),
-            d.get("l", None),
-            d.get("c", None),
-            d.get("v", None),
-            d.get("vw", None),
-            d.get("otc", None),
-            d.get("t", None),
-            d.get("n", None),
+            accumulated_volume=d.get("av"),
+            open=d.get("o"),
+            high=d.get("h"),
+            low=d.get("l"),
+            close=d.get("c"),
+            volume=d.get("v"),
+            vwap=d.get("vw"),
+            otc=d.get("otc"),
+            timestamp=d.get("t"),
+            transactions=d.get("n"),
+            fractional_volume=d.get("dv"),
+            fractional_accumulated_volume=d.get("dav"),
         )
 
 
@@ -318,10 +323,32 @@ class UniversalSnapshotSession:
     low: Optional[float] = None
     previous_close: Optional[float] = None
     volume: Optional[float] = None
+    vwap: Optional[float] = None
+    last_updated: Optional[int] = None
+    fractional_volume: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
-        return UniversalSnapshotSession(**d)
+        return UniversalSnapshotSession(
+            price=d.get("price"),
+            change=d.get("change"),
+            change_percent=d.get("change_percent"),
+            early_trading_change=d.get("early_trading_change"),
+            early_trading_change_percent=d.get("early_trading_change_percent"),
+            regular_trading_change=d.get("regular_trading_change"),
+            regular_trading_change_percent=d.get("regular_trading_change_percent"),
+            late_trading_change=d.get("late_trading_change"),
+            late_trading_change_percent=d.get("late_trading_change_percent"),
+            open=d.get("open"),
+            close=d.get("close"),
+            high=d.get("high"),
+            low=d.get("low"),
+            previous_close=d.get("previous_close"),
+            volume=d.get("volume"),
+            vwap=d.get("vwap"),
+            last_updated=d.get("last_updated"),
+            fractional_volume=d.get("decimal_volume"),
+        )
 
 
 @modelclass
@@ -330,8 +357,10 @@ class UniversalSnapshotLastQuote:
 
     ask: Optional[float] = None
     ask_size: Optional[float] = None
+    ask_exchange: Optional[int] = None
     bid: Optional[float] = None
     bid_size: Optional[float] = None
+    bid_exchange: Optional[int] = None
     midpoint: Optional[float] = None
     exchange: Optional[int] = None
     timeframe: Optional[str] = None
@@ -339,7 +368,18 @@ class UniversalSnapshotLastQuote:
 
     @staticmethod
     def from_dict(d):
-        return UniversalSnapshotLastQuote(**d)
+        return UniversalSnapshotLastQuote(
+            ask=d.get("ask"),
+            ask_size=d.get("ask_size"),
+            ask_exchange=d.get("ask_exchange"),
+            bid=d.get("bid"),
+            bid_size=d.get("bid_size"),
+            bid_exchange=d.get("bid_exchange"),
+            midpoint=d.get("midpoint"),
+            exchange=d.get("exchange"),
+            timeframe=d.get("timeframe"),
+            last_updated=d.get("last_updated"),
+        )
 
 
 @modelclass
@@ -355,10 +395,51 @@ class UniversalSnapshotLastTrade:
     last_updated: Optional[int] = None
     participant_timestamp: Optional[int] = None
     sip_timestamp: Optional[int] = None
+    fractional_size: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
-        return UniversalSnapshotLastTrade(**d)
+        return UniversalSnapshotLastTrade(
+            id=d.get("id"),
+            price=d.get("price"),
+            size=d.get("size"),
+            exchange=d.get("exchange"),
+            conditions=d.get("conditions"),
+            timeframe=d.get("timeframe"),
+            last_updated=d.get("last_updated"),
+            participant_timestamp=d.get("participant_timestamp"),
+            sip_timestamp=d.get("sip_timestamp"),
+            fractional_size=d.get("decimal_size"),
+        )
+
+
+@modelclass
+class UniversalSnapshotLastMinute:
+    """Contains the most recent minute-level aggregate for the asset."""
+
+    open: Optional[float] = None
+    close: Optional[float] = None
+    high: Optional[float] = None
+    low: Optional[float] = None
+    volume: Optional[float] = None
+    vwap: Optional[float] = None
+    transactions: Optional[int] = None
+    last_updated: Optional[int] = None
+    fractional_volume: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d):
+        return UniversalSnapshotLastMinute(
+            open=d.get("open"),
+            close=d.get("close"),
+            high=d.get("high"),
+            low=d.get("low"),
+            volume=d.get("volume"),
+            vwap=d.get("vwap"),
+            transactions=d.get("transactions"),
+            last_updated=d.get("last_updated"),
+            fractional_volume=d.get("decimal_volume"),
+        )
 
 
 @modelclass
@@ -374,7 +455,14 @@ class UniversalSnapshotUnderlyingAsset:
 
     @staticmethod
     def from_dict(d):
-        return UniversalSnapshotUnderlyingAsset(**d)
+        return UniversalSnapshotUnderlyingAsset(
+            ticker=d.get("ticker"),
+            price=d.get("price"),
+            value=d.get("value"),
+            change_to_break_even=d.get("change_to_break_even"),
+            timeframe=d.get("timeframe"),
+            last_updated=d.get("last_updated"),
+        )
 
 
 @modelclass
@@ -389,18 +477,25 @@ class UniversalSnapshotDetails:
 
     @staticmethod
     def from_dict(d):
-        return UniversalSnapshotDetails(**d)
+        return UniversalSnapshotDetails(
+            contract_type=d.get("contract_type"),
+            exercise_style=d.get("exercise_style"),
+            expiration_date=d.get("expiration_date"),
+            shares_per_contract=d.get("shares_per_contract"),
+            strike_price=d.get("strike_price"),
+        )
 
 
 @modelclass
 class UniversalSnapshot:
-    """Contains snapshot data for an asset."""
+    """Contains snapshot data for an asset (stocks, options, indices, fx, crypto)."""
 
     ticker: Optional[str] = None
     type: Optional[str] = None
     session: Optional[UniversalSnapshotSession] = None
     last_quote: Optional[UniversalSnapshotLastQuote] = None
     last_trade: Optional[UniversalSnapshotLastTrade] = None
+    last_minute: Optional[UniversalSnapshotLastMinute] = None
     greeks: Optional[Greeks] = None
     underlying_asset: Optional[UniversalSnapshotUnderlyingAsset] = None
     details: Optional[UniversalSnapshotDetails] = None
@@ -412,12 +507,15 @@ class UniversalSnapshot:
     fair_market_value: Optional[float] = None
     error: Optional[str] = None
     message: Optional[str] = None
+    value: Optional[float] = None
+    last_updated: Optional[int] = None
+    timeframe: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
         return UniversalSnapshot(
-            ticker=d.get("ticker", None),
-            type=d.get("type", None),
+            ticker=d.get("ticker"),
+            type=d.get("type"),
             session=(
                 None
                 if "session" not in d
@@ -433,7 +531,12 @@ class UniversalSnapshot:
                 if "last_trade" not in d
                 else UniversalSnapshotLastTrade.from_dict(d["last_trade"])
             ),
-            greeks=None if "greeks" not in d else Greeks.from_dict(d["greeks"]),
+            last_minute=(
+                None
+                if "last_minute" not in d
+                else UniversalSnapshotLastMinute.from_dict(d["last_minute"])
+            ),
+            greeks=(None if "greeks" not in d else Greeks.from_dict(d["greeks"])),
             underlying_asset=(
                 None
                 if "underlying_asset" not in d
@@ -444,12 +547,15 @@ class UniversalSnapshot:
                 if "details" not in d
                 else UniversalSnapshotDetails.from_dict(d["details"])
             ),
-            break_even_price=d.get("break_even_price", None),
-            implied_volatility=d.get("implied_volatility", None),
-            open_interest=d.get("open_interest", None),
-            market_status=d.get("market_status", None),
-            name=d.get("name", None),
-            fair_market_value=d.get("fmv", None),
-            error=d.get("error", None),
-            message=d.get("message", None),
+            break_even_price=d.get("break_even_price"),
+            implied_volatility=d.get("implied_volatility"),
+            open_interest=d.get("open_interest"),
+            market_status=d.get("market_status"),
+            name=d.get("name"),
+            fair_market_value=d.get("fmv"),
+            error=d.get("error"),
+            message=d.get("message"),
+            value=d.get("value"),
+            last_updated=d.get("last_updated"),
+            timeframe=d.get("timeframe"),
         )
