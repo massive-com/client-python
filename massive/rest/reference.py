@@ -776,7 +776,7 @@ class ContractsClient(BaseClient):
             options=options,
         )
 
-    def list_stocks_taxonomies_risk_factors(
+    def list_stocks_filings_risk_factors(
         self,
         filing_date: Optional[Union[str, date]] = None,
         filing_date_any_of: Optional[str] = None,
@@ -803,14 +803,58 @@ class ContractsClient(BaseClient):
         options: Optional[RequestOptionBuilder] = None,
     ) -> Union[Iterator[RiskFactor], HTTPResponse]:
         """
-        Get categorized risk factors from 10-K filings.
+        Get categorized risk factors extracted from 10-K filings (with supporting_text).
         """
         url = "/stocks/filings/vX/risk-factors"
         return self._paginate(
             path=url,
-            params=self._get_params(self.list_stocks_taxonomies_risk_factors, locals()),
+            params=self._get_params(self.list_stocks_filings_risk_factors, locals()),
             result_key="results",
             deserializer=RiskFactor.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_stocks_taxonomies_risk_factors(
+        self,
+        taxonomy: Optional[float] = None,
+        taxonomy_gt: Optional[float] = None,
+        taxonomy_gte: Optional[float] = None,
+        taxonomy_lt: Optional[float] = None,
+        taxonomy_lte: Optional[float] = None,
+        primary_category: Optional[str] = None,
+        primary_category_any_of: Optional[str] = None,
+        primary_category_gt: Optional[str] = None,
+        primary_category_gte: Optional[str] = None,
+        primary_category_lt: Optional[str] = None,
+        primary_category_lte: Optional[str] = None,
+        secondary_category: Optional[str] = None,
+        secondary_category_any_of: Optional[str] = None,
+        secondary_category_gt: Optional[str] = None,
+        secondary_category_gte: Optional[str] = None,
+        secondary_category_lt: Optional[str] = None,
+        secondary_category_lte: Optional[str] = None,
+        tertiary_category: Optional[str] = None,
+        tertiary_category_any_of: Optional[str] = None,
+        tertiary_category_gt: Optional[str] = None,
+        tertiary_category_gte: Optional[str] = None,
+        tertiary_category_lt: Optional[str] = None,
+        tertiary_category_lte: Optional[str] = None,
+        limit: Optional[int] = 200,
+        sort: Optional[Union[str, Sort]] = "taxonomy.desc",
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[RiskFactorTaxonomy], HTTPResponse]:
+        """
+        Get the taxonomy/categories used to classify risk factors (kept old name for backward compatibility).
+        """
+        url = "/stocks/taxonomies/vX/risk-factors"
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_taxonomies_risk_factors, locals()),
+            result_key="results",
+            deserializer=RiskFactorTaxonomy.from_dict,
             raw=raw,
             options=options,
         )
