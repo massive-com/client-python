@@ -920,3 +920,78 @@ class RiskFactorTaxonomy:
             taxonomy=d.get("taxonomy"),
             tertiary_category=d.get("tertiary_category"),
         )
+
+
+@modelclass
+class FilingSection:
+    """SEC document text section from a 10-K/10-Q (raw text content)."""
+
+    cik: Optional[str] = None
+    filing_date: Optional[str] = None
+    filing_url: Optional[str] = None
+    period_end: Optional[str] = None
+    section: Optional[str] = None
+    text: Optional[str] = None
+    ticker: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d):
+        return FilingSection(
+            cik=d.get("cik"),
+            filing_date=d.get("filing_date"),
+            filing_url=d.get("filing_url"),
+            period_end=d.get("period_end"),
+            section=d.get("section"),
+            text=d.get("text"),
+            ticker=d.get("ticker"),
+        )
+
+
+@modelclass
+class Filing8K:
+    """Parsed 8-K filing with item-level text content."""
+
+    accession_number: Optional[str] = None
+    cik: Optional[str] = None
+    filing_date: Optional[str] = None
+    filing_url: Optional[str] = None
+    form_type: Optional[str] = None
+    items_text: Optional[str] = None
+    ticker: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d):
+        return Filing8K(
+            accession_number=d.get("accession_number"),
+            cik=d.get("cik"),
+            filing_date=d.get("filing_date"),
+            filing_url=d.get("filing_url"),
+            form_type=d.get("form_type"),
+            items_text=d.get("items_text"),
+            ticker=d.get("ticker"),
+        )
+
+
+@modelclass
+class FilingIndex:
+    """Master index entry for any SEC filing (10-K, 8-K, 10-Q, etc.)."""
+
+    accession_number: Optional[str] = None
+    cik: Optional[str] = None
+    filing_date: Optional[str] = None
+    filing_url: Optional[str] = None
+    form_type: Optional[str] = None
+    issuer_name: Optional[str] = None
+    ticker: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d):
+        return FilingIndex(
+            accession_number=d.get("accession_number"),
+            cik=d.get("cik"),
+            filing_date=d.get("filing_date"),
+            filing_url=d.get("filing_url"),
+            form_type=d.get("form_type"),
+            issuer_name=d.get("issuer_name"),
+            ticker=d.get("ticker"),
+        )
