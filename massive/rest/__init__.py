@@ -1,4 +1,3 @@
-from typing_extensions import Dict
 from .aggs import AggsClient
 from .futures import FuturesClient
 from .financials import FinancialsClient
@@ -21,7 +20,7 @@ from .reference import (
     ContractsClient,
 )
 from .vX import VXClient
-from typing import Optional, Any
+from typing import Optional, Any, Dict
 import os
 
 BASE = "https://api.massive.com"

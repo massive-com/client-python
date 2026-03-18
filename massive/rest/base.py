@@ -81,9 +81,7 @@ class BaseClient:
             cert_reqs="CERT_REQUIRED",
             retries=retry_strategy,  # use the customized Retry instance
             timeout=self.timeout,  # set timeout for each request
-            connection_pool_kw=connection_pool_kw
-            if connection_pool_kw is not None
-            else {},
+            **(connection_pool_kw if connection_pool_kw is not None else {}),
         )
 
         if verbose:
