@@ -1,3 +1,4 @@
+from typing_extensions import Dict
 from .aggs import AggsClient
 from .futures import FuturesClient
 from .financials import FinancialsClient
@@ -60,6 +61,7 @@ class RESTClient(
         verbose: bool = False,
         trace: bool = False,
         custom_json: Optional[Any] = None,
+        connection_pool_kw: Optional[Dict[str, Any]] = None,
     ):
         super().__init__(
             api_key=api_key,
@@ -72,6 +74,7 @@ class RESTClient(
             verbose=verbose,
             trace=trace,
             custom_json=custom_json,
+            connection_pool_kw=connection_pool_kw,
         )
         self.vx = VXClient(
             api_key=api_key,
@@ -84,4 +87,5 @@ class RESTClient(
             verbose=verbose,
             trace=trace,
             custom_json=custom_json,
+            connection_pool_kw=connection_pool_kw,
         )
