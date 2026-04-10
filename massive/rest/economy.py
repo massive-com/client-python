@@ -8,6 +8,8 @@ from .models.economy import (
     TreasuryYield,
     FedInflationExpectations,
     FedLaborMarket,
+    EUMerchantAggregate,
+    EUMerchantHierarchy,
 )
 from .models.common import Sort, Order
 from .models.request import RequestOptionBuilder
@@ -166,5 +168,105 @@ class EconomyClient(BaseClient):
             params=self._get_params(self.list_labor_market_indicators, locals()),
             deserializer=FedLaborMarket.from_dict,
             raw=raw,
+            options=options,
+        )
+
+    def list_eu_merchant_aggregates(
+        self,
+        transaction_date: Optional[Union[str, date]] = None,
+        transaction_date_gt: Optional[Union[str, date]] = None,
+        transaction_date_gte: Optional[Union[str, date]] = None,
+        transaction_date_lt: Optional[Union[str, date]] = None,
+        transaction_date_lte: Optional[Union[str, date]] = None,
+        name: Optional[str] = None,
+        name_any_of: Optional[str] = None,
+        name_gt: Optional[str] = None,
+        name_gte: Optional[str] = None,
+        name_lt: Optional[str] = None,
+        name_lte: Optional[str] = None,
+        user_country: Optional[str] = None,
+        user_country_any_of: Optional[str] = None,
+        channel: Optional[str] = None,
+        channel_any_of: Optional[str] = None,
+        consumer_type: Optional[str] = None,
+        consumer_type_any_of: Optional[str] = None,
+        parent_name: Optional[str] = None,
+        parent_name_any_of: Optional[str] = None,
+        parent_name_gt: Optional[str] = None,
+        parent_name_gte: Optional[str] = None,
+        parent_name_lt: Optional[str] = None,
+        parent_name_lte: Optional[str] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[EUMerchantAggregate], HTTPResponse]:
+        """
+        Aggregated consumer transactions from European credit card panels (UK, DE, FR, IT, ES, AT).
+        Each row represents daily credit card, debit card, or open banking transactions
+        (7-day lag from transaction date) at a tagged merchant or payment processor.
+
+        Includes ticker (Bloomberg) and industry mapping for ~250 US public companies.
+        User counts provided across 8- and 28-day windows for normalization.
+        """
+        url = "/consumer-spending/eu/v1/merchant-aggregates"
+
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_eu_merchant_aggregates, locals()),
+            deserializer=EUMerchantAggregate.from_dict,
+            raw=raw,
+            result_key="results",
+            options=options,
+        )
+
+    def list_eu_merchant_hierarchy(
+        self,
+        lookup_name: Optional[str] = None,
+        lookup_name_any_of: Optional[str] = None,
+        lookup_name_gt: Optional[str] = None,
+        lookup_name_gte: Optional[str] = None,
+        lookup_name_lt: Optional[str] = None,
+        lookup_name_lte: Optional[str] = None,
+        ticker: Optional[str] = None,
+        ticker_any_of: Optional[str] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        listing_status: Optional[str] = None,
+        listing_status_any_of: Optional[str] = None,
+        active_from: Optional[Union[str, date]] = None,
+        active_from_gt: Optional[Union[str, date]] = None,
+        active_from_gte: Optional[Union[str, date]] = None,
+        active_from_lt: Optional[Union[str, date]] = None,
+        active_from_lte: Optional[Union[str, date]] = None,
+        active_to: Optional[Union[str, date]] = None,
+        active_to_gt: Optional[Union[str, date]] = None,
+        active_to_gte: Optional[Union[str, date]] = None,
+        active_to_lt: Optional[Union[str, date]] = None,
+        active_to_lte: Optional[Union[str, date]] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[EUMerchantHierarchy], HTTPResponse]:
+        """
+        Reference data mapping merchants to parent companies, tickers, sectors,
+        and industries across Fable's European consumer transaction panel.
+
+        Use lookup_name + active_from/active_to to join with merchant-aggregates
+        for point-in-time queries.
+        """
+        url = "/consumer-spending/eu/v1/merchant-hierarchy"
+
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_eu_merchant_hierarchy, locals()),
+            deserializer=EUMerchantHierarchy.from_dict,
+            raw=raw,
+            result_key="results",
             options=options,
         )
