@@ -19,9 +19,7 @@ class TestConfig(unittest.TestCase):
     def test_load_config_from_file(self):
         from project.us_daily.config import load_config
 
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".json", delete=False
-        ) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump({"refresh_tickers": True, "market_cap_min": 1e10}, f)
             tmp_path = f.name
 

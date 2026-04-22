@@ -26,10 +26,12 @@ class TestTickerFilter(unittest.TestCase):
 
         client = MagicMock()
         # list_tickers returns different tickers per exchange
-        client.list_tickers.return_value = iter([
-            self._make_ticker("AAPL", "XNAS"),
-            self._make_ticker("TINY", "XNAS"),
-        ])
+        client.list_tickers.return_value = iter(
+            [
+                self._make_ticker("AAPL", "XNAS"),
+                self._make_ticker("TINY", "XNAS"),
+            ]
+        )
 
         # get_ticker_details: AAPL has large cap, TINY does not
         def mock_details(ticker):
@@ -55,9 +57,11 @@ class TestTickerFilter(unittest.TestCase):
         config = Config(market_cap_min=5e9, request_interval=0)
 
         client = MagicMock()
-        client.list_tickers.return_value = iter([
-            self._make_ticker("MSFT", "XNYS"),
-        ])
+        client.list_tickers.return_value = iter(
+            [
+                self._make_ticker("MSFT", "XNYS"),
+            ]
+        )
         client.get_ticker_details.return_value = self._make_details(
             "MSFT", "Microsoft Corporation", 2.8e12, "XNYS"
         )
@@ -80,10 +84,12 @@ class TestTickerFilter(unittest.TestCase):
         config = Config(market_cap_min=5e9, request_interval=0)
 
         client = MagicMock()
-        client.list_tickers.return_value = iter([
-            self._make_ticker("FAIL", "XNAS"),
-            self._make_ticker("AAPL", "XNAS"),
-        ])
+        client.list_tickers.return_value = iter(
+            [
+                self._make_ticker("FAIL", "XNAS"),
+                self._make_ticker("AAPL", "XNAS"),
+            ]
+        )
 
         def mock_details(ticker):
             if ticker == "FAIL":

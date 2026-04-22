@@ -54,11 +54,14 @@ def main():
     if config.refresh_tickers or not file_exists(tickers_path):
         logger.info("Filtering top tickers from API...")
         tickers = filter_top_tickers(client, config)
-        save_json(tickers_path, {
-            "updated_at": datetime.now().strftime("%Y-%m-%d"),
-            "market_cap_min": config.market_cap_min,
-            "tickers": tickers,
-        })
+        save_json(
+            tickers_path,
+            {
+                "updated_at": datetime.now().strftime("%Y-%m-%d"),
+                "market_cap_min": config.market_cap_min,
+                "tickers": tickers,
+            },
+        )
         logger.info(f"Saved {len(tickers)} tickers to {tickers_path}")
     else:
         data = load_json(tickers_path)

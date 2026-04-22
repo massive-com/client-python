@@ -82,11 +82,13 @@ def fetch_ticker_aggs(client, ticker: str, config: Config) -> dict:
                     time.sleep(config.request_interval)
 
         if aggs is None:
-            failures.append({
-                "ticker": ticker,
-                "month": month,
-                "error": str(last_error),
-            })
+            failures.append(
+                {
+                    "ticker": ticker,
+                    "month": month,
+                    "error": str(last_error),
+                }
+            )
             logger.error(f"  {ticker} {month}: all retries failed, skipping")
             continue
 

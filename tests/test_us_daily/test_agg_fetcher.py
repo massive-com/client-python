@@ -91,8 +91,12 @@ class TestFetchTickerAggs(unittest.TestCase):
 
         client = MagicMock()
 
-        with patch("project.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]):
-            with patch("project.us_daily.agg_fetcher.is_current_month", return_value=False):
+        with patch(
+            "project.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
+        ):
+            with patch(
+                "project.us_daily.agg_fetcher.is_current_month", return_value=False
+            ):
                 with patch("project.us_daily.agg_fetcher.time.sleep"):
                     result = fetch_ticker_aggs(client, "AAPL", config)
 
@@ -123,8 +127,12 @@ class TestFetchTickerAggs(unittest.TestCase):
         client = MagicMock()
         client.list_aggs.return_value = iter([agg1])
 
-        with patch("project.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]):
-            with patch("project.us_daily.agg_fetcher.is_current_month", return_value=False):
+        with patch(
+            "project.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
+        ):
+            with patch(
+                "project.us_daily.agg_fetcher.is_current_month", return_value=False
+            ):
                 with patch("project.us_daily.agg_fetcher.time.sleep"):
                     result = fetch_ticker_aggs(client, "AAPL", config)
 
@@ -169,8 +177,12 @@ class TestFetchTickerAggs(unittest.TestCase):
         client = MagicMock()
         client.list_aggs.return_value = iter([agg1])
 
-        with patch("project.us_daily.agg_fetcher.generate_months", return_value=["2026-04"]):
-            with patch("project.us_daily.agg_fetcher.is_current_month", return_value=True):
+        with patch(
+            "project.us_daily.agg_fetcher.generate_months", return_value=["2026-04"]
+        ):
+            with patch(
+                "project.us_daily.agg_fetcher.is_current_month", return_value=True
+            ):
                 with patch("project.us_daily.agg_fetcher.time.sleep"):
                     result = fetch_ticker_aggs(client, "AAPL", config)
 
@@ -192,8 +204,12 @@ class TestFetchTickerAggs(unittest.TestCase):
         client = MagicMock()
         client.list_aggs.side_effect = Exception("API timeout")
 
-        with patch("project.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]):
-            with patch("project.us_daily.agg_fetcher.is_current_month", return_value=False):
+        with patch(
+            "project.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
+        ):
+            with patch(
+                "project.us_daily.agg_fetcher.is_current_month", return_value=False
+            ):
                 with patch("project.us_daily.agg_fetcher.time.sleep"):
                     result = fetch_ticker_aggs(client, "AAPL", config)
 

@@ -32,9 +32,7 @@ def filter_top_tickers(client, config: Config) -> List[dict]:
                 details = client.get_ticker_details(ticker_str)
                 time.sleep(config.request_interval)
             except Exception as e:
-                logger.warning(
-                    f"Failed to get details for {ticker_str}: {e}"
-                )
+                logger.warning(f"Failed to get details for {ticker_str}: {e}")
                 continue
 
             if details.market_cap is None:
