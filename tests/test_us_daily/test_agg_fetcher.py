@@ -73,23 +73,28 @@ class TestFetchTickerAggs(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.test_dir)
 
+    def _make_manager(self, df=None, source_name="akshare", error=None):
+        from processor.us_daily.sources.manager import SourceManager
+
+        manager = MagicMock(spec=SourceManager)
+        if error:
+            manager.fetch_daily.side_effect = error
+        else:
+            manager.fetch_daily.return_value = (df, source_name)
+        return manager
+
     def test_skips_existing_historical_month(self):
         from processor.us_daily.agg_fetcher import fetch_ticker_aggs
         from processor.us_daily.config import Config
 
-        config = Config(
-            start_date="2020-01",
-            data_dir=self.test_dir,
-            request_interval=0,
-        )
+        config = Config(start_date="2020-01", daily_dir=self.test_dir)
 
-        # Create existing file for 2020-01
         ticker_dir = os.path.join(self.test_dir, "AAPL")
         os.makedirs(ticker_dir)
         with open(os.path.join(ticker_dir, "2020-01.json"), "w") as f:
             json.dump({"ticker": "AAPL", "month": "2020-01", "data": []}, f)
 
-        client = MagicMock()
+        manager = self._make_manager()
 
         with patch(
             "processor.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
@@ -97,35 +102,27 @@ class TestFetchTickerAggs(unittest.TestCase):
             with patch(
                 "processor.us_daily.agg_fetcher.is_current_month", return_value=False
             ):
-                with patch("processor.us_daily.agg_fetcher.time.sleep"):
-                    result = fetch_ticker_aggs(client, "AAPL", config)
+                result = fetch_ticker_aggs(manager, "AAPL", config)
 
-        # Should not have called list_aggs since file exists and not current month
-        client.list_aggs.assert_not_called()
+        manager.fetch_daily.assert_not_called()
         self.assertEqual(result["failures"], [])
 
     def test_fetches_missing_month(self):
         from processor.us_daily.agg_fetcher import fetch_ticker_aggs
         from processor.us_daily.config import Config
+        import pandas as pd
 
-        config = Config(
-            start_date="2020-01",
-            data_dir=self.test_dir,
-            request_interval=0,
-        )
+        config = Config(start_date="2020-01", daily_dir=self.test_dir)
 
-        agg1 = MagicMock()
-        agg1.open = 74.06
-        agg1.high = 75.15
-        agg1.low = 73.80
-        agg1.close = 74.36
-        agg1.volume = 108872000.0
-        agg1.vwap = 74.53
-        agg1.timestamp = 1577854800000
-        agg1.transactions = 480012
-
-        client = MagicMock()
-        client.list_aggs.return_value = iter([agg1])
+        df = pd.DataFrame({
+            "date": ["2020-01-02"],
+            "open": [74.06],
+            "high": [75.15],
+            "low": [73.80],
+            "close": [74.36],
+            "volume": [108872000],
+        })
+        manager = self._make_manager(df=df, source_name="akshare")
 
         with patch(
             "processor.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
@@ -133,10 +130,8 @@ class TestFetchTickerAggs(unittest.TestCase):
             with patch(
                 "processor.us_daily.agg_fetcher.is_current_month", return_value=False
             ):
-                with patch("processor.us_daily.agg_fetcher.time.sleep"):
-                    result = fetch_ticker_aggs(client, "AAPL", config)
+                result = fetch_ticker_aggs(manager, "AAPL", config)
 
-        # Verify file was created
         file_path = os.path.join(self.test_dir, "AAPL", "2020-01.json")
         self.assertTrue(os.path.exists(file_path))
 
@@ -144,38 +139,32 @@ class TestFetchTickerAggs(unittest.TestCase):
             data = json.load(f)
         self.assertEqual(data["ticker"], "AAPL")
         self.assertEqual(data["month"], "2020-01")
+        self.assertEqual(data["source"], "akshare")
         self.assertEqual(len(data["data"]), 1)
-        self.assertEqual(data["data"][0]["open"], 74.06)
+        self.assertEqual(data["data"][0]["close"], 74.36)
         self.assertEqual(result["failures"], [])
 
     def test_refreshes_current_month(self):
         from processor.us_daily.agg_fetcher import fetch_ticker_aggs
         from processor.us_daily.config import Config
+        import pandas as pd
 
-        config = Config(
-            start_date="2026-04",
-            data_dir=self.test_dir,
-            request_interval=0,
-        )
+        config = Config(start_date="2026-04", daily_dir=self.test_dir)
 
-        # Create existing file for current month
         ticker_dir = os.path.join(self.test_dir, "AAPL")
         os.makedirs(ticker_dir)
         with open(os.path.join(ticker_dir, "2026-04.json"), "w") as f:
             json.dump({"ticker": "AAPL", "month": "2026-04", "data": []}, f)
 
-        agg1 = MagicMock()
-        agg1.open = 200.0
-        agg1.high = 210.0
-        agg1.low = 195.0
-        agg1.close = 205.0
-        agg1.volume = 50000000.0
-        agg1.vwap = 203.0
-        agg1.timestamp = 1714348800000
-        agg1.transactions = 300000
-
-        client = MagicMock()
-        client.list_aggs.return_value = iter([agg1])
+        df = pd.DataFrame({
+            "date": ["2026-04-01"],
+            "open": [200.0],
+            "high": [210.0],
+            "low": [195.0],
+            "close": [205.0],
+            "volume": [50000000],
+        })
+        manager = self._make_manager(df=df, source_name="yfinance")
 
         with patch(
             "processor.us_daily.agg_fetcher.generate_months", return_value=["2026-04"]
@@ -183,26 +172,21 @@ class TestFetchTickerAggs(unittest.TestCase):
             with patch(
                 "processor.us_daily.agg_fetcher.is_current_month", return_value=True
             ):
-                with patch("processor.us_daily.agg_fetcher.time.sleep"):
-                    result = fetch_ticker_aggs(client, "AAPL", config)
+                result = fetch_ticker_aggs(manager, "AAPL", config)
 
-        # Should have called list_aggs even though file exists
-        client.list_aggs.assert_called_once()
+        manager.fetch_daily.assert_called_once()
         self.assertEqual(result["failures"], [])
 
-    def test_records_failure_after_retries(self):
+    def test_records_failure_when_all_sources_fail(self):
         from processor.us_daily.agg_fetcher import fetch_ticker_aggs
         from processor.us_daily.config import Config
+        from processor.us_daily.sources.manager import FetchError
 
-        config = Config(
-            start_date="2020-01",
-            data_dir=self.test_dir,
-            request_interval=0,
-            max_retries=2,
+        config = Config(start_date="2020-01", daily_dir=self.test_dir, max_retries=2)
+
+        manager = self._make_manager(
+            error=FetchError("All sources failed for AAPL")
         )
-
-        client = MagicMock()
-        client.list_aggs.side_effect = Exception("API timeout")
 
         with patch(
             "processor.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
@@ -210,13 +194,11 @@ class TestFetchTickerAggs(unittest.TestCase):
             with patch(
                 "processor.us_daily.agg_fetcher.is_current_month", return_value=False
             ):
-                with patch("processor.us_daily.agg_fetcher.time.sleep"):
-                    result = fetch_ticker_aggs(client, "AAPL", config)
+                result = fetch_ticker_aggs(manager, "AAPL", config)
 
         self.assertEqual(len(result["failures"]), 1)
         self.assertEqual(result["failures"][0]["ticker"], "AAPL")
         self.assertEqual(result["failures"][0]["month"], "2020-01")
-        self.assertIn("API timeout", result["failures"][0]["error"])
 
 
 if __name__ == "__main__":

@@ -1,10 +1,10 @@
 import calendar
 import logging
-import time
 from datetime import date, datetime
 from typing import List, Tuple
 
 from processor.us_daily.config import Config
+from processor.us_daily.sources.manager import FetchError
 from processor.us_daily.storage import (
     get_month_file_path,
     file_exists,
@@ -45,73 +45,48 @@ def current_month() -> str:
     return f"{today.year:04d}-{today.month:02d}"
 
 
-def fetch_ticker_aggs(client, ticker: str, config: Config) -> dict:
+def fetch_ticker_aggs(source_manager, ticker: str, config: Config) -> dict:
+    """Fetch monthly OHLCV data for a ticker using SourceManager.
+
+    Args:
+        source_manager: SourceManager instance with failover sources.
+        ticker: Stock ticker symbol (e.g. "AAPL").
+        config: Config with daily_dir, start_date, max_retries.
+
+    Returns:
+        Dict with "failures" list of failed months.
+    """
     months = generate_months(config.start_date, current_month())
     failures = []
 
     for month in months:
-        file_path = get_month_file_path(config.data_dir, ticker, month)
+        file_path = get_month_file_path(config.daily_dir, ticker, month)
 
         if file_exists(file_path) and not is_current_month(month):
             logger.debug(f"  {ticker} {month}: exists, skipping")
             continue
 
         start_date, end_date = get_month_bounds(month)
-        aggs = None
-        last_error = None
 
-        for attempt in range(1, config.max_retries + 1):
-            try:
-                aggs_iter = client.list_aggs(
-                    ticker,
-                    1,
-                    "day",
-                    from_=start_date,
-                    to=end_date,
-                    adjusted=True,
-                    sort="asc",
-                )
-                aggs = list(aggs_iter)
-                break
-            except Exception as e:
-                last_error = e
-                logger.warning(
-                    f"  {ticker} {month}: attempt {attempt}/{config.max_retries} failed: {e}"
-                )
-                if attempt < config.max_retries:
-                    time.sleep(config.request_interval)
-
-        if aggs is None:
-            failures.append(
-                {
-                    "ticker": ticker,
-                    "month": month,
-                    "error": str(last_error),
-                }
-            )
-            logger.error(f"  {ticker} {month}: all retries failed, skipping")
+        try:
+            df, source_name = source_manager.fetch_daily(ticker, start_date, end_date)
+        except FetchError as e:
+            failures.append({
+                "ticker": ticker,
+                "month": month,
+                "error": str(e),
+            })
+            logger.error(f"  {ticker} {month}: {e}")
             continue
 
         data = {
             "ticker": ticker,
             "month": month,
+            "source": source_name,
             "fetched_at": datetime.now().isoformat(timespec="seconds"),
-            "data": [
-                {
-                    "open": a.open,
-                    "high": a.high,
-                    "low": a.low,
-                    "close": a.close,
-                    "volume": a.volume,
-                    "vwap": a.vwap,
-                    "timestamp": a.timestamp,
-                    "transactions": a.transactions,
-                }
-                for a in aggs
-            ],
+            "data": df.to_dict(orient="records"),
         }
         save_json(file_path, data)
-        logger.info(f"  {ticker} {month}: fetched {len(aggs)} bars")
-        time.sleep(config.request_interval)
+        logger.info(f"  {ticker} {month}: fetched {len(df)} bars from {source_name}")
 
     return {"failures": failures}
