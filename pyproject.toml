@@ -10,6 +10,9 @@ dependencies = [
     "websockets>=14.0",
     "certifi>=2022.5.18,<2027.0.0",
     "pandas",
+    "requests",
+    "tenacity",
+    "fake-useragent",
 ]
 
 [project.optional-dependencies]

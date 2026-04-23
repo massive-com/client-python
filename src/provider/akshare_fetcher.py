@@ -41,7 +41,7 @@ from tenacity import (
     before_sleep_log,
 )
 
-from patch.eastmoney_patch import eastmoney_patch
+from provider._patch.eastmoney_patch import eastmoney_patch
 from provider._config import get_config
 from .base import BaseFetcher, DataFetchError, RateLimitError, STANDARD_COLUMNS, is_bse_code, is_st_stock, is_kc_cy_stock, normalize_stock_code
 from .realtime_types import (
