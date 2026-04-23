@@ -1,2 +1,2 @@
 sphinx-autodoc-typehints~=1.19.2
-websockets~=10.3
+websockets>=14.0

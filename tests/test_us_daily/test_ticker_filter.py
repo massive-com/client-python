@@ -19,8 +19,8 @@ class TestTickerFilter(unittest.TestCase):
         return d
 
     def test_filter_top_tickers_filters_by_market_cap(self):
-        from project.us_daily.ticker_filter import filter_top_tickers
-        from project.us_daily.config import Config
+        from data_provider.us_daily.ticker_filter import filter_top_tickers
+        from data_provider.us_daily.config import Config
 
         config = Config(market_cap_min=5e9, request_interval=0)
 
@@ -42,8 +42,8 @@ class TestTickerFilter(unittest.TestCase):
 
         client.get_ticker_details.side_effect = mock_details
 
-        with patch("project.us_daily.ticker_filter.EXCHANGES", ["XNAS"]):
-            with patch("project.us_daily.ticker_filter.time.sleep"):
+        with patch("data_provider.us_daily.ticker_filter.EXCHANGES", ["XNAS"]):
+            with patch("data_provider.us_daily.ticker_filter.time.sleep"):
                 result = filter_top_tickers(client, config)
 
         tickers = [t["ticker"] for t in result]
@@ -51,8 +51,8 @@ class TestTickerFilter(unittest.TestCase):
         self.assertNotIn("TINY", tickers)
 
     def test_filter_top_tickers_includes_required_fields(self):
-        from project.us_daily.ticker_filter import filter_top_tickers
-        from project.us_daily.config import Config
+        from data_provider.us_daily.ticker_filter import filter_top_tickers
+        from data_provider.us_daily.config import Config
 
         config = Config(market_cap_min=5e9, request_interval=0)
 
@@ -66,8 +66,8 @@ class TestTickerFilter(unittest.TestCase):
             "MSFT", "Microsoft Corporation", 2.8e12, "XNYS"
         )
 
-        with patch("project.us_daily.ticker_filter.EXCHANGES", ["XNYS"]):
-            with patch("project.us_daily.ticker_filter.time.sleep"):
+        with patch("data_provider.us_daily.ticker_filter.EXCHANGES", ["XNYS"]):
+            with patch("data_provider.us_daily.ticker_filter.time.sleep"):
                 result = filter_top_tickers(client, config)
 
         self.assertEqual(len(result), 1)
@@ -78,8 +78,8 @@ class TestTickerFilter(unittest.TestCase):
         self.assertEqual(entry["exchange"], "XNYS")
 
     def test_filter_skips_ticker_on_details_error(self):
-        from project.us_daily.ticker_filter import filter_top_tickers
-        from project.us_daily.config import Config
+        from data_provider.us_daily.ticker_filter import filter_top_tickers
+        from data_provider.us_daily.config import Config
 
         config = Config(market_cap_min=5e9, request_interval=0)
 
@@ -98,8 +98,8 @@ class TestTickerFilter(unittest.TestCase):
 
         client.get_ticker_details.side_effect = mock_details
 
-        with patch("project.us_daily.ticker_filter.EXCHANGES", ["XNAS"]):
-            with patch("project.us_daily.ticker_filter.time.sleep"):
+        with patch("data_provider.us_daily.ticker_filter.EXCHANGES", ["XNAS"]):
+            with patch("data_provider.us_daily.ticker_filter.time.sleep"):
                 result = filter_top_tickers(client, config)
 
         tickers = [t["ticker"] for t in result]

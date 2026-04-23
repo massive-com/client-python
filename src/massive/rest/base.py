@@ -2,6 +2,7 @@ import certifi
 import json
 import urllib3
 import inspect
+import time
 from urllib3.util.retry import Retry
 from enum import Enum
 from typing import Optional, Any, Dict
@@ -241,6 +242,7 @@ class BaseClient:
             if parsed.query:
                 path += "?" + parsed.query
             params = {}
+            time.sleep(12)
 
     def _paginate(
         self,
