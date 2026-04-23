@@ -66,8 +66,6 @@ def list_tickers_for_exchange(client, exchange_name: str, config: Config) -> Lis
     # Fetch details for new tickers only
     new_count = 0
     for i, ticker_obj in enumerate(ticker_objs):
-        if new_count >= 10:
-            break
         ticker_str = ticker_obj.ticker
         if ticker_str in existing_tickers:
             continue
