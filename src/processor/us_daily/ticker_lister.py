@@ -66,6 +66,9 @@ def list_all_tickers(client, config: Config) -> List[dict]:
     # Fetch details for new tickers only
     new_count = 0
     for i, ticker_obj in enumerate(ticker_objs):
+        if new_count >= 10:
+            break
+
         ticker_str = ticker_obj.ticker
         if ticker_str in existing_tickers:
             continue
