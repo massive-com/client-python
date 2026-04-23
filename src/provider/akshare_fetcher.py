@@ -424,7 +424,7 @@ class AkshareFetcher(BaseFetcher):
         从 Akshare 获取原始数据
         
         根据代码类型自动选择 API：
-        - 美股：不支持，抛出异常由 YfinanceFetcher 处理（Issue #311）
+        - 美股：优先 ak.stock_us_hist()，回退 ak.stock_us_daily()
         - 港股：使用 ak.stock_hk_hist()
         - ETF 基金：使用 ak.fund_etf_hist_em()
         - 普通 A 股：使用 ak.stock_zh_a_hist()
