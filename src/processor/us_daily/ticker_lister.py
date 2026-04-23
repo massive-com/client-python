@@ -4,15 +4,11 @@ from datetime import date
 from typing import Dict, List
 
 from processor.us_daily.config import Config
-from processor.us_daily.storage import get_list_file_path, save_json, load_json, file_exists
+from processor.us_daily.storage import save_json, load_json, file_exists
 
 logger = logging.getLogger("us_daily")
 
-EXCHANGES: Dict[str, str] = {
-    "nasdaq": "XNAS",
-    "nyse": "XNYS",
-    "arca": "ARCX",
-}
+TICKERS_FILE = "tickers.json"
 
 
 def _details_to_dict(details) -> dict:
@@ -29,14 +25,18 @@ def _details_to_dict(details) -> dict:
     return result
 
 
-def list_tickers_for_exchange(client, exchange_name: str, config: Config) -> List[dict]:
-    """Fetch all tickers for an exchange and save to file.
+def _get_tickers_file(config: Config) -> str:
+    import os
+    return os.path.join(config.list_data_dir, TICKERS_FILE)
+
+
+def list_all_tickers(client, config: Config) -> List[dict]:
+    """Fetch all US stock tickers and save to file.
 
     Supports resume: if the output file already exists, previously fetched
     tickers are kept and only missing ones are fetched.
     """
-    exchange_code = EXCHANGES[exchange_name]
-    file_path = get_list_file_path(config.list_data_dir, exchange_name)
+    file_path = _get_tickers_file(config)
 
     # Load existing tickers for resume
     existing_tickers: Dict[str, dict] = {}
@@ -45,23 +45,23 @@ def list_tickers_for_exchange(client, exchange_name: str, config: Config) -> Lis
         for t in data.get("tickers", []):
             existing_tickers[t["ticker"]] = t
         logger.info(
-            f"[{exchange_name}] Resuming: {len(existing_tickers)} tickers already fetched"
+            f"Resuming: {len(existing_tickers)} tickers already fetched"
         )
 
-    # Get full ticker list from API
-    logger.info(f"[{exchange_name}] Listing tickers for {exchange_code}")
+    # Get full ticker list from API (all US stocks, no exchange filter)
+    logger.info("Listing all US stock tickers")
     try:
         ticker_objs = list(
             client.list_tickers(
-                market="stocks", exchange=exchange_code, active=True, limit=1000
+                market="stocks", active=True, limit=1000
             )
         )
     except Exception as e:
-        logger.error(f"[{exchange_name}] Failed to list tickers: {e}")
+        logger.error(f"Failed to list tickers: {e}")
         return list(existing_tickers.values())
 
     time.sleep(config.massive_interval)
-    logger.info(f"[{exchange_name}] Found {len(ticker_objs)} tickers")
+    logger.info(f"Found {len(ticker_objs)} tickers")
 
     # Fetch details for new tickers only
     new_count = 0
@@ -76,11 +76,11 @@ def list_tickers_for_exchange(client, exchange_name: str, config: Config) -> Lis
             existing_tickers[ticker_str] = entry
             new_count += 1
             logger.info(
-                f"[{exchange_name}] [{i + 1}/{len(ticker_objs)}] {ticker_str}: OK"
+                f"[{i + 1}/{len(ticker_objs)}] {ticker_str}: OK"
             )
         except Exception as e:
             logger.warning(
-                f"[{exchange_name}] [{i + 1}/{len(ticker_objs)}] {ticker_str}: {e}"
+                f"[{i + 1}/{len(ticker_objs)}] {ticker_str}: {e}"
             )
 
         time.sleep(config.massive_interval)
@@ -90,22 +90,20 @@ def list_tickers_for_exchange(client, exchange_name: str, config: Config) -> Lis
             tickers_list = list(existing_tickers.values())
             save_json(file_path, {
                 "updated_at": date.today().strftime("%Y-%m-%d"),
-                "exchange": exchange_code,
                 "count": len(tickers_list),
                 "tickers": tickers_list,
             })
             logger.info(
-                f"[{exchange_name}] Checkpoint: saved {len(tickers_list)} tickers to {file_path}"
+                f"Checkpoint: saved {len(tickers_list)} tickers to {file_path}"
             )
 
     # Final save
     tickers_list = list(existing_tickers.values())
     save_json(file_path, {
         "updated_at": date.today().strftime("%Y-%m-%d"),
-        "exchange": exchange_code,
         "count": len(tickers_list),
         "tickers": tickers_list,
     })
 
-    logger.info(f"[{exchange_name}] Saved {len(tickers_list)} tickers to {file_path}")
+    logger.info(f"Saved {len(tickers_list)} tickers to {file_path}")
     return tickers_list

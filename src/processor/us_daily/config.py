@@ -7,7 +7,6 @@ from typing import List
 @dataclass
 class Config:
     refresh_tickers: bool = False
-    exchanges: List[str] = field(default_factory=lambda: ["nasdaq", "nyse", "arca"])
     start_date: str = "2026-01"
     data_source_priority: List[str] = field(
         default_factory=lambda: ["massive", "akshare", "yfinance"]

@@ -50,12 +50,6 @@ class TestStorage(unittest.TestCase):
         self.assertTrue(file_exists(existing))
         self.assertFalse(file_exists(os.path.join(self.test_dir, "nope.json")))
 
-    def test_get_list_file_path(self):
-        from processor.us_daily.storage import get_list_file_path
-
-        result = get_list_file_path("data/us_list", "nasdaq")
-        self.assertEqual(result, "data/us_list/nasdaq.json")
-
     def test_get_month_file_path_daily_dir(self):
         from processor.us_daily.storage import get_month_file_path
 

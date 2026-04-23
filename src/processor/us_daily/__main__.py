@@ -5,13 +5,13 @@ import sys
 from massive import RESTClient
 
 from processor.us_daily.config import load_config
-from processor.us_daily.ticker_lister import list_tickers_for_exchange, EXCHANGES
+from processor.us_daily.ticker_lister import list_all_tickers, _get_tickers_file
 from processor.us_daily.agg_fetcher import fetch_ticker_aggs
 from processor.us_daily.sources.akshare_source import AkshareSource
 from processor.us_daily.sources.yfinance_source import YfinanceSource
 from processor.us_daily.sources.massive_source import MassiveSource
 from processor.us_daily.sources.manager import SourceManager
-from processor.us_daily.storage import get_list_file_path, load_json, file_exists
+from processor.us_daily.storage import load_json, file_exists
 
 
 SOURCE_CLASSES = {
@@ -65,20 +65,12 @@ def build_source_manager(config, client) -> SourceManager:
 
 
 def load_all_tickers(config) -> list:
-    """Load tickers from all exchange files in list_data_dir."""
-    all_tickers = []
-    seen = set()
-    for exchange_name in config.exchanges:
-        file_path = get_list_file_path(config.list_data_dir, exchange_name)
-        if not file_exists(file_path):
-            continue
-        data = load_json(file_path)
-        for t in data.get("tickers", []):
-            ticker = t["ticker"]
-            if ticker not in seen:
-                seen.add(ticker)
-                all_tickers.append(t)
-    return all_tickers
+    """Load tickers from the tickers file."""
+    file_path = _get_tickers_file(config)
+    if not file_exists(file_path):
+        return []
+    data = load_json(file_path)
+    return data.get("tickers", [])
 
 
 def main():
@@ -90,17 +82,11 @@ def main():
 
     client = RESTClient()
 
-    # Step 1: Fetch ticker lists per exchange
-    if config.refresh_tickers or any(
-        not file_exists(get_list_file_path(config.list_data_dir, ex))
-        for ex in config.exchanges
-    ):
-        for exchange_name in config.exchanges:
-            if exchange_name not in EXCHANGES:
-                logger.warning(f"Unknown exchange: {exchange_name}, skipping")
-                continue
-            logger.info(f"Fetching ticker list for {exchange_name}...")
-            list_tickers_for_exchange(client, exchange_name, config)
+    # Step 1: Fetch ticker list
+    tickers_file = _get_tickers_file(config)
+    if config.refresh_tickers or not file_exists(tickers_file):
+        logger.info("Fetching ticker list...")
+        list_all_tickers(client, config)
 
     # Load all tickers
     tickers = load_all_tickers(config)

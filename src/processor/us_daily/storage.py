@@ -6,10 +6,6 @@ def get_tickers_file_path(data_dir: str) -> str:
     return os.path.join(data_dir, "top_tickers.json")
 
 
-def get_list_file_path(list_dir: str, exchange: str) -> str:
-    return os.path.join(list_dir, f"{exchange}.json")
-
-
 def get_month_file_path(data_dir: str, ticker: str, month: str) -> str:
     return os.path.join(data_dir, ticker, f"{month}.json")
 
