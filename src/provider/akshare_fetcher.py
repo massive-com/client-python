@@ -278,6 +278,7 @@ class AkshareFetcher(BaseFetcher):
         self.sleep_min = sleep_min
         self.sleep_max = sleep_max
         self._last_request_time: Optional[float] = None
+        self._us_code_map: Optional[Dict[str, str]] = None
         # 东财补丁开启才执行打补丁操作
         if get_config().enable_eastmoney_patch:
             eastmoney_patch()
@@ -318,7 +319,35 @@ class AkshareFetcher(BaseFetcher):
         # 执行随机 jitter 休眠
         self.random_sleep(self.sleep_min, self.sleep_max)
         self._last_request_time = time.time()
-    
+
+    def _to_us_em_symbol(self, ticker: str) -> Optional[str]:
+        """
+        将纯美股 ticker 转换为东财格式（如 AAPL → 105.AAPL）
+
+        通过 ak.stock_us_spot_em() 获取完整代码映射并缓存。
+        失败或找不到时返回 None，由调用方回退到 stock_us_daily。
+        """
+        ticker = ticker.strip().upper()
+
+        if self._us_code_map is None:
+            try:
+                import akshare as ak
+                spot_df = ak.stock_us_spot_em()
+                self._us_code_map = {}
+                if spot_df is not None and not spot_df.empty and '代码' in spot_df.columns:
+                    for _, row in spot_df.iterrows():
+                        full_code = str(row['代码'])
+                        parts = full_code.split('.', 1)
+                        if len(parts) == 2:
+                            self._us_code_map[parts[1].upper()] = full_code
+                logger.info(f"[美股] 代码映射表构建完成，共 {len(self._us_code_map)} 个")
+            except Exception as e:
+                logger.warning(f"[美股] stock_us_spot_em 调用失败，将回退到 stock_us_daily: {e}")
+                self._us_code_map = {}
+                return None
+
+        return self._us_code_map.get(ticker)
+
     @retry(
         stop=stop_after_attempt(3),  # 最多重试3次
         wait=wait_exponential(multiplier=1, min=2, max=30),  # 指数退避：2, 4, 8... 最大30秒
