@@ -162,7 +162,7 @@ def _longbridge_config_kwargs() -> Dict[str, Any]:
 
     if "language" in params:
         try:
-            from src.report_language import normalize_report_language
+            from provider._config import normalize_report_language
 
             rl = normalize_report_language(os.getenv("REPORT_LANGUAGE"), default="zh")
             if rl == "zh":
@@ -290,7 +290,7 @@ class LongbridgeFetcher(BaseFetcher):
         if self._available is not None:
             return self._available
         try:
-            from src.config import get_config
+            from provider._config import get_config
             config = get_config()
             has_creds = bool(
                 config.longbridge_app_key
@@ -323,7 +323,7 @@ class LongbridgeFetcher(BaseFetcher):
 
                 # ── 2. Ensure credentials are available in env ──
                 try:
-                    from src.config import get_config
+                    from provider._config import get_config
                     app_config = get_config()
                     app_key = app_config.longbridge_app_key
                     app_secret = app_config.longbridge_app_secret

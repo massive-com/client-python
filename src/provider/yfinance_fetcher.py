@@ -37,7 +37,7 @@ from .us_index_mapping import get_us_index_yf_symbol, is_us_stock_code
 
 # 可选导入本地股票映射补丁，若缺失则使用空字典兜底
 try:
-    from src.data.stock_mapping import STOCK_NAME_MAP, is_meaningful_stock_name
+    from provider._data.stock_mapping import STOCK_NAME_MAP, is_meaningful_stock_name
 except (ImportError, ModuleNotFoundError):
     STOCK_NAME_MAP = {}
 
