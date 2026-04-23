@@ -38,6 +38,7 @@ def fetch_ticker_aggs(source_manager, ticker: str, config: Config) -> dict:
     """
     years = generate_years(config.start_year, date.today().year)
     failures = []
+    total_bars = 0
 
     for year in years:
         file_path = get_year_file_path(config.daily_data_dir, ticker, year)
@@ -63,10 +64,12 @@ def fetch_ticker_aggs(source_manager, ticker: str, config: Config) -> dict:
             "ticker": ticker,
             "year": year,
             "source": source_name,
+            "count": len(df),
             "fetched_at": datetime.now().isoformat(timespec="seconds"),
             "data": df.to_dict(orient="records"),
         }
         save_json(file_path, data)
+        total_bars += len(df)
         logger.info(f"  {ticker} {year}: fetched {len(df)} bars from {source_name}")
 
-    return {"failures": failures}
+    return {"failures": failures, "total_bars": total_bars}

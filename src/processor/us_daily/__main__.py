@@ -116,21 +116,23 @@ def main():
         tickers = filtered
 
     all_failures = []
+    all_bars = 0
     total = len(tickers)
     for i, ticker_info in enumerate(tickers):
         ticker = ticker_info["ticker"]
         logger.info(f"[{i + 1}/{total}] Processing {ticker}")
         result = fetch_ticker_aggs(source_manager, ticker, config)
+        all_bars += result["total_bars"]
         if result["failures"]:
             all_failures.extend(result["failures"])
 
     # Step 3: Summary
     logger.info("=== Summary ===")
-    logger.info(f"Total tickers: {total}")
+    logger.info(f"Total tickers: {total}, total bars fetched: {all_bars}")
     if all_failures:
-        logger.warning(f"Failed months: {len(all_failures)}")
+        logger.warning(f"Failed years: {len(all_failures)}")
         for f in all_failures:
-            logger.warning(f"  - {f['ticker']} {f['month']}: {f['error']}")
+            logger.warning(f"  - {f['ticker']} {f['year']}: {f['error']}")
     else:
         logger.info("All data fetched successfully")
     logger.info("=== Done ===")
