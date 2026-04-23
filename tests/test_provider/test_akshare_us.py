@@ -201,5 +201,75 @@ class TestFetchRawDataUsStock(unittest.TestCase):
         self.assertFalse(df.empty)
 
 
+class TestNormalizeDataUsStock(unittest.TestCase):
+    """测试 _normalize_data 对美股数据的扩展字段保留"""
+
+    def _make_fetcher(self):
+        with patch("provider.akshare_fetcher.get_config") as mock_cfg:
+            mock_cfg.return_value.enable_eastmoney_patch = False
+            from provider.akshare_fetcher import AkshareFetcher
+            return AkshareFetcher(sleep_min=0, sleep_max=0)
+
+    def test_us_stock_keeps_all_fields(self):
+        """美股数据应保留所有映射后的字段"""
+        fetcher = self._make_fetcher()
+
+        raw_df = pd.DataFrame({
+            "日期": ["2024-01-02"],
+            "开盘": [185.0],
+            "收盘": [186.5],
+            "最高": [187.0],
+            "最低": [184.0],
+            "成交量": [50000000],
+            "成交额": [9300000000],
+            "振幅": [1.62],
+            "涨跌幅": [0.81],
+            "涨跌额": [1.5],
+            "换手率": [0.32],
+        })
+
+        result = fetcher._normalize_data(raw_df, "AAPL")
+
+        # 标准字段
+        self.assertIn("date", result.columns)
+        self.assertIn("open", result.columns)
+        self.assertIn("close", result.columns)
+        self.assertIn("volume", result.columns)
+        self.assertIn("amount", result.columns)
+        self.assertIn("pct_chg", result.columns)
+        # 美股扩展字段
+        self.assertIn("amplitude", result.columns)
+        self.assertIn("change", result.columns)
+        self.assertIn("turnover_rate", result.columns)
+        # code 字段
+        self.assertIn("code", result.columns)
+        self.assertEqual(result.iloc[0]["code"], "AAPL")
+
+    def test_a_stock_still_filters_columns(self):
+        """A 股数据仍然只保留 STANDARD_COLUMNS"""
+        fetcher = self._make_fetcher()
+
+        raw_df = pd.DataFrame({
+            "日期": ["2024-01-02"],
+            "开盘": [10.0],
+            "收盘": [10.5],
+            "最高": [11.0],
+            "最低": [9.5],
+            "成交量": [1000000],
+            "成交额": [10500000],
+            "振幅": [15.0],
+            "涨跌幅": [5.0],
+            "涨跌额": [0.5],
+            "换手率": [1.2],
+        })
+
+        result = fetcher._normalize_data(raw_df, "600519")
+
+        # A 股不应包含扩展字段
+        self.assertNotIn("amplitude", result.columns)
+        self.assertNotIn("change", result.columns)
+        self.assertNotIn("turnover_rate", result.columns)
+
+
 if __name__ == "__main__":
     unittest.main()

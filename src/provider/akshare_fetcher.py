@@ -739,15 +739,17 @@ class AkshareFetcher(BaseFetcher):
     def _normalize_data(self, df: pd.DataFrame, stock_code: str) -> pd.DataFrame:
         """
         标准化 Akshare 数据
-        
+
         Akshare 返回的列名（中文）：
         日期, 开盘, 收盘, 最高, 最低, 成交量, 成交额, 振幅, 涨跌幅, 涨跌额, 换手率
-        
+
         需要映射到标准列名：
         date, open, high, low, close, volume, amount, pct_chg
+
+        美股数据额外保留：amplitude, change, turnover_rate
         """
         df = df.copy()
-        
+
         # 列名映射（Akshare 中文列名 -> 标准英文列名）
         column_mapping = {
             '日期': 'date',
@@ -758,19 +760,27 @@ class AkshareFetcher(BaseFetcher):
             '成交量': 'volume',
             '成交额': 'amount',
             '涨跌幅': 'pct_chg',
+            '振幅': 'amplitude',
+            '涨跌额': 'change',
+            '换手率': 'turnover_rate',
         }
-        
+
         # 重命名列
         df = df.rename(columns=column_mapping)
-        
+
         # 添加股票代码列
         df['code'] = stock_code
-        
-        # 只保留需要的列
-        keep_cols = ['code'] + STANDARD_COLUMNS
-        existing_cols = [col for col in keep_cols if col in df.columns]
-        df = df[existing_cols]
-        
+
+        if _is_us_code(stock_code):
+            # 美股：保留所有已映射的列
+            mapped_cols = ['code'] + [v for v in column_mapping.values() if v in df.columns]
+            df = df[mapped_cols]
+        else:
+            # 非美股：只保留标准列
+            keep_cols = ['code'] + STANDARD_COLUMNS
+            existing_cols = [col for col in keep_cols if col in df.columns]
+            df = df[existing_cols]
+
         return df
     
     def get_realtime_quote(self, stock_code: str, source: str = "em") -> Optional[UnifiedRealtimeQuote]:
