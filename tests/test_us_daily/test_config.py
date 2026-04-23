@@ -6,7 +6,7 @@ import tempfile
 
 class TestConfig(unittest.TestCase):
     def test_default_config(self):
-        from data_provider.us_daily.config import Config
+        from processor.us_daily.config import Config
 
         config = Config()
         self.assertEqual(config.refresh_tickers, False)
@@ -17,7 +17,7 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(config.max_retries, 3)
 
     def test_load_config_from_file(self):
-        from data_provider.us_daily.config import load_config
+        from processor.us_daily.config import load_config
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump({"refresh_tickers": True, "market_cap_min": 1e10}, f)
@@ -34,7 +34,7 @@ class TestConfig(unittest.TestCase):
             os.unlink(tmp_path)
 
     def test_load_config_missing_file_uses_defaults(self):
-        from data_provider.us_daily.config import load_config
+        from processor.us_daily.config import load_config
 
         config = load_config("/nonexistent/path/config.json")
         self.assertEqual(config.refresh_tickers, False)

@@ -9,19 +9,19 @@ from datetime import date
 
 class TestGenerateMonths(unittest.TestCase):
     def test_generate_months_basic(self):
-        from data_provider.us_daily.agg_fetcher import generate_months
+        from processor.us_daily.agg_fetcher import generate_months
 
         result = generate_months("2020-01", "2020-04")
         self.assertEqual(result, ["2020-01", "2020-02", "2020-03", "2020-04"])
 
     def test_generate_months_cross_year(self):
-        from data_provider.us_daily.agg_fetcher import generate_months
+        from processor.us_daily.agg_fetcher import generate_months
 
         result = generate_months("2023-11", "2024-02")
         self.assertEqual(result, ["2023-11", "2023-12", "2024-01", "2024-02"])
 
     def test_generate_months_single(self):
-        from data_provider.us_daily.agg_fetcher import generate_months
+        from processor.us_daily.agg_fetcher import generate_months
 
         result = generate_months("2024-06", "2024-06")
         self.assertEqual(result, ["2024-06"])
@@ -29,21 +29,21 @@ class TestGenerateMonths(unittest.TestCase):
 
 class TestMonthBounds(unittest.TestCase):
     def test_month_bounds_january(self):
-        from data_provider.us_daily.agg_fetcher import get_month_bounds
+        from processor.us_daily.agg_fetcher import get_month_bounds
 
         start, end = get_month_bounds("2020-01")
         self.assertEqual(start, "2020-01-01")
         self.assertEqual(end, "2020-01-31")
 
     def test_month_bounds_february_leap(self):
-        from data_provider.us_daily.agg_fetcher import get_month_bounds
+        from processor.us_daily.agg_fetcher import get_month_bounds
 
         start, end = get_month_bounds("2024-02")
         self.assertEqual(start, "2024-02-01")
         self.assertEqual(end, "2024-02-29")
 
     def test_month_bounds_february_non_leap(self):
-        from data_provider.us_daily.agg_fetcher import get_month_bounds
+        from processor.us_daily.agg_fetcher import get_month_bounds
 
         start, end = get_month_bounds("2023-02")
         self.assertEqual(start, "2023-02-01")
@@ -51,16 +51,16 @@ class TestMonthBounds(unittest.TestCase):
 
 
 class TestIsCurrentMonth(unittest.TestCase):
-    @patch("data_provider.us_daily.agg_fetcher.date")
+    @patch("processor.us_daily.agg_fetcher.date")
     def test_is_current_month_true(self, mock_date):
-        from data_provider.us_daily.agg_fetcher import is_current_month
+        from processor.us_daily.agg_fetcher import is_current_month
 
         mock_date.today.return_value = date(2026, 4, 22)
         self.assertTrue(is_current_month("2026-04"))
 
-    @patch("data_provider.us_daily.agg_fetcher.date")
+    @patch("processor.us_daily.agg_fetcher.date")
     def test_is_current_month_false(self, mock_date):
-        from data_provider.us_daily.agg_fetcher import is_current_month
+        from processor.us_daily.agg_fetcher import is_current_month
 
         mock_date.today.return_value = date(2026, 4, 22)
         self.assertFalse(is_current_month("2026-03"))
@@ -74,8 +74,8 @@ class TestFetchTickerAggs(unittest.TestCase):
         shutil.rmtree(self.test_dir)
 
     def test_skips_existing_historical_month(self):
-        from data_provider.us_daily.agg_fetcher import fetch_ticker_aggs
-        from data_provider.us_daily.config import Config
+        from processor.us_daily.agg_fetcher import fetch_ticker_aggs
+        from processor.us_daily.config import Config
 
         config = Config(
             start_date="2020-01",
@@ -92,12 +92,12 @@ class TestFetchTickerAggs(unittest.TestCase):
         client = MagicMock()
 
         with patch(
-            "data_provider.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
+            "processor.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
         ):
             with patch(
-                "data_provider.us_daily.agg_fetcher.is_current_month", return_value=False
+                "processor.us_daily.agg_fetcher.is_current_month", return_value=False
             ):
-                with patch("data_provider.us_daily.agg_fetcher.time.sleep"):
+                with patch("processor.us_daily.agg_fetcher.time.sleep"):
                     result = fetch_ticker_aggs(client, "AAPL", config)
 
         # Should not have called list_aggs since file exists and not current month
@@ -105,8 +105,8 @@ class TestFetchTickerAggs(unittest.TestCase):
         self.assertEqual(result["failures"], [])
 
     def test_fetches_missing_month(self):
-        from data_provider.us_daily.agg_fetcher import fetch_ticker_aggs
-        from data_provider.us_daily.config import Config
+        from processor.us_daily.agg_fetcher import fetch_ticker_aggs
+        from processor.us_daily.config import Config
 
         config = Config(
             start_date="2020-01",
@@ -128,12 +128,12 @@ class TestFetchTickerAggs(unittest.TestCase):
         client.list_aggs.return_value = iter([agg1])
 
         with patch(
-            "data_provider.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
+            "processor.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
         ):
             with patch(
-                "data_provider.us_daily.agg_fetcher.is_current_month", return_value=False
+                "processor.us_daily.agg_fetcher.is_current_month", return_value=False
             ):
-                with patch("data_provider.us_daily.agg_fetcher.time.sleep"):
+                with patch("processor.us_daily.agg_fetcher.time.sleep"):
                     result = fetch_ticker_aggs(client, "AAPL", config)
 
         # Verify file was created
@@ -149,8 +149,8 @@ class TestFetchTickerAggs(unittest.TestCase):
         self.assertEqual(result["failures"], [])
 
     def test_refreshes_current_month(self):
-        from data_provider.us_daily.agg_fetcher import fetch_ticker_aggs
-        from data_provider.us_daily.config import Config
+        from processor.us_daily.agg_fetcher import fetch_ticker_aggs
+        from processor.us_daily.config import Config
 
         config = Config(
             start_date="2026-04",
@@ -178,12 +178,12 @@ class TestFetchTickerAggs(unittest.TestCase):
         client.list_aggs.return_value = iter([agg1])
 
         with patch(
-            "data_provider.us_daily.agg_fetcher.generate_months", return_value=["2026-04"]
+            "processor.us_daily.agg_fetcher.generate_months", return_value=["2026-04"]
         ):
             with patch(
-                "data_provider.us_daily.agg_fetcher.is_current_month", return_value=True
+                "processor.us_daily.agg_fetcher.is_current_month", return_value=True
             ):
-                with patch("data_provider.us_daily.agg_fetcher.time.sleep"):
+                with patch("processor.us_daily.agg_fetcher.time.sleep"):
                     result = fetch_ticker_aggs(client, "AAPL", config)
 
         # Should have called list_aggs even though file exists
@@ -191,8 +191,8 @@ class TestFetchTickerAggs(unittest.TestCase):
         self.assertEqual(result["failures"], [])
 
     def test_records_failure_after_retries(self):
-        from data_provider.us_daily.agg_fetcher import fetch_ticker_aggs
-        from data_provider.us_daily.config import Config
+        from processor.us_daily.agg_fetcher import fetch_ticker_aggs
+        from processor.us_daily.config import Config
 
         config = Config(
             start_date="2020-01",
@@ -205,12 +205,12 @@ class TestFetchTickerAggs(unittest.TestCase):
         client.list_aggs.side_effect = Exception("API timeout")
 
         with patch(
-            "data_provider.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
+            "processor.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
         ):
             with patch(
-                "data_provider.us_daily.agg_fetcher.is_current_month", return_value=False
+                "processor.us_daily.agg_fetcher.is_current_month", return_value=False
             ):
-                with patch("data_provider.us_daily.agg_fetcher.time.sleep"):
+                with patch("processor.us_daily.agg_fetcher.time.sleep"):
                     result = fetch_ticker_aggs(client, "AAPL", config)
 
         self.assertEqual(len(result["failures"]), 1)
