@@ -39,7 +39,11 @@ class MassiveSource(BaseSource):
                 "low": a.low,
                 "close": a.close,
                 "volume": a.volume,
+                "vwap": a.vwap,
+                "transactions": a.transactions,
+                "otc": a.otc,
             })
 
-        df = pd.DataFrame(rows, columns=STANDARD_COLUMNS)
+        columns = STANDARD_COLUMNS + ["vwap", "transactions", "otc"]
+        df = pd.DataFrame(rows, columns=columns)
         return df

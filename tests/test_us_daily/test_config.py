@@ -13,12 +13,12 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(config.start_date, "2026-01")
         self.assertEqual(config.max_retries, 3)
         self.assertEqual(config.exchanges, ["nasdaq", "nyse", "arca"])
-        self.assertEqual(config.data_source_priority, ["akshare", "yfinance", "massive"])
+        self.assertEqual(config.data_source_priority, ["massive", "akshare", "yfinance"])
         self.assertEqual(config.akshare_interval, 2.0)
         self.assertEqual(config.yfinance_interval, 1.0)
         self.assertEqual(config.massive_interval, 12.0)
-        self.assertEqual(config.list_dir, "data/us_list")
-        self.assertEqual(config.daily_dir, "data/us_daily")
+        self.assertEqual(config.list_data_dir, "data/us_list")
+        self.assertEqual(config.daily_data_dir, "data/us_daily")
 
     def test_load_config_from_file(self):
         from processor.us_daily.config import load_config
@@ -47,7 +47,7 @@ class TestConfig(unittest.TestCase):
 
         config = load_config("/nonexistent/path/config.json")
         self.assertEqual(config.refresh_tickers, False)
-        self.assertEqual(config.data_source_priority, ["akshare", "yfinance", "massive"])
+        self.assertEqual(config.data_source_priority, ["massive", "akshare", "yfinance"])
 
 
 if __name__ == "__main__":

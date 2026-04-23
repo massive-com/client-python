@@ -36,7 +36,7 @@ def list_tickers_for_exchange(client, exchange_name: str, config: Config) -> Lis
     tickers are kept and only missing ones are fetched.
     """
     exchange_code = EXCHANGES[exchange_name]
-    file_path = get_list_file_path(config.list_dir, exchange_name)
+    file_path = get_list_file_path(config.list_data_dir, exchange_name)
 
     # Load existing tickers for resume
     existing_tickers: Dict[str, dict] = {}
@@ -64,7 +64,10 @@ def list_tickers_for_exchange(client, exchange_name: str, config: Config) -> Lis
     logger.info(f"[{exchange_name}] Found {len(ticker_objs)} tickers")
 
     # Fetch details for new tickers only
+    new_count = 0
     for i, ticker_obj in enumerate(ticker_objs):
+        if new_count >= 10:
+            break
         ticker_str = ticker_obj.ticker
         if ticker_str in existing_tickers:
             continue
@@ -73,6 +76,7 @@ def list_tickers_for_exchange(client, exchange_name: str, config: Config) -> Lis
             details = client.get_ticker_details(ticker_str)
             entry = _details_to_dict(details)
             existing_tickers[ticker_str] = entry
+            new_count += 1
             logger.info(
                 f"[{exchange_name}] [{i + 1}/{len(ticker_objs)}] {ticker_str}: OK"
             )
@@ -83,7 +87,20 @@ def list_tickers_for_exchange(client, exchange_name: str, config: Config) -> Lis
 
         time.sleep(config.massive_interval)
 
-    # Save result
+        # Flush to disk every 100 new details to avoid losing progress
+        if new_count > 0 and new_count % 100 == 0:
+            tickers_list = list(existing_tickers.values())
+            save_json(file_path, {
+                "updated_at": date.today().strftime("%Y-%m-%d"),
+                "exchange": exchange_code,
+                "count": len(tickers_list),
+                "tickers": tickers_list,
+            })
+            logger.info(
+                f"[{exchange_name}] Checkpoint: saved {len(tickers_list)} tickers to {file_path}"
+            )
+
+    # Final save
     tickers_list = list(existing_tickers.values())
     save_json(file_path, {
         "updated_at": date.today().strftime("%Y-%m-%d"),

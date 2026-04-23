@@ -22,7 +22,7 @@ tushare = ["tushare"]
 pytdx = ["pytdx"]
 baostock = ["baostock"]
 yfinance = ["yfinance"]
-longbridge = ["longbridge-openapi"]
+# longbridge = ["longbridge-openapi"]
 all = [
     "efinance",
     "akshare",
@@ -30,7 +30,7 @@ all = [
     "pytdx",
     "baostock",
     "yfinance",
-    "longbridge-openapi",
+    # "longbridge-openapi",
 ]
 dev = [
     "black>=24.8.0",

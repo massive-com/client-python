@@ -27,7 +27,7 @@ class TestTickerLister(unittest.TestCase):
         from processor.us_daily.ticker_lister import list_tickers_for_exchange
         from processor.us_daily.config import Config
 
-        config = Config(list_dir=self.test_dir, massive_interval=0)
+        config = Config(list_data_dir=self.test_dir, massive_interval=0)
 
         client = MagicMock()
         client.list_tickers.return_value = iter([
@@ -68,7 +68,7 @@ class TestTickerLister(unittest.TestCase):
         from processor.us_daily.ticker_lister import list_tickers_for_exchange
         from processor.us_daily.config import Config
 
-        config = Config(list_dir=self.test_dir, massive_interval=0)
+        config = Config(list_data_dir=self.test_dir, massive_interval=0)
 
         # Pre-populate file with AAPL already fetched
         file_path = os.path.join(self.test_dir, "nasdaq.json")
@@ -110,7 +110,7 @@ class TestTickerLister(unittest.TestCase):
         from processor.us_daily.ticker_lister import list_tickers_for_exchange
         from processor.us_daily.config import Config
 
-        config = Config(list_dir=self.test_dir, massive_interval=0)
+        config = Config(list_data_dir=self.test_dir, massive_interval=0)
 
         client = MagicMock()
         client.list_tickers.return_value = iter([

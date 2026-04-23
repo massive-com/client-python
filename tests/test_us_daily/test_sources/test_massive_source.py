@@ -15,6 +15,9 @@ class TestMassiveSource(unittest.TestCase):
         agg1.close = 74.36
         agg1.volume = 108872000
         agg1.timestamp = 1577944800000  # 2020-01-02 UTC
+        agg1.vwap = 74.50
+        agg1.transactions = 5000
+        agg1.otc = False
 
         client = MagicMock()
         client.list_aggs.return_value = iter([agg1])
@@ -22,10 +25,13 @@ class TestMassiveSource(unittest.TestCase):
         source = MassiveSource(client=client, request_interval=0.0)
         result = source.fetch_daily("AAPL", "2020-01-01", "2020-01-31")
 
-        self.assertListEqual(list(result.columns), STANDARD_COLUMNS)
+        expected_columns = STANDARD_COLUMNS + ["vwap", "transactions", "otc"]
+        self.assertListEqual(list(result.columns), expected_columns)
         self.assertEqual(len(result), 1)
         self.assertEqual(result.iloc[0]["close"], 74.36)
         self.assertEqual(result.iloc[0]["date"], "2020-01-02")
+        self.assertEqual(result.iloc[0]["vwap"], 74.50)
+        self.assertEqual(result.iloc[0]["transactions"], 5000)
 
     def test_fetch_daily_calls_client_correctly(self):
         from processor.us_daily.sources.massive_source import MassiveSource

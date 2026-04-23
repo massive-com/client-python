@@ -65,11 +65,11 @@ def build_source_manager(config, client) -> SourceManager:
 
 
 def load_all_tickers(config) -> list:
-    """Load tickers from all exchange files in list_dir."""
+    """Load tickers from all exchange files in list_data_dir."""
     all_tickers = []
     seen = set()
     for exchange_name in config.exchanges:
-        file_path = get_list_file_path(config.list_dir, exchange_name)
+        file_path = get_list_file_path(config.list_data_dir, exchange_name)
         if not file_exists(file_path):
             continue
         data = load_json(file_path)
@@ -92,7 +92,7 @@ def main():
 
     # Step 1: Fetch ticker lists per exchange
     if config.refresh_tickers or any(
-        not file_exists(get_list_file_path(config.list_dir, ex))
+        not file_exists(get_list_file_path(config.list_data_dir, ex))
         for ex in config.exchanges
     ):
         for exchange_name in config.exchanges:
@@ -108,6 +108,26 @@ def main():
 
     # Step 2: Fetch daily data
     source_manager = build_source_manager(config, client)
+
+    # Filter tickers by market cap
+    if config.market_cap_min > 0:
+        filtered = []
+        for t in tickers:
+            market_cap = t.get("market_cap")
+            if market_cap is not None and market_cap >= config.market_cap_min:
+                filtered.append(t)
+            elif market_cap is None:
+                logger.debug(
+                    f"Skipping {t['ticker']}: market_cap is None"
+                )
+            else:
+                logger.debug(
+                    f"Skipping {t['ticker']}: market_cap={market_cap:.0f} < {config.market_cap_min:.0f}"
+                )
+        logger.info(
+            f"Filtered by market_cap >= {config.market_cap_min:.0f}: {len(filtered)}/{len(tickers)} tickers"
+        )
+        tickers = filtered
 
     all_failures = []
     total = len(tickers)

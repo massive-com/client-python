@@ -51,7 +51,7 @@ def fetch_ticker_aggs(source_manager, ticker: str, config: Config) -> dict:
     Args:
         source_manager: SourceManager instance with failover sources.
         ticker: Stock ticker symbol (e.g. "AAPL").
-        config: Config with daily_dir, start_date, max_retries.
+        config: Config with daily_data_dir, start_date, max_retries.
 
     Returns:
         Dict with "failures" list of failed months.
@@ -60,7 +60,7 @@ def fetch_ticker_aggs(source_manager, ticker: str, config: Config) -> dict:
     failures = []
 
     for month in months:
-        file_path = get_month_file_path(config.daily_dir, ticker, month)
+        file_path = get_month_file_path(config.daily_data_dir, ticker, month)
 
         if file_exists(file_path) and not is_current_month(month):
             logger.debug(f"  {ticker} {month}: exists, skipping")

@@ -10,13 +10,14 @@ class Config:
     exchanges: List[str] = field(default_factory=lambda: ["nasdaq", "nyse", "arca"])
     start_date: str = "2026-01"
     data_source_priority: List[str] = field(
-        default_factory=lambda: ["akshare", "yfinance", "massive"]
+        default_factory=lambda: ["massive", "akshare", "yfinance"]
     )
+    market_cap_min: float = 1_000_000_000
     akshare_interval: float = 2.0
     yfinance_interval: float = 1.0
     massive_interval: float = 12.0
-    list_dir: str = "data/us_list"
-    daily_dir: str = "data/us_daily"
+    list_data_dir: str = "data/us_list"
+    daily_data_dir: str = "data/us_daily"
     max_retries: int = 3
 
 

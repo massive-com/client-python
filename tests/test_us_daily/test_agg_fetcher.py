@@ -87,7 +87,7 @@ class TestFetchTickerAggs(unittest.TestCase):
         from processor.us_daily.agg_fetcher import fetch_ticker_aggs
         from processor.us_daily.config import Config
 
-        config = Config(start_date="2020-01", daily_dir=self.test_dir)
+        config = Config(start_date="2020-01", daily_data_dir=self.test_dir)
 
         ticker_dir = os.path.join(self.test_dir, "AAPL")
         os.makedirs(ticker_dir)
@@ -112,7 +112,7 @@ class TestFetchTickerAggs(unittest.TestCase):
         from processor.us_daily.config import Config
         import pandas as pd
 
-        config = Config(start_date="2020-01", daily_dir=self.test_dir)
+        config = Config(start_date="2020-01", daily_data_dir=self.test_dir)
 
         df = pd.DataFrame({
             "date": ["2020-01-02"],
@@ -149,7 +149,7 @@ class TestFetchTickerAggs(unittest.TestCase):
         from processor.us_daily.config import Config
         import pandas as pd
 
-        config = Config(start_date="2026-04", daily_dir=self.test_dir)
+        config = Config(start_date="2026-04", daily_data_dir=self.test_dir)
 
         ticker_dir = os.path.join(self.test_dir, "AAPL")
         os.makedirs(ticker_dir)
@@ -182,7 +182,7 @@ class TestFetchTickerAggs(unittest.TestCase):
         from processor.us_daily.config import Config
         from processor.us_daily.sources.manager import FetchError
 
-        config = Config(start_date="2020-01", daily_dir=self.test_dir, max_retries=2)
+        config = Config(start_date="2020-01", daily_data_dir=self.test_dir, max_retries=2)
 
         manager = self._make_manager(
             error=FetchError("All sources failed for AAPL")

@@ -1,8 +1,9 @@
 {
-  "refresh_tickers": false,
+  "refresh_tickers": true,
   "market_cap_min": 1000000000,
   "start_date": "2026-01",
   "request_interval": 12,
-  "data_dir": "data/us_daily",
+  "list_data_dir": "data/us_list",
+  "daily_data_dir": "data/us_daily",
   "max_retries": 3
 }
