@@ -123,7 +123,7 @@ class TickersClient(BaseClient):
         :return: List of tickers.
         """
         url = "/v3/reference/tickers"
-
+        print("DEBUG_11")
         return self._paginate(
             path=url,
             params=self._get_params(self.list_tickers, locals()),
