@@ -22,6 +22,9 @@ from .reference import (
 from .vX import VXClient
 from typing import Optional, Any
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE = "https://api.massive.com"
 ENV_KEY = "MASSIVE_API_KEY"

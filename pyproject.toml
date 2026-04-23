@@ -13,6 +13,7 @@ dependencies = [
     "requests",
     "tenacity",
     "fake-useragent",
+    "python-dotenv",
 ]
 
 [project.optional-dependencies]

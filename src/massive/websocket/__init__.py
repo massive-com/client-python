@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 from enum import Enum
 from typing import Optional, Union, List, Set, Callable, Awaitable, Any
 import logging
@@ -12,6 +13,8 @@ from websockets.exceptions import ConnectionClosedOK, ConnectionClosedError
 from ..logging import get_logger
 import logging
 from ..exceptions import AuthError
+
+load_dotenv()
 
 env_key = "MASSIVE_API_KEY"
 logger = get_logger("WebSocketClient")
