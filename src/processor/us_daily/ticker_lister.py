@@ -66,8 +66,8 @@ def list_all_tickers(client, config: Config) -> List[dict]:
     # Fetch details for new tickers only
     new_count = 0
     for i, ticker_obj in enumerate(ticker_objs):
-        # if new_count >= 10:
-        #     break
+        if new_count >= 10:
+            break
 
         ticker_str = ticker_obj.ticker
         if ticker_str in existing_tickers:
@@ -89,7 +89,7 @@ def list_all_tickers(client, config: Config) -> List[dict]:
         time.sleep(config.massive_interval)
 
         # Flush to disk every 100 new details to avoid losing progress
-        if new_count > 0 and new_count % 100 == 0:
+        if new_count > 0 and new_count % 20 == 0:
             tickers_list = list(existing_tickers.values())
             save_json(file_path, {
                 "updated_at": date.today().strftime("%Y-%m-%d"),

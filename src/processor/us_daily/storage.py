@@ -10,6 +10,10 @@ def get_month_file_path(data_dir: str, ticker: str, month: str) -> str:
     return os.path.join(data_dir, ticker, f"{month}.json")
 
 
+def get_year_file_path(data_dir: str, ticker: str, year: int) -> str:
+    return os.path.join(data_dir, ticker, f"{year}.json")
+
+
 def save_json(path: str, data: dict) -> None:
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:

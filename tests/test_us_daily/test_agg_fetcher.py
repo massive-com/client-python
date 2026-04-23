@@ -7,63 +7,43 @@ import json
 from datetime import date
 
 
-class TestGenerateMonths(unittest.TestCase):
-    def test_generate_months_basic(self):
-        from processor.us_daily.agg_fetcher import generate_months
+class TestGenerateYears(unittest.TestCase):
+    def test_generate_years_basic(self):
+        from processor.us_daily.agg_fetcher import generate_years
 
-        result = generate_months("2020-01", "2020-04")
-        self.assertEqual(result, ["2020-01", "2020-02", "2020-03", "2020-04"])
+        result = generate_years(2024, 2026)
+        self.assertEqual(result, [2024, 2025, 2026])
 
-    def test_generate_months_cross_year(self):
-        from processor.us_daily.agg_fetcher import generate_months
+    def test_generate_years_single(self):
+        from processor.us_daily.agg_fetcher import generate_years
 
-        result = generate_months("2023-11", "2024-02")
-        self.assertEqual(result, ["2023-11", "2023-12", "2024-01", "2024-02"])
-
-    def test_generate_months_single(self):
-        from processor.us_daily.agg_fetcher import generate_months
-
-        result = generate_months("2024-06", "2024-06")
-        self.assertEqual(result, ["2024-06"])
+        result = generate_years(2024, 2024)
+        self.assertEqual(result, [2024])
 
 
-class TestMonthBounds(unittest.TestCase):
-    def test_month_bounds_january(self):
-        from processor.us_daily.agg_fetcher import get_month_bounds
+class TestYearBounds(unittest.TestCase):
+    def test_year_bounds(self):
+        from processor.us_daily.agg_fetcher import get_year_bounds
 
-        start, end = get_month_bounds("2020-01")
-        self.assertEqual(start, "2020-01-01")
-        self.assertEqual(end, "2020-01-31")
-
-    def test_month_bounds_february_leap(self):
-        from processor.us_daily.agg_fetcher import get_month_bounds
-
-        start, end = get_month_bounds("2024-02")
-        self.assertEqual(start, "2024-02-01")
-        self.assertEqual(end, "2024-02-29")
-
-    def test_month_bounds_february_non_leap(self):
-        from processor.us_daily.agg_fetcher import get_month_bounds
-
-        start, end = get_month_bounds("2023-02")
-        self.assertEqual(start, "2023-02-01")
-        self.assertEqual(end, "2023-02-28")
+        start, end = get_year_bounds(2024)
+        self.assertEqual(start, "2024-01-01")
+        self.assertEqual(end, "2024-12-31")
 
 
-class TestIsCurrentMonth(unittest.TestCase):
+class TestIsCurrentYear(unittest.TestCase):
     @patch("processor.us_daily.agg_fetcher.date")
-    def test_is_current_month_true(self, mock_date):
-        from processor.us_daily.agg_fetcher import is_current_month
+    def test_is_current_year_true(self, mock_date):
+        from processor.us_daily.agg_fetcher import is_current_year
 
         mock_date.today.return_value = date(2026, 4, 22)
-        self.assertTrue(is_current_month("2026-04"))
+        self.assertTrue(is_current_year(2026))
 
     @patch("processor.us_daily.agg_fetcher.date")
-    def test_is_current_month_false(self, mock_date):
-        from processor.us_daily.agg_fetcher import is_current_month
+    def test_is_current_year_false(self, mock_date):
+        from processor.us_daily.agg_fetcher import is_current_year
 
         mock_date.today.return_value = date(2026, 4, 22)
-        self.assertFalse(is_current_month("2026-03"))
+        self.assertFalse(is_current_year(2025))
 
 
 class TestFetchTickerAggs(unittest.TestCase):
@@ -83,39 +63,39 @@ class TestFetchTickerAggs(unittest.TestCase):
             manager.fetch_daily.return_value = (df, source_name)
         return manager
 
-    def test_skips_existing_historical_month(self):
+    def test_skips_existing_historical_year(self):
         from processor.us_daily.agg_fetcher import fetch_ticker_aggs
         from processor.us_daily.config import Config
 
-        config = Config(start_date="2020-01", daily_data_dir=self.test_dir)
+        config = Config(start_year=2024, daily_data_dir=self.test_dir)
 
         ticker_dir = os.path.join(self.test_dir, "AAPL")
         os.makedirs(ticker_dir)
-        with open(os.path.join(ticker_dir, "2020-01.json"), "w") as f:
-            json.dump({"ticker": "AAPL", "month": "2020-01", "data": []}, f)
+        with open(os.path.join(ticker_dir, "2024.json"), "w") as f:
+            json.dump({"ticker": "AAPL", "year": 2024, "data": []}, f)
 
         manager = self._make_manager()
 
         with patch(
-            "processor.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
+            "processor.us_daily.agg_fetcher.generate_years", return_value=[2024]
         ):
             with patch(
-                "processor.us_daily.agg_fetcher.is_current_month", return_value=False
+                "processor.us_daily.agg_fetcher.is_current_year", return_value=False
             ):
                 result = fetch_ticker_aggs(manager, "AAPL", config)
 
         manager.fetch_daily.assert_not_called()
         self.assertEqual(result["failures"], [])
 
-    def test_fetches_missing_month(self):
+    def test_fetches_missing_year(self):
         from processor.us_daily.agg_fetcher import fetch_ticker_aggs
         from processor.us_daily.config import Config
         import pandas as pd
 
-        config = Config(start_date="2020-01", daily_data_dir=self.test_dir)
+        config = Config(start_year=2024, daily_data_dir=self.test_dir)
 
         df = pd.DataFrame({
-            "date": ["2020-01-02"],
+            "date": ["2024-01-02"],
             "open": [74.06],
             "high": [75.15],
             "low": [73.80],
@@ -125,36 +105,36 @@ class TestFetchTickerAggs(unittest.TestCase):
         manager = self._make_manager(df=df, source_name="akshare")
 
         with patch(
-            "processor.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
+            "processor.us_daily.agg_fetcher.generate_years", return_value=[2024]
         ):
             with patch(
-                "processor.us_daily.agg_fetcher.is_current_month", return_value=False
+                "processor.us_daily.agg_fetcher.is_current_year", return_value=False
             ):
                 result = fetch_ticker_aggs(manager, "AAPL", config)
 
-        file_path = os.path.join(self.test_dir, "AAPL", "2020-01.json")
+        file_path = os.path.join(self.test_dir, "AAPL", "2024.json")
         self.assertTrue(os.path.exists(file_path))
 
         with open(file_path) as f:
             data = json.load(f)
         self.assertEqual(data["ticker"], "AAPL")
-        self.assertEqual(data["month"], "2020-01")
+        self.assertEqual(data["year"], 2024)
         self.assertEqual(data["source"], "akshare")
         self.assertEqual(len(data["data"]), 1)
         self.assertEqual(data["data"][0]["close"], 74.36)
         self.assertEqual(result["failures"], [])
 
-    def test_refreshes_current_month(self):
+    def test_refreshes_current_year(self):
         from processor.us_daily.agg_fetcher import fetch_ticker_aggs
         from processor.us_daily.config import Config
         import pandas as pd
 
-        config = Config(start_date="2026-04", daily_data_dir=self.test_dir)
+        config = Config(start_year=2026, daily_data_dir=self.test_dir)
 
         ticker_dir = os.path.join(self.test_dir, "AAPL")
         os.makedirs(ticker_dir)
-        with open(os.path.join(ticker_dir, "2026-04.json"), "w") as f:
-            json.dump({"ticker": "AAPL", "month": "2026-04", "data": []}, f)
+        with open(os.path.join(ticker_dir, "2026.json"), "w") as f:
+            json.dump({"ticker": "AAPL", "year": 2026, "data": []}, f)
 
         df = pd.DataFrame({
             "date": ["2026-04-01"],
@@ -167,10 +147,10 @@ class TestFetchTickerAggs(unittest.TestCase):
         manager = self._make_manager(df=df, source_name="yfinance")
 
         with patch(
-            "processor.us_daily.agg_fetcher.generate_months", return_value=["2026-04"]
+            "processor.us_daily.agg_fetcher.generate_years", return_value=[2026]
         ):
             with patch(
-                "processor.us_daily.agg_fetcher.is_current_month", return_value=True
+                "processor.us_daily.agg_fetcher.is_current_year", return_value=True
             ):
                 result = fetch_ticker_aggs(manager, "AAPL", config)
 
@@ -182,23 +162,23 @@ class TestFetchTickerAggs(unittest.TestCase):
         from processor.us_daily.config import Config
         from processor.us_daily.sources.manager import FetchError
 
-        config = Config(start_date="2020-01", daily_data_dir=self.test_dir, max_retries=2)
+        config = Config(start_year=2024, daily_data_dir=self.test_dir, max_retries=2)
 
         manager = self._make_manager(
             error=FetchError("All sources failed for AAPL")
         )
 
         with patch(
-            "processor.us_daily.agg_fetcher.generate_months", return_value=["2020-01"]
+            "processor.us_daily.agg_fetcher.generate_years", return_value=[2024]
         ):
             with patch(
-                "processor.us_daily.agg_fetcher.is_current_month", return_value=False
+                "processor.us_daily.agg_fetcher.is_current_year", return_value=False
             ):
                 result = fetch_ticker_aggs(manager, "AAPL", config)
 
         self.assertEqual(len(result["failures"]), 1)
         self.assertEqual(result["failures"][0]["ticker"], "AAPL")
-        self.assertEqual(result["failures"][0]["month"], "2020-01")
+        self.assertEqual(result["failures"][0]["year"], 2024)
 
 
 if __name__ == "__main__":

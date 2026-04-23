@@ -10,7 +10,7 @@ class TestConfig(unittest.TestCase):
 
         config = Config()
         self.assertEqual(config.refresh_tickers, False)
-        self.assertEqual(config.start_date, "2026-01")
+        self.assertEqual(config.start_year, 2024)
         self.assertEqual(config.max_retries, 3)
         self.assertEqual(config.data_source_priority, ["massive", "akshare", "yfinance"])
         self.assertEqual(config.akshare_interval, 2.0)
@@ -34,7 +34,7 @@ class TestConfig(unittest.TestCase):
             self.assertEqual(config.refresh_tickers, True)
             self.assertEqual(config.akshare_interval, 3.0)
             # defaults preserved for unspecified fields
-            self.assertEqual(config.start_date, "2026-01")
+            self.assertEqual(config.start_year, 2024)
             self.assertEqual(config.massive_interval, 12.0)
         finally:
             os.unlink(tmp_path)

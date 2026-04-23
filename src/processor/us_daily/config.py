@@ -7,7 +7,7 @@ from typing import List
 @dataclass
 class Config:
     refresh_tickers: bool = False
-    start_date: str = "2026-01"
+    start_year: int = 2024
     data_source_priority: List[str] = field(
         default_factory=lambda: ["massive", "akshare", "yfinance"]
     )
