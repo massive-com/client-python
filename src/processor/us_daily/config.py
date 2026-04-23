@@ -1,15 +1,22 @@
 import json
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import List
 
 
 @dataclass
 class Config:
     refresh_tickers: bool = False
-    market_cap_min: float = 5e9
+    exchanges: List[str] = field(default_factory=lambda: ["nasdaq", "nyse", "arca"])
     start_date: str = "2026-01"
-    request_interval: int = 12
-    data_dir: str = "data/us_daily"
+    data_source_priority: List[str] = field(
+        default_factory=lambda: ["akshare", "yfinance", "massive"]
+    )
+    akshare_interval: float = 2.0
+    yfinance_interval: float = 1.0
+    massive_interval: float = 12.0
+    list_dir: str = "data/us_list"
+    daily_dir: str = "data/us_daily"
     max_retries: int = 3
 
 
