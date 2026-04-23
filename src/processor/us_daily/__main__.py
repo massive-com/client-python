@@ -5,15 +5,15 @@ from datetime import datetime
 
 from massive import RESTClient
 
-from data_provider.us_daily.config import load_config
-from data_provider.us_daily.storage import (
+from processor.us_daily.config import load_config
+from processor.us_daily.storage import (
     get_tickers_file_path,
     file_exists,
     save_json,
     load_json,
 )
-from data_provider.us_daily.ticker_filter import filter_top_tickers
-from data_provider.us_daily.agg_fetcher import fetch_ticker_aggs
+from processor.us_daily.ticker_filter import filter_top_tickers
+from processor.us_daily.agg_fetcher import fetch_ticker_aggs
 
 
 def setup_logging():

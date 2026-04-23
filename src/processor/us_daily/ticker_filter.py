@@ -2,7 +2,7 @@ import logging
 import time
 from typing import List
 
-from data_provider.us_daily.config import Config
+from processor.us_daily.config import Config
 
 logger = logging.getLogger("us_daily")
 

@@ -4,8 +4,8 @@ import time
 from datetime import date, datetime
 from typing import List, Tuple
 
-from data_provider.us_daily.config import Config
-from data_provider.us_daily.storage import (
+from processor.us_daily.config import Config
+from processor.us_daily.storage import (
     get_month_file_path,
     file_exists,
     save_json,
