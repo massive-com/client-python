@@ -13,8 +13,10 @@ class Config:
     max_retries: int = 3
 
 
-def load_config(config_path: str = "data_provider/us_daily/config.json") -> Config:
+def load_config(config_path: str = None) -> Config:
     config = Config()
+    if config_path is None:
+        config_path = os.path.join(os.path.dirname(__file__), "config.json")
     if os.path.exists(config_path):
         with open(config_path, "r") as f:
             data = json.load(f)
