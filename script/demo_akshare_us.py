@@ -55,11 +55,17 @@ def fetch_us_stock_list(output_dir: Path) -> list[dict]:
         logger.error("美股列表为空")
         sys.exit(1)
 
+    if "代码" not in df.columns:
+        logger.error("美股列表缺少 '代码' 列")
+        sys.exit(1)
+
     stocks = []
     code_col = "代码"
     name_col = "名称" if "名称" in df.columns else None
 
     for _, row in df.iterrows():
+        if pd.isna(row[code_col]):
+            continue
         full_code = str(row[code_col])
         parts = full_code.split(".", 1)
         ticker = parts[1].upper() if len(parts) == 2 else full_code.upper()
