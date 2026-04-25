@@ -46,7 +46,8 @@ def fetch_us_stock_list(output_dir: Path) -> list[dict]:
     """
     logger.info("获取美股代码列表...")
     try:
-        df = ak.stock_us_spot_em()
+        # df = ak.stock_us_spot_em()
+        df = ak.stock_us_spot()
     except Exception as e:
         logger.error(f"获取美股列表失败: {e}")
         sys.exit(1)

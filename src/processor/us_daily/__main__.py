@@ -14,9 +14,13 @@ from processor.us_daily.sources.manager import SourceManager
 from processor.us_daily.storage import load_json, file_exists
 
 
+# SOURCE_CLASSES = {
+#     "akshare": AkshareSource,
+#     "yfinance": YfinanceSource,
+#     "massive": MassiveSource,
+# }
+
 SOURCE_CLASSES = {
-    "akshare": AkshareSource,
-    "yfinance": YfinanceSource,
     "massive": MassiveSource,
 }
 

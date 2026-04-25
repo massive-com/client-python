@@ -28,9 +28,9 @@ class SourceManager:
         errors = []
         for source in self.sources:
             try:
+                time.sleep(source.request_interval)
                 df = source.fetch_daily(ticker, start_date, end_date)
                 if df is not None and not df.empty:
-                    time.sleep(source.request_interval)
                     return df, source.name
                 else:
                     logger.debug(
