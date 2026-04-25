@@ -85,7 +85,6 @@ def fetch_daily_for_stock(
     source: AkshareSource,
     ticker: str,
     year: int,
-    output_dir: Path,
 ) -> Optional[pd.DataFrame]:
     """获取单只股票指定年份的日线数据（含重试）。
 
@@ -156,7 +155,7 @@ def main(dry_run: bool = False) -> None:
         ticker = stock["ticker"]
         logger.info(f"[{i+1}/{len(stocks)}] 获取 {ticker} ({stock['name']})...")
 
-        df = fetch_daily_for_stock(source, ticker, YEAR, DEMO_STOCK_DIR)
+        df = fetch_daily_for_stock(source, ticker, YEAR)
         if df is not None:
             stock_dir = DEMO_STOCK_DIR / ticker
             stock_dir.mkdir(parents=True, exist_ok=True)
