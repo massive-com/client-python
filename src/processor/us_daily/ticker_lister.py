@@ -30,6 +30,11 @@ def _get_tickers_file(config: Config) -> str:
     return os.path.join(config.list_data_dir, TICKERS_FILE)
 
 
+def _file_age_days(file_path: str) -> float:
+    import os
+    return (time.time() - os.path.getmtime(file_path)) / 86400
+
+
 def list_all_tickers(client, config: Config) -> List[dict]:
     """Fetch all US stock tickers and save to file.
 
@@ -37,6 +42,13 @@ def list_all_tickers(client, config: Config) -> List[dict]:
     tickers are kept and only missing ones are fetched.
     """
     file_path = _get_tickers_file(config)
+
+    # Return cached data if file is <= 7 days old
+    if file_exists(file_path) and _file_age_days(file_path) <= 7:
+        data = load_json(file_path)
+        tickers = data.get("tickers", [])
+        logger.info(f"Using cached tickers ({len(tickers)} tickers, file <= 7 days old)")
+        return tickers
 
     # Load existing tickers for resume
     existing_tickers: Dict[str, dict] = {}
