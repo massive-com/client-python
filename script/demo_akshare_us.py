@@ -38,12 +38,56 @@ MAX_RETRIES = 3
 RETRY_BACKOFFS = [2, 4, 8]  # seconds
 
 
+def fetch_us_stock_list(output_dir: Path) -> list[dict]:
+    """通过 stock_us_spot_em 获取所有美股代码列表。
+
+    Returns:
+        股票列表 [{"ticker": "AAPL", "name": "苹果", "em_code": "105.AAPL"}, ...]
+    """
+    logger.info("获取美股代码列表...")
+    try:
+        df = ak.stock_us_spot_em()
+    except Exception as e:
+        logger.error(f"获取美股列表失败: {e}")
+        sys.exit(1)
+
+    if df is None or df.empty:
+        logger.error("美股列表为空")
+        sys.exit(1)
+
+    stocks = []
+    code_col = "代码"
+    name_col = "名称" if "名称" in df.columns else None
+
+    for _, row in df.iterrows():
+        full_code = str(row[code_col])
+        parts = full_code.split(".", 1)
+        ticker = parts[1].upper() if len(parts) == 2 else full_code.upper()
+        name = str(row[name_col]) if name_col and pd.notna(row[name_col]) else ""
+        stocks.append({"ticker": ticker, "name": name, "em_code": full_code})
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_file = output_dir / "us_stocks.json"
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(stocks, f, ensure_ascii=False, indent=2)
+
+    logger.info(f"美股列表已保存: {output_file} ({len(stocks)} 只)")
+    return stocks
+
+
 def main(dry_run: bool = False) -> None:
     """入口函数。"""
     if dry_run:
         logger.info("--dry-run 模式：仅获取股票列表，不抓取数据")
     else:
         logger.info("开始获取美股数据 demo")
+
+    stocks = fetch_us_stock_list(DEMO_LIST_DIR)
+    logger.info(f"共 {len(stocks)} 只美股")
+
+    if dry_run:
+        logger.info("--dry-run 完成")
+        return
 
 
 if __name__ == "__main__":
