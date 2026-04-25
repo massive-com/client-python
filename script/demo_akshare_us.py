@@ -81,8 +81,60 @@ def fetch_us_stock_list(output_dir: Path) -> list[dict]:
     return stocks
 
 
+def fetch_daily_for_stock(
+    source: AkshareSource,
+    ticker: str,
+    year: int,
+    output_dir: Path,
+) -> Optional[pd.DataFrame]:
+    """获取单只股票指定年份的日线数据（含重试）。
+
+    Returns:
+        DataFrame 或 None（失败时）
+    """
+    start = f"{year}0101"
+    end = f"{year}1231"
+
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            df = source.fetch_daily(ticker, start, end)
+            if df is not None and not df.empty:
+                return df
+            logger.warning(f"[{ticker}] 返回空数据 (attempt {attempt}/{MAX_RETRIES})")
+        except Exception as e:
+            logger.warning(f"[{ticker}] 获取失败 (attempt {attempt}/{MAX_RETRIES}): {e}")
+
+        if attempt < MAX_RETRIES:
+            backoff = RETRY_BACKOFFS[attempt - 1]
+            logger.debug(f"[{ticker}] 等待 {backoff}s 后重试...")
+            time.sleep(backoff)
+
+    logger.error(f"[{ticker}] 重试 {MAX_RETRIES} 次后仍失败，跳过")
+    return None
+
+
+def save_summary(
+    output_dir: Path,
+    total: int,
+    success: int,
+    failed: int,
+    failed_tickers: list[str],
+) -> None:
+    """保存抓取摘要到 JSON 文件。"""
+    summary = {
+        "total": total,
+        "success": success,
+        "failed": failed,
+        "failed_tickers": failed_tickers,
+    }
+    output_dir.mkdir(parents=True, exist_ok=True)
+    summary_file = output_dir / "fetch_summary.json"
+    with open(summary_file, "w", encoding="utf-8") as f:
+        json.dump(summary, f, ensure_ascii=False, indent=2)
+    logger.info(f"摘要已保存: {summary_file}")
+
+
 def main(dry_run: bool = False) -> None:
-    """入口函数。"""
     if dry_run:
         logger.info("--dry-run 模式：仅获取股票列表，不抓取数据")
     else:
@@ -94,6 +146,30 @@ def main(dry_run: bool = False) -> None:
     if dry_run:
         logger.info("--dry-run 完成")
         return
+
+    source = AkshareSource()
+    success = 0
+    failed = 0
+    failed_tickers: list[str] = []
+
+    for i, stock in enumerate(stocks):
+        ticker = stock["ticker"]
+        logger.info(f"[{i+1}/{len(stocks)}] 获取 {ticker} ({stock['name']})...")
+
+        df = fetch_daily_for_stock(source, ticker, YEAR, DEMO_STOCK_DIR)
+        if df is not None:
+            stock_dir = DEMO_STOCK_DIR / ticker
+            stock_dir.mkdir(parents=True, exist_ok=True)
+            output_file = stock_dir / f"{ticker}_{YEAR}.json"
+            df.to_json(output_file, orient="records", force_ascii=False, indent=2)
+            logger.info(f"[{i+1}/{len(stocks)}] {ticker}: {len(df)} 行 -> {output_file}")
+            success += 1
+        else:
+            failed += 1
+            failed_tickers.append(ticker)
+
+    save_summary(DEMO_STOCK_DIR, len(stocks), success, failed, failed_tickers)
+    logger.info(f"完成: 成功 {success}, 失败 {failed}")
 
 
 if __name__ == "__main__":
