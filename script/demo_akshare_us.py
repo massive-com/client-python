@@ -151,21 +151,24 @@ def main(dry_run: bool = False) -> None:
     failed = 0
     failed_tickers: list[str] = []
 
-    for i, stock in enumerate(stocks):
-        ticker = stock["ticker"]
-        logger.info(f"[{i+1}/{len(stocks)}] 获取 {ticker} ({stock['name']})...")
+    try:
+        for i, stock in enumerate(stocks):
+            ticker = stock["ticker"]
+            logger.info(f"[{i+1}/{len(stocks)}] 获取 {ticker} ({stock['name']})...")
 
-        df = fetch_daily_for_stock(source, ticker, YEAR)
-        if df is not None:
-            stock_dir = DEMO_STOCK_DIR / ticker
-            stock_dir.mkdir(parents=True, exist_ok=True)
-            output_file = stock_dir / f"{ticker}_{YEAR}.json"
-            df.to_json(output_file, orient="records", force_ascii=False, indent=2)
-            logger.info(f"[{i+1}/{len(stocks)}] {ticker}: {len(df)} 行 -> {output_file}")
-            success += 1
-        else:
-            failed += 1
-            failed_tickers.append(ticker)
+            df = fetch_daily_for_stock(source, ticker, YEAR)
+            if df is not None:
+                stock_dir = DEMO_STOCK_DIR / ticker
+                stock_dir.mkdir(parents=True, exist_ok=True)
+                output_file = stock_dir / f"{ticker}_{YEAR}.json"
+                df.to_json(output_file, orient="records", force_ascii=False, indent=2)
+                logger.info(f"[{i+1}/{len(stocks)}] {ticker}: {len(df)} 行 -> {output_file}")
+                success += 1
+            else:
+                failed += 1
+                failed_tickers.append(ticker)
+    except KeyboardInterrupt:
+        logger.warning("用户中断 (Ctrl+C)，保存当前进度...")
 
     save_summary(DEMO_STOCK_DIR, len(stocks), success, failed, failed_tickers)
     logger.info(f"完成: 成功 {success}, 失败 {failed}")
