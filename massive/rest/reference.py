@@ -30,6 +30,9 @@ from .models import (
     RiskFactorTaxonomy,
     FilingSection,
     Filing8K,
+    Filing13F,
+    FilingForm3,
+    FilingForm4,
     FilingIndex,
 )
 from urllib3 import HTTPResponse
@@ -988,6 +991,134 @@ class ContractsClient(BaseClient):
             params=self._get_params(self.list_stocks_filings_index, locals()),
             result_key="results",
             deserializer=FilingIndex.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_stocks_filings_13f(
+        self,
+        filer_cik: Optional[str] = None,
+        filer_cik_any_of: Optional[str] = None,
+        filing_date: Optional[Union[str, date]] = None,
+        filing_date_gt: Optional[Union[str, date]] = None,
+        filing_date_gte: Optional[Union[str, date]] = None,
+        filing_date_lt: Optional[Union[str, date]] = None,
+        filing_date_lte: Optional[Union[str, date]] = None,
+        limit: Optional[int] = 100,
+        sort: Optional[Union[str, Sort]] = "filing_date.desc",
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[Filing13F], HTTPResponse]:
+        """
+        SEC Form 13F filings data showing institutional investment manager holdings.
+        Form 13F is required to be filed quarterly by institutional investment managers
+        with at least $100 million in qualifying assets under management.
+        """
+        url = "/stocks/filings/vX/13-F"
+
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_filings_13f, locals()),
+            result_key="results",
+            deserializer=Filing13F.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_stocks_filings_form_3(
+        self,
+        issuer_cik: Optional[str] = None,
+        issuer_cik_any_of: Optional[str] = None,
+        owner_cik: Optional[str] = None,
+        owner_cik_any_of: Optional[str] = None,
+        tickers: Optional[str] = None,
+        tickers_all_of: Optional[str] = None,
+        tickers_any_of: Optional[str] = None,
+        form_type: Optional[str] = None,
+        filing_date: Optional[Union[str, date]] = None,
+        filing_date_gt: Optional[Union[str, date]] = None,
+        filing_date_gte: Optional[Union[str, date]] = None,
+        filing_date_lt: Optional[Union[str, date]] = None,
+        filing_date_lte: Optional[Union[str, date]] = None,
+        max_ticker: Optional[str] = None,
+        max_ticker_any_of: Optional[str] = None,
+        max_ticker_gt: Optional[str] = None,
+        max_ticker_gte: Optional[str] = None,
+        max_ticker_lt: Optional[str] = None,
+        max_ticker_lte: Optional[str] = None,
+        min_ticker: Optional[str] = None,
+        min_ticker_any_of: Optional[str] = None,
+        min_ticker_gt: Optional[str] = None,
+        min_ticker_gte: Optional[str] = None,
+        min_ticker_lt: Optional[str] = None,
+        min_ticker_lte: Optional[str] = None,
+        limit: Optional[int] = 100,
+        sort: Optional[Union[str, Sort]] = "filing_date.desc",
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[FilingForm3], HTTPResponse]:
+        """
+        SEC Form 3 filings reporting initial statements of beneficial ownership of securities.
+        Filed by corporate insiders (directors, officers, and 10%+ shareholders) when they first acquire a position.
+        """
+        url = "/stocks/filings/vX/form-3"
+
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_filings_form_3, locals()),
+            result_key="results",
+            deserializer=FilingForm3.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_stocks_filings_form_4(
+        self,
+        issuer_cik: Optional[str] = None,
+        issuer_cik_any_of: Optional[str] = None,
+        owner_cik: Optional[str] = None,
+        owner_cik_any_of: Optional[str] = None,
+        tickers: Optional[str] = None,
+        tickers_all_of: Optional[str] = None,
+        tickers_any_of: Optional[str] = None,
+        form_type: Optional[str] = None,
+        transaction_code: Optional[str] = None,
+        filing_date: Optional[Union[str, date]] = None,
+        filing_date_gt: Optional[Union[str, date]] = None,
+        filing_date_gte: Optional[Union[str, date]] = None,
+        filing_date_lt: Optional[Union[str, date]] = None,
+        filing_date_lte: Optional[Union[str, date]] = None,
+        max_ticker: Optional[str] = None,
+        max_ticker_any_of: Optional[str] = None,
+        max_ticker_gt: Optional[str] = None,
+        max_ticker_gte: Optional[str] = None,
+        max_ticker_lt: Optional[str] = None,
+        max_ticker_lte: Optional[str] = None,
+        min_ticker: Optional[str] = None,
+        min_ticker_any_of: Optional[str] = None,
+        min_ticker_gt: Optional[str] = None,
+        min_ticker_gte: Optional[str] = None,
+        min_ticker_lt: Optional[str] = None,
+        min_ticker_lte: Optional[str] = None,
+        limit: Optional[int] = 100,
+        sort: Optional[Union[str, Sort]] = "filing_date.desc",
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[FilingForm4], HTTPResponse]:
+        """
+        SEC Form 4 filings reporting changes in beneficial ownership of securities.
+        Filed by corporate insiders (directors, officers, and 10%+ shareholders) within two business days of a transaction.
+        """
+        url = "/stocks/filings/vX/form-4"
+
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_filings_form_4, locals()),
+            result_key="results",
+            deserializer=FilingForm4.from_dict,
             raw=raw,
             options=options,
         )

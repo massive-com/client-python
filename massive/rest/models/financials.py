@@ -923,6 +923,60 @@ class RiskFactorTaxonomy:
 
 
 @modelclass
+@dataclass
+class Filing13F:
+    """SEC Form 13F filings data showing institutional investment manager holdings."""
+
+    accession_number: Optional[str] = None
+    cusip: Optional[str] = None
+    file_number: Optional[str] = None
+    filer_cik: Optional[str] = None
+    filing_date: Optional[str] = None
+    filing_url: Optional[str] = None
+    film_number: Optional[str] = None
+    form_type: Optional[str] = None
+    investment_discretion: Optional[str] = None
+    issuer_name: Optional[str] = None
+    market_value: Optional[int] = None
+    other_managers: Optional[List[str]] = None
+    period: Optional[str] = None
+    put_call: Optional[str] = None
+    shares_or_principal_amount: Optional[int] = None
+    shares_or_principal_type: Optional[str] = None
+    title_of_class: Optional[str] = None
+    voting_authority_none: Optional[int] = None
+    voting_authority_shared: Optional[int] = None
+    voting_authority_sole: Optional[int] = None
+
+    @staticmethod
+    def from_dict(d: Optional[Dict[str, Any]]) -> "Filing13F":
+        if not d:
+            return Filing13F()
+        return Filing13F(
+            accession_number=d.get("accession_number"),
+            cusip=d.get("cusip"),
+            file_number=d.get("file_number"),
+            filer_cik=d.get("filer_cik"),
+            filing_date=d.get("filing_date"),
+            filing_url=d.get("filing_url"),
+            film_number=d.get("film_number"),
+            form_type=d.get("form_type"),
+            investment_discretion=d.get("investment_discretion"),
+            issuer_name=d.get("issuer_name"),
+            market_value=d.get("market_value"),
+            other_managers=d.get("other_managers"),
+            period=d.get("period"),
+            put_call=d.get("put_call"),
+            shares_or_principal_amount=d.get("shares_or_principal_amount"),
+            shares_or_principal_type=d.get("shares_or_principal_type"),
+            title_of_class=d.get("title_of_class"),
+            voting_authority_none=d.get("voting_authority_none"),
+            voting_authority_shared=d.get("voting_authority_shared"),
+            voting_authority_sole=d.get("voting_authority_sole"),
+        )
+
+
+@modelclass
 class FilingSection:
     """SEC document text section from a 10-K/10-Q (raw text content)."""
 
@@ -944,6 +998,206 @@ class FilingSection:
             section=d.get("section"),
             text=d.get("text"),
             ticker=d.get("ticker"),
+        )
+
+
+@modelclass
+@dataclass
+class FilingFootnote:
+    """Footnote from SEC Form 3/4 filings."""
+
+    id: Optional[str] = None
+    description: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d: Optional[Dict[str, Any]]) -> "FilingFootnote":
+        if not d:
+            return FilingFootnote()
+        return FilingFootnote(
+            id=d.get("id"),
+            description=d.get("description"),
+        )
+
+
+@modelclass
+@dataclass
+class FilingForm3:
+    """SEC Form 3 filings reporting initial statements of beneficial ownership of securities.
+    Filed by corporate insiders (directors, officers, and 10%+ shareholders) when they first acquire a position.
+    """
+
+    accession_number: Optional[str] = None
+    aff_10b5_one: Optional[bool] = None
+    date_of_original_submission: Optional[str] = None
+    direct_or_indirect: Optional[str] = None
+    exercise_date: Optional[str] = None
+    exercise_price: Optional[float] = None
+    filing_date: Optional[str] = None
+    filing_url: Optional[str] = None
+    footnotes: Optional[List[FilingFootnote]] = None
+    form_type: Optional[str] = None
+    is_director: Optional[bool] = None
+    is_officer: Optional[bool] = None
+    is_other: Optional[bool] = None
+    is_ten_percent_owner: Optional[bool] = None
+    issuer_cik: Optional[str] = None
+    issuer_name: Optional[str] = None
+    nature_of_ownership: Optional[str] = None
+    not_subject_to_section_16: Optional[bool] = None
+    officer_title: Optional[str] = None
+    owner_cik: Optional[str] = None
+    owner_name: Optional[str] = None
+    period_of_report: Optional[str] = None
+    remarks: Optional[str] = None
+    security_title: Optional[str] = None
+    security_type: Optional[str] = None
+    shares_owned: Optional[float] = None
+    tickers: Optional[List[str]] = None
+    underlying_security_shares: Optional[float] = None
+    underlying_security_title: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d: Optional[Dict[str, Any]]) -> "FilingForm3":
+        if not d:
+            return FilingForm3()
+        footnotes = d.get("footnotes")
+        return FilingForm3(
+            accession_number=d.get("accession_number"),
+            aff_10b5_one=d.get("aff_10b5_one"),
+            date_of_original_submission=d.get("date_of_original_submission"),
+            direct_or_indirect=d.get("direct_or_indirect"),
+            exercise_date=d.get("exercise_date"),
+            exercise_price=d.get("exercise_price"),
+            filing_date=d.get("filing_date"),
+            filing_url=d.get("filing_url"),
+            footnotes=(
+                [FilingFootnote.from_dict(f) for f in footnotes]
+                if footnotes is not None
+                else None
+            ),
+            form_type=d.get("form_type"),
+            is_director=d.get("is_director"),
+            is_officer=d.get("is_officer"),
+            is_other=d.get("is_other"),
+            is_ten_percent_owner=d.get("is_ten_percent_owner"),
+            issuer_cik=d.get("issuer_cik"),
+            issuer_name=d.get("issuer_name"),
+            nature_of_ownership=d.get("nature_of_ownership"),
+            not_subject_to_section_16=d.get("not_subject_to_section_16"),
+            officer_title=d.get("officer_title"),
+            owner_cik=d.get("owner_cik"),
+            owner_name=d.get("owner_name"),
+            period_of_report=d.get("period_of_report"),
+            remarks=d.get("remarks"),
+            security_title=d.get("security_title"),
+            security_type=d.get("security_type"),
+            shares_owned=d.get("shares_owned"),
+            tickers=d.get("tickers"),
+            underlying_security_shares=d.get("underlying_security_shares"),
+            underlying_security_title=d.get("underlying_security_title"),
+        )
+
+
+@modelclass
+@dataclass
+class FilingForm4:
+    """SEC Form 4 filings reporting changes in beneficial ownership of securities.
+    Filed by corporate insiders (directors, officers, and 10%+ shareholders) within two business days of a transaction.
+    """
+
+    accession_number: Optional[str] = None
+    aff_10b5_one: Optional[bool] = None
+    date_of_original_submission: Optional[str] = None
+    deemed_execution_date: Optional[str] = None
+    direct_or_indirect: Optional[str] = None
+    equity_swap_involved: Optional[bool] = None
+    exercise_date: Optional[str] = None
+    exercise_price: Optional[float] = None
+    expiration_date: Optional[str] = None
+    filing_date: Optional[str] = None
+    filing_url: Optional[str] = None
+    footnotes: Optional[List[FilingFootnote]] = None
+    form_type: Optional[str] = None
+    is_director: Optional[bool] = None
+    is_officer: Optional[bool] = None
+    is_other: Optional[bool] = None
+    is_ten_percent_owner: Optional[bool] = None
+    issuer_cik: Optional[str] = None
+    issuer_name: Optional[str] = None
+    nature_of_ownership: Optional[str] = None
+    not_subject_to_section_16: Optional[bool] = None
+    officer_title: Optional[str] = None
+    owner_cik: Optional[str] = None
+    owner_name: Optional[str] = None
+    period_of_report: Optional[str] = None
+    record_type: Optional[str] = None
+    remarks: Optional[str] = None
+    security_title: Optional[str] = None
+    security_type: Optional[str] = None
+    shares_owned_following_transaction: Optional[float] = None
+    tickers: Optional[List[str]] = None
+    transaction_acquired_disposed: Optional[str] = None
+    transaction_code: Optional[str] = None
+    transaction_date: Optional[str] = None
+    transaction_price_per_share: Optional[float] = None
+    transaction_shares: Optional[float] = None
+    transaction_timeliness: Optional[str] = None
+    transaction_value: Optional[float] = None
+    underlying_security_shares: Optional[float] = None
+    underlying_security_title: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d: Optional[Dict[str, Any]]) -> "FilingForm4":
+        if not d:
+            return FilingForm4()
+        footnotes = d.get("footnotes")
+        return FilingForm4(
+            accession_number=d.get("accession_number"),
+            aff_10b5_one=d.get("aff_10b5_one"),
+            date_of_original_submission=d.get("date_of_original_submission"),
+            deemed_execution_date=d.get("deemed_execution_date"),
+            direct_or_indirect=d.get("direct_or_indirect"),
+            equity_swap_involved=d.get("equity_swap_involved"),
+            exercise_date=d.get("exercise_date"),
+            exercise_price=d.get("exercise_price"),
+            expiration_date=d.get("expiration_date"),
+            filing_date=d.get("filing_date"),
+            filing_url=d.get("filing_url"),
+            footnotes=(
+                [FilingFootnote.from_dict(f) for f in footnotes]
+                if footnotes is not None
+                else None
+            ),
+            form_type=d.get("form_type"),
+            is_director=d.get("is_director"),
+            is_officer=d.get("is_officer"),
+            is_other=d.get("is_other"),
+            is_ten_percent_owner=d.get("is_ten_percent_owner"),
+            issuer_cik=d.get("issuer_cik"),
+            issuer_name=d.get("issuer_name"),
+            nature_of_ownership=d.get("nature_of_ownership"),
+            not_subject_to_section_16=d.get("not_subject_to_section_16"),
+            officer_title=d.get("officer_title"),
+            owner_cik=d.get("owner_cik"),
+            owner_name=d.get("owner_name"),
+            period_of_report=d.get("period_of_report"),
+            record_type=d.get("record_type"),
+            remarks=d.get("remarks"),
+            security_title=d.get("security_title"),
+            security_type=d.get("security_type"),
+            shares_owned_following_transaction=d.get(
+                "shares_owned_following_transaction"
+            ),
+            tickers=d.get("tickers"),
+            transaction_acquired_disposed=d.get("transaction_acquired_disposed"),
+            transaction_code=d.get("transaction_code"),
+            transaction_date=d.get("transaction_date"),
+            transaction_price_per_share=d.get("transaction_price_per_share"),
+            transaction_shares=d.get("transaction_shares"),
+            transaction_timeliness=d.get("transaction_timeliness"),
+            transaction_value=d.get("transaction_value"),
+            underlying_security_shares=d.get("underlying_security_shares"),
+            underlying_security_title=d.get("underlying_security_title"),
         )
 
 
