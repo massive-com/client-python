@@ -6,7 +6,7 @@ from ...modelclass import modelclass
 class FuturesAgg:
     """
     A single aggregate bar for a futures contract in a given time window.
-    Corresponds to /futures/vX/aggs/{ticker}.
+    Corresponds to /futures/v1/aggs/{ticker}.
     """
 
     ticker: Optional[str] = None
@@ -42,7 +42,7 @@ class FuturesAgg:
 class FuturesContract:
     """
     Represents a single futures contract (or a 'combo' contract).
-    Corresponds to /futures/vX/contracts endpoints.
+    Corresponds to /futures/v1/contracts endpoints.
     """
 
     ticker: Optional[str] = None
@@ -90,7 +90,7 @@ class FuturesContract:
 class FuturesProduct:
     """
     Represents a single futures product (or product 'combo').
-    Corresponds to /futures/vX/products endpoints.
+    Corresponds to /futures/v1/products endpoints.
     """
 
     product_code: Optional[str] = None
@@ -138,7 +138,7 @@ class FuturesProduct:
 class FuturesQuote:
     """
     Represents a futures NBBO quote within a given time range.
-    Corresponds to /futures/vX/quotes/{ticker}
+    Corresponds to /futures/v1/quotes/{ticker}
     """
 
     ticker: Optional[str] = None
@@ -174,7 +174,7 @@ class FuturesQuote:
 class FuturesTrade:
     """
     Represents a futures trade within a given time range.
-    Corresponds to /futures/vX/trades/{ticker}
+    Corresponds to /futures/v1/trades/{ticker}
     """
 
     ticker: Optional[str] = None
@@ -202,7 +202,7 @@ class FuturesTrade:
 class FuturesSchedule:
     """
     Represents a single schedule event for a given session_end_date and product.
-    Corresponds to /futures/vX/schedules
+    Corresponds to /futures/v1/schedules
     """
 
     event: Optional[str] = None
@@ -397,7 +397,7 @@ class FuturesSnapshot:
 class FuturesExchange:
     """
     Represents a futures exchange or trading venue.
-    Corresponds to /futures/vX/exchanges endpoint.
+    Corresponds to /futures/v1/exchanges endpoint.
     """
 
     acronym: Optional[str] = None
