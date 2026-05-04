@@ -21,7 +21,7 @@ from .models.request import RequestOptionBuilder
 class FuturesClient(BaseClient):
     """
     Client for the Futures REST Endpoints
-    (aligned with the paths from /futures/vX/...)
+    (aligned with the paths from /futures/v1/...)
     """
 
     def list_futures_aggregates(
@@ -40,7 +40,7 @@ class FuturesClient(BaseClient):
         options: Optional[RequestOptionBuilder] = None,
     ) -> Union[Iterator[FuturesAgg], HTTPResponse]:
         """
-        Endpoint: GET /futures/vX/aggs/{ticker}
+        Endpoint: GET /futures/v1/aggs/{ticker}
 
         Get aggregates for a futures contract in a given time range.
         This endpoint returns data that includes:
@@ -48,7 +48,7 @@ class FuturesClient(BaseClient):
         - volume, dollar_volume, etc.
         If `next_url` is present, it will be paginated.
         """
-        url = f"/futures/vX/aggs/{ticker}"
+        url = f"/futures/v1/aggs/{ticker}"
         return self._paginate(
             path=url,
             params=self._get_params(self.list_futures_aggregates, locals()),
@@ -96,11 +96,11 @@ class FuturesClient(BaseClient):
         options: Optional[RequestOptionBuilder] = None,
     ) -> Union[Iterator[FuturesContract], HTTPResponse]:
         """
-        Endpoint: GET /futures/vX/contracts
+        Endpoint: GET /futures/v1/contracts
 
         The Contracts endpoint returns a paginated list of futures contracts.
         """
-        url = "/futures/vX/contracts"
+        url = "/futures/v1/contracts"
         return self._paginate(
             path=url,
             params=self._get_params(self.list_futures_contracts, locals()),
@@ -151,11 +151,11 @@ class FuturesClient(BaseClient):
         options: Optional[RequestOptionBuilder] = None,
     ) -> Union[Iterator[FuturesProduct], HTTPResponse]:
         """
-        Endpoint: GET /futures/vX/products
+        Endpoint: GET /futures/v1/products
 
         Returns a list of futures products (including combos).
         """
-        url = "/futures/vX/products"
+        url = "/futures/v1/products"
         return self._paginate(
             path=url,
             params=self._get_params(self.list_futures_products, locals()),
@@ -184,11 +184,11 @@ class FuturesClient(BaseClient):
         options: Optional[RequestOptionBuilder] = None,
     ) -> Union[Iterator[FuturesQuote], HTTPResponse]:
         """
-        Endpoint: GET /futures/vX/quotes/{ticker}
+        Endpoint: GET /futures/v1/quotes/{ticker}
 
         Get quotes for a contract in a given time range (paginated).
         """
-        url = f"/futures/vX/quotes/{ticker}"
+        url = f"/futures/v1/quotes/{ticker}"
         return self._paginate(
             path=url,
             params=self._get_params(self.list_futures_quotes, locals()),
@@ -217,11 +217,11 @@ class FuturesClient(BaseClient):
         options: Optional[RequestOptionBuilder] = None,
     ) -> Union[Iterator[FuturesTrade], HTTPResponse]:
         """
-        Endpoint: GET /futures/vX/trades/{ticker}
+        Endpoint: GET /futures/v1/trades/{ticker}
 
         Get trades for a contract in a given time range (paginated).
         """
-        url = f"/futures/vX/trades/{ticker}"
+        url = f"/futures/v1/trades/{ticker}"
         return self._paginate(
             path=url,
             params=self._get_params(self.list_futures_trades, locals()),
@@ -257,12 +257,12 @@ class FuturesClient(BaseClient):
         options: Optional[RequestOptionBuilder] = None,
     ) -> Union[Iterator[FuturesSchedule], HTTPResponse]:
         """
-        Endpoint: GET /futures/vX/schedules
+        Endpoint: GET /futures/v1/schedules
 
         Returns a list of trading schedules for multiple futures products on a specific date.
         If `next_url` is present, this is paginated.
         """
-        url = "/futures/vX/schedules"
+        url = "/futures/v1/schedules"
         return self._paginate(
             path=url,
             params=self._get_params(self.list_futures_schedules, locals()),
@@ -284,7 +284,7 @@ class FuturesClient(BaseClient):
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
     ) -> Union[Iterator[FuturesMarketStatus], HTTPResponse]:
-        url = "/futures/vX/market-status"
+        url = "/futures/v1/market-status"
         return self._paginate(
             path=url,
             params=self._get_params(self.list_futures_market_statuses, locals()),
@@ -313,7 +313,7 @@ class FuturesClient(BaseClient):
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
     ) -> Union[Iterator[FuturesSnapshot], HTTPResponse]:
-        url = "/futures/vX/snapshot"
+        url = "/futures/v1/snapshot"
         return self._paginate(
             path=url,
             params=self._get_params(self.get_futures_snapshot, locals()),
@@ -330,11 +330,11 @@ class FuturesClient(BaseClient):
         options: Optional[RequestOptionBuilder] = None,
     ) -> Union[Iterator[FuturesExchange], HTTPResponse]:
         """
-        Endpoint: GET /futures/vX/exchanges
+        Endpoint: GET /futures/v1/exchanges
 
         US futures exchanges and trading venues including major derivatives exchanges (CME, CBOT, NYMEX, COMEX) and other futures market infrastructure for commodity, financial, and other derivative contract trading.
         """
-        url = "/futures/vX/exchanges"
+        url = "/futures/v1/exchanges"
         return self._paginate(
             path=url,
             params=self._get_params(self.list_futures_exchanges, locals()),
