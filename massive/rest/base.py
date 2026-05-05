@@ -28,6 +28,7 @@ class BaseClient:
         connect_timeout: float,
         read_timeout: float,
         num_pools: int,
+        connection_pool_kw: Optional[Dict[str, Any]],
         retries: int,
         base: str,
         pagination: bool,
@@ -80,6 +81,7 @@ class BaseClient:
             cert_reqs="CERT_REQUIRED",
             retries=retry_strategy,  # use the customized Retry instance
             timeout=self.timeout,  # set timeout for each request
+            **(connection_pool_kw if connection_pool_kw is not None else {}),
         )
 
         if verbose:
