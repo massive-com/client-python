@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Union
 from ...modelclass import modelclass
 
 
@@ -150,6 +150,7 @@ class FuturesQuote:
     bid_price: Optional[float] = None
     bid_size: Optional[float] = None
     bid_timestamp: Optional[int] = None
+    channel: Optional[int] = None
     report_sequence: Optional[int] = None
     sequence_number: Optional[int] = None
 
@@ -165,6 +166,7 @@ class FuturesQuote:
             bid_price=d.get("bid_price"),
             bid_size=d.get("bid_size"),
             bid_timestamp=d.get("bid_timestamp"),
+            channel=d.get("channel"),
             report_sequence=d.get("report_sequence"),
             sequence_number=d.get("sequence_number"),
         )
@@ -180,6 +182,7 @@ class FuturesTrade:
     ticker: Optional[str] = None
     timestamp: Optional[int] = None
     session_end_date: Optional[str] = None
+    channel: Optional[int] = None
     price: Optional[float] = None
     size: Optional[float] = None
     report_sequence: Optional[int] = None
@@ -191,6 +194,7 @@ class FuturesTrade:
             ticker=d.get("ticker"),
             timestamp=d.get("timestamp"),
             session_end_date=d.get("session_end_date"),
+            channel=d.get("channel"),
             price=d.get("price"),
             size=d.get("size"),
             report_sequence=d.get("report_sequence"),
@@ -248,13 +252,17 @@ class FuturesMarketStatus:
 @modelclass
 class FuturesSnapshotDetails:
     open_interest: Optional[int] = None
-    settlement_date: Optional[int] = None
+    settlement_date: Optional[Union[str, int]] = None
+    ticker: Optional[str] = None
+    product_code: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
         return FuturesSnapshotDetails(
             open_interest=d.get("open_interest"),
             settlement_date=d.get("settlement_date"),
+            ticker=d.get("ticker"),
+            product_code=d.get("product_code"),
         )
 
 
@@ -354,6 +362,7 @@ class FuturesSnapshotSession:
 class FuturesSnapshot:
     ticker: Optional[str] = None
     product_code: Optional[str] = None
+
     details: Optional[FuturesSnapshotDetails] = None
     last_minute: Optional[FuturesSnapshotMinute] = None
     last_quote: Optional[FuturesSnapshotQuote] = None
@@ -362,14 +371,11 @@ class FuturesSnapshot:
 
     @staticmethod
     def from_dict(d):
+        details_dict = d.get("details") or {}
         return FuturesSnapshot(
-            ticker=d.get("ticker"),
-            product_code=d.get("product_code"),
-            details=(
-                FuturesSnapshotDetails.from_dict(d.get("details", {}))
-                if d.get("details")
-                else None
-            ),
+            ticker=d.get("ticker") or details_dict.get("ticker"),
+            product_code=d.get("product_code") or details_dict.get("product_code"),
+            details=FuturesSnapshotDetails.from_dict(details_dict),
             last_minute=(
                 FuturesSnapshotMinute.from_dict(d.get("last_minute", {}))
                 if d.get("last_minute")

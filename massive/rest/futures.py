@@ -239,7 +239,6 @@ class FuturesClient(BaseClient):
         product_code_lt: Optional[str] = None,
         product_code_lte: Optional[str] = None,
         session_end_date: Optional[str] = None,
-        session_end_date_any_of: Optional[str] = None,
         session_end_date_gt: Optional[str] = None,
         session_end_date_gte: Optional[str] = None,
         session_end_date_lt: Optional[str] = None,
