@@ -923,6 +923,63 @@ class RiskFactorTaxonomy:
 
 
 @modelclass
+class Disclosure:
+    """
+    A single tagged disclosure within an SEC 8-K filing. A filing can produce
+    multiple disclosures, each classified into primary, secondary, and tertiary
+    categories with a supporting text excerpt.
+    """
+
+    accession_number: Optional[str] = None
+    cik: Optional[str] = None
+    filing_date: Optional[str] = None
+    filing_url: Optional[str] = None
+    primary_category: Optional[str] = None
+    secondary_category: Optional[str] = None
+    supporting_text: Optional[str] = None
+    tertiary_category: Optional[str] = None
+    tickers: Optional[List[str]] = None
+
+    @staticmethod
+    def from_dict(d):
+        return Disclosure(
+            accession_number=d.get("accession_number"),
+            cik=d.get("cik"),
+            filing_date=d.get("filing_date"),
+            filing_url=d.get("filing_url"),
+            primary_category=d.get("primary_category"),
+            secondary_category=d.get("secondary_category"),
+            supporting_text=d.get("supporting_text"),
+            tertiary_category=d.get("tertiary_category"),
+            tickers=d.get("tickers"),
+        )
+
+
+@modelclass
+class DisclosureTaxonomy:
+    """
+    A single 8-K disclosure classification, part of the complete list of
+    classifications used in the 8-K disclosures endpoint.
+    """
+
+    description: Optional[str] = None
+    primary_category: Optional[str] = None
+    secondary_category: Optional[str] = None
+    taxonomy: Optional[str] = None
+    tertiary_category: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d):
+        return DisclosureTaxonomy(
+            description=d.get("description"),
+            primary_category=d.get("primary_category"),
+            secondary_category=d.get("secondary_category"),
+            taxonomy=d.get("taxonomy"),
+            tertiary_category=d.get("tertiary_category"),
+        )
+
+
+@modelclass
 @dataclass
 class Filing13F:
     """SEC Form 13F filings data showing institutional investment manager holdings."""
