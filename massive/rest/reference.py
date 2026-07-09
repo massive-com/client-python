@@ -28,6 +28,8 @@ from .models import (
     ShortVolume,
     RiskFactor,
     RiskFactorTaxonomy,
+    Disclosure,
+    DisclosureTaxonomy,
     FilingSection,
     Filing8K,
     Filing13F,
@@ -858,6 +860,88 @@ class ContractsClient(BaseClient):
             params=self._get_params(self.list_stocks_taxonomies_risk_factors, locals()),
             result_key="results",
             deserializer=RiskFactorTaxonomy.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_stocks_filings_8k_disclosures(
+        self,
+        cik: Optional[str] = None,
+        cik_any_of: Optional[str] = None,
+        tickers: Optional[str] = None,
+        tickers_all_of: Optional[str] = None,
+        tickers_any_of: Optional[str] = None,
+        filing_date: Optional[Union[str, date]] = None,
+        filing_date_any_of: Optional[str] = None,
+        filing_date_gt: Optional[Union[str, date]] = None,
+        filing_date_gte: Optional[Union[str, date]] = None,
+        filing_date_lt: Optional[Union[str, date]] = None,
+        filing_date_lte: Optional[Union[str, date]] = None,
+        tertiary_category: Optional[str] = None,
+        limit: Optional[int] = 100,
+        sort: Optional[Union[str, Sort]] = "filing_date.desc",
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[Disclosure], HTTPResponse]:
+        """
+        SEC 8-K filing disclosure categorization. A single 8-K filing can produce
+        multiple rows when it covers multiple disclosure types, each classified into
+        primary, secondary, and tertiary categories with a supporting text excerpt.
+        The full classification list is available at /stocks/taxonomies/vX/disclosures.
+        """
+        url = "/stocks/filings/8-K/vX/disclosures"
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_filings_8k_disclosures, locals()),
+            result_key="results",
+            deserializer=Disclosure.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_stocks_taxonomies_disclosures(
+        self,
+        taxonomy: Optional[str] = None,
+        taxonomy_any_of: Optional[str] = None,
+        taxonomy_gt: Optional[str] = None,
+        taxonomy_gte: Optional[str] = None,
+        taxonomy_lt: Optional[str] = None,
+        taxonomy_lte: Optional[str] = None,
+        primary_category: Optional[str] = None,
+        primary_category_any_of: Optional[str] = None,
+        primary_category_gt: Optional[str] = None,
+        primary_category_gte: Optional[str] = None,
+        primary_category_lt: Optional[str] = None,
+        primary_category_lte: Optional[str] = None,
+        secondary_category: Optional[str] = None,
+        secondary_category_any_of: Optional[str] = None,
+        secondary_category_gt: Optional[str] = None,
+        secondary_category_gte: Optional[str] = None,
+        secondary_category_lt: Optional[str] = None,
+        secondary_category_lte: Optional[str] = None,
+        tertiary_category: Optional[str] = None,
+        tertiary_category_any_of: Optional[str] = None,
+        tertiary_category_gt: Optional[str] = None,
+        tertiary_category_gte: Optional[str] = None,
+        tertiary_category_lt: Optional[str] = None,
+        tertiary_category_lte: Optional[str] = None,
+        limit: Optional[int] = 200,
+        sort: Optional[Union[str, Sort]] = "taxonomy.desc",
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[DisclosureTaxonomy], HTTPResponse]:
+        """
+        The complete list of 8-K disclosure classifications used in the 8-K
+        disclosures endpoint.
+        """
+        url = "/stocks/taxonomies/vX/disclosures"
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_taxonomies_disclosures, locals()),
+            result_key="results",
+            deserializer=DisclosureTaxonomy.from_dict,
             raw=raw,
             options=options,
         )
