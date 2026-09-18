@@ -5,13 +5,13 @@ import logging
 import json
 import asyncio
 import ssl
-import certifi
 from .models import *
 from websockets.asyncio.client import connect, ClientConnection
 from websockets.exceptions import ConnectionClosedOK, ConnectionClosedError
 from ..logging import get_logger
 import logging
 from ..exceptions import AuthError
+from ..rest.base import _default_ca_bundle
 
 env_key = "MASSIVE_API_KEY"
 logger = get_logger("WebSocketClient")
@@ -98,7 +98,7 @@ class WebSocketClient:
         ssl_context = None
         if self.url.startswith("wss://"):
             ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-            ssl_context.load_verify_locations(certifi.where())
+            ssl_context.load_verify_locations(_default_ca_bundle())
 
         last_exc = None
         async for s in connect(

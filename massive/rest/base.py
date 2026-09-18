@@ -1,5 +1,6 @@
 import certifi
 import json
+import os
 import urllib3
 import inspect
 from urllib3.util.retry import Retry
@@ -19,6 +20,14 @@ try:
     version_number = version("massive-api-client")
 except PackageNotFoundError:
     pass
+
+
+def _default_ca_bundle() -> str:
+    for env_var in ("SSL_CERT_FILE", "REQUESTS_CA_BUNDLE"):
+        bundle = os.environ.get(env_var)
+        if bundle:
+            return bundle
+    return certifi.where()
 
 
 class BaseClient:
@@ -76,7 +85,7 @@ class BaseClient:
         self.client = urllib3.PoolManager(
             num_pools=num_pools,
             headers=self.headers,  # default headers sent with each request.
-            ca_certs=certifi.where(),
+            ca_certs=_default_ca_bundle(),
             cert_reqs="CERT_REQUIRED",
             retries=retry_strategy,  # use the customized Retry instance
             timeout=self.timeout,  # set timeout for each request
