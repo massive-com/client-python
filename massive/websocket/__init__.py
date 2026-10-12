@@ -5,10 +5,10 @@ import logging
 import json
 import asyncio
 import ssl
-import certifi
 from .models import *
 from websockets.asyncio.client import connect, ClientConnection
 from websockets.exceptions import ConnectionClosedOK, ConnectionClosedError
+from ..certs import ca_bundle_path
 from ..logging import get_logger
 import logging
 from ..exceptions import AuthError
@@ -75,6 +75,14 @@ class WebSocketClient:
         else:
             self.json = json
 
+    def _ssl_context(self) -> Optional[ssl.SSLContext]:
+        # darwin needs some extra <3
+        if not self.url.startswith("wss://"):
+            return None
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        context.load_verify_locations(ca_bundle_path())
+        return context
+
     # https://websockets.readthedocs.io/en/stable/reference/client.html#opening-a-connection
     async def connect(
         self,
@@ -94,11 +102,7 @@ class WebSocketClient:
         """
         reconnects = 0
         logger.debug("connect: %s", self.url)
-        # darwin needs some extra <3
-        ssl_context = None
-        if self.url.startswith("wss://"):
-            ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-            ssl_context.load_verify_locations(certifi.where())
+        ssl_context = self._ssl_context()
 
         last_exc = None
         async for s in connect(

@@ -1,4 +1,3 @@
-import certifi
 import json
 import urllib3
 import inspect
@@ -8,6 +7,7 @@ from typing import Optional, Any, Dict
 from datetime import datetime
 from importlib.metadata import version, PackageNotFoundError
 from .models.request import RequestOptionBuilder
+from ..certs import ca_bundle_path
 from ..logging import get_logger
 import logging
 from urllib.parse import urlencode, urlparse
@@ -76,7 +76,7 @@ class BaseClient:
         self.client = urllib3.PoolManager(
             num_pools=num_pools,
             headers=self.headers,  # default headers sent with each request.
-            ca_certs=certifi.where(),
+            ca_certs=ca_bundle_path(),
             cert_reqs="CERT_REQUIRED",
             retries=retry_strategy,  # use the customized Retry instance
             timeout=self.timeout,  # set timeout for each request
