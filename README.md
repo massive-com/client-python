@@ -23,6 +23,13 @@ To get started, please see the [Getting Started](https://massive.com/docs/stocks
 
 The free tier of our API comes with usage limitations, potentially leading to rate limit errors if these are exceeded. For uninterrupted access and to support larger data requirements, we recommend reviewing our [subscription plans](https://massive.com/pricing), which are tailored for a wide range of needs from development to high-demand applications. Refer to our pricing page for detailed information on limits and features to ensure a seamless experience, especially for real-time data processing.
 
+## AI tools
+
+Coding with Claude, Cursor, ChatGPT, or another AI assistant? Give it direct access to Massive data and docs:
+
+- **MCP server**: connect your MCP client to the hosted server at `https://mcp.massive.com/`. See the [AI Tools quickstart](https://massive.com/docs/ai-tools/quickstart) for setup in each client.
+- **llms.txt**: point your agent at [`https://massive.com/docs/llms.txt`](https://massive.com/docs/llms.txt) for an LLM-friendly index of the Massive docs.
+
 ## REST API Client
 Import the RESTClient.
 ```python
@@ -190,6 +197,8 @@ We will respond to issues within at most 3 weeks.
 We're also open to volunteers if you want to submit a PR for any open issues but
 please discuss it with us beforehand. PRs that aren't linked to an existing issue or
 discussed with us ahead of time will generally be declined.
+
+If you use an AI coding agent to work on this repo, it should read [AGENTS.md](./AGENTS.md), which covers the project layout, build and test commands, and which files are generated.
 
 ### Development
 
