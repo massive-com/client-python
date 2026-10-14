@@ -60,6 +60,7 @@ class RESTClient(
         verbose: bool = False,
         trace: bool = False,
         custom_json: Optional[Any] = None,
+        raise_on_decode_error: bool = False,
     ):
         super().__init__(
             api_key=api_key,
@@ -72,6 +73,7 @@ class RESTClient(
             verbose=verbose,
             trace=trace,
             custom_json=custom_json,
+            raise_on_decode_error=raise_on_decode_error,
         )
         self.vx = VXClient(
             api_key=api_key,
@@ -84,4 +86,5 @@ class RESTClient(
             verbose=verbose,
             trace=trace,
             custom_json=custom_json,
+            raise_on_decode_error=raise_on_decode_error,
         )

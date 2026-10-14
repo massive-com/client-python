@@ -11,7 +11,7 @@ from .models.request import RequestOptionBuilder
 from ..logging import get_logger
 import logging
 from urllib.parse import urlencode, urlparse
-from ..exceptions import AuthError, BadResponse
+from ..exceptions import AuthError, BadResponse, ResponseDecodeError
 
 logger = get_logger("RESTClient")
 version_number = "unknown"
@@ -34,6 +34,7 @@ class BaseClient:
         verbose: bool,
         trace: bool,
         custom_json: Optional[Any] = None,
+        raise_on_decode_error: bool = False,
     ):
         if api_key is None:
             raise AuthError(
@@ -43,6 +44,7 @@ class BaseClient:
         self.API_KEY = api_key
         self.BASE = base
         self.pagination = pagination
+        self.raise_on_decode_error = raise_on_decode_error
 
         self.headers = {
             "Authorization": "Bearer " + self.API_KEY,
@@ -140,6 +142,10 @@ class BaseClient:
         try:
             obj = self._decode(resp)
         except ValueError as e:
+            if self.raise_on_decode_error:
+                raise ResponseDecodeError(
+                    f"Could not decode response body from {full_url}: {e}"
+                ) from e
             logger.error("Error decoding json response: %s", e)
             return []
 
@@ -226,6 +232,10 @@ class BaseClient:
             try:
                 decoded = self._decode(resp)
             except ValueError as e:
+                if self.raise_on_decode_error:
+                    raise ResponseDecodeError(
+                        f"Could not decode response body from {path}: {e}"
+                    ) from e
                 logger.error("Error decoding json response: %s", e)
                 return []
 
