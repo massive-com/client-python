@@ -29,6 +29,7 @@ Coding with Claude, Cursor, ChatGPT, or another AI assistant? Give it direct acc
 
 - **MCP server**: connect your MCP client to the hosted server at `https://mcp.massive.com/`. See the [AI Tools quickstart](https://massive.com/docs/ai-tools/quickstart) for setup in each client.
 - **llms.txt**: point your agent at [`https://massive.com/docs/llms.txt`](https://massive.com/docs/llms.txt) for an LLM-friendly index of the Massive docs.
+- **Skills plugin**: install the Massive plugin from [massive-com/ai](https://github.com/massive-com/ai) to teach your assistant how to use the API correctly: hosts, auth, entitlements, and accurate historical data. In Claude Code, run `/plugin marketplace add massive-com/ai`, then `/plugin install massive@massive-plugins`.
 
 ## REST API Client
 Import the RESTClient.
