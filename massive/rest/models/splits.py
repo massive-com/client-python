@@ -5,6 +5,7 @@ from ...modelclass import modelclass
 @modelclass
 class Split:
     "Split contains data for a historical stock split, including the ticker symbol, the execution date, and the factors of the split ratio."
+
     id: Optional[int] = None
     execution_date: Optional[str] = None
     split_from: Optional[int] = None

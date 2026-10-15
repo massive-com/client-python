@@ -1,8 +1,8 @@
 """
 This script computes and visualizes the correlation matrix of a selected set of
 stocks using Massive's API. This script is for educational purposes only and is
-not intended to provide investment advice. The examples provided analyze the 
-correlation between different stocks from diverse sectors, as well as within 
+not intended to provide investment advice. The examples provided analyze the
+correlation between different stocks from diverse sectors, as well as within
 specific sectors.
 
 Blog: https://massive.com/blog/finding-correlation-between-stocks/
@@ -10,7 +10,7 @@ Video: https://www.youtube.com/watch?v=q0TgaUGWPFc
 
 Before running this script, there are 4 prerequisites:
 
-1) Dependencies: Ensure that the following Python libraries are installed in 
+1) Dependencies: Ensure that the following Python libraries are installed in
    your environment:
    - pandas
    - numpy
@@ -21,8 +21,8 @@ Before running this script, there are 4 prerequisites:
    You can likely run:
    pip install pandas numpy seaborn matplotlib massive-api-client
 
-2) API Key: You will need a Massive API key to fetch the stock data. This can 
-   be set manually in the script below, or you can set an environment variable 
+2) API Key: You will need a Massive API key to fetch the stock data. This can
+   be set manually in the script below, or you can set an environment variable
    'MASSIVE_API_KEY'.
 
    setx MASSIVE_API_KEY "<your_api_key>"   <- windows
@@ -31,13 +31,13 @@ Before running this script, there are 4 prerequisites:
 3) Select Stocks: You need to select the stocks you're interested in analyzing.
    Update the 'symbols' variable in this script with your chosen stock symbols.
 
-4) Select Date Range: You need to specify the date range for the historical 
-   data that you want to fetch. Update the 'start_date' and 'end_date' 
+4) Select Date Range: You need to specify the date range for the historical
+   data that you want to fetch. Update the 'start_date' and 'end_date'
    variables in this script accordingly.
 
 Understanding stock correlation is important when building a diverse portfolio,
-as it can help manage risk and inform investment strategies. It's always 
-essential to do your own research or consult a financial advisor for 
+as it can help manage risk and inform investment strategies. It's always
+essential to do your own research or consult a financial advisor for
 personalized advice when investing.
 """
 

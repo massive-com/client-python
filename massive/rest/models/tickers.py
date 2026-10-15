@@ -5,6 +5,7 @@ from ...modelclass import modelclass
 @modelclass
 class CompanyAddress:
     "Contains address data for a ticker detail."
+
     address1: Optional[str] = None
     address2: Optional[str] = None
     city: Optional[str] = None
@@ -20,6 +21,7 @@ class CompanyAddress:
 @modelclass
 class Branding:
     "Contains branding data for a ticker detail."
+
     icon_url: Optional[str] = None
     logo_url: Optional[str] = None
     accent_color: Optional[str] = None
@@ -34,6 +36,7 @@ class Branding:
 @modelclass
 class Insight:
     "Contains the insights related to the article."
+
     sentiment: Optional[str] = None
     sentiment_reasoning: Optional[str] = None
     ticker: Optional[str] = None
@@ -46,6 +49,7 @@ class Insight:
 @modelclass
 class Publisher:
     "Contains publisher data for ticker news."
+
     favicon_url: Optional[str] = None
     homepage_url: Optional[str] = None
     logo_url: Optional[str] = None
@@ -59,6 +63,7 @@ class Publisher:
 @modelclass
 class Ticker:
     "Ticker contains data for a specified ticker symbol."
+
     active: Optional[bool] = None
     cik: Optional[str] = None
     composite_figi: Optional[str] = None
@@ -85,6 +90,7 @@ class Ticker:
 @modelclass
 class TickerDetails:
     "TickerDetails contains data for a specified ticker symbol."
+
     active: Optional[bool] = None
     address: Optional[CompanyAddress] = None
     branding: Optional[Branding] = None
@@ -157,6 +163,7 @@ class TickerDetails:
 @modelclass
 class TickerNews:
     "TickerDetails contains data for news articles relating to a stock ticker symbol."
+
     amp_url: Optional[str] = None
     article_url: Optional[str] = None
     author: Optional[str] = None
@@ -197,6 +204,7 @@ class TickerNews:
 @modelclass
 class TickerTypes:
     "TickerTypes contains data for ticker types."
+
     asset_class: Optional[str] = None
     code: Optional[str] = None
     description: Optional[str] = None

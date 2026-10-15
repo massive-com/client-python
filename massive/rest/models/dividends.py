@@ -5,6 +5,7 @@ from ...modelclass import modelclass
 @modelclass
 class Dividend:
     "Dividend contains data for a historical cash dividend, including the ticker symbol, declaration date, ex-dividend date, record date, pay date, frequency, and amount."
+
     id: Optional[int] = None
     cash_amount: Optional[float] = None
     currency: Optional[str] = None
