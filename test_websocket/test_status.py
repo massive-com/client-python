@@ -1,4 +1,5 @@
 from massive import WebSocketClient
+from massive.websocket import logger
 from base_ws import BaseTest
 from mock_server import port
 from websockets.asyncio.client import connect
@@ -57,5 +58,8 @@ class StatusTest(BaseTest):
         )
 
     async def test_success_statuses_are_not_logged(self):
-        with self.assertNoLogs("WebSocketClient", level="WARNING"):
+        # assertNoLogs needs Python 3.10, so log a sentinel and check it's the only line
+        with self.assertLogs("WebSocketClient", level="WARNING") as logs:
             await self.run_client("T.AAPL")
+            logger.warning("sentinel")
+        self.assertEqual(logs.output, ["WARNING:WebSocketClient:sentinel"])
