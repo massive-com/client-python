@@ -20,6 +20,21 @@ async def mock_server(websocket):
             )
         elif message["action"] == "subscribe":
             for p in message["params"].split(","):
+                if p.startswith("ERR."):
+                    # emulate the server rejecting a subscription
+                    await websocket.send(
+                        json.dumps(
+                            [
+                                {
+                                    "ev": "status",
+                                    "status": "error",
+                                    "message": "Subscription limit reached for feed.",
+                                }
+                            ]
+                            * 2
+                        )
+                    )
+                    continue
                 subs.add(p)
                 await websocket.send(
                     json.dumps(
