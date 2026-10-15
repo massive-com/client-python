@@ -60,6 +60,16 @@ Get crypto L2 book snapshot
 
 .. automethod:: massive.RESTClient.get_snapshot_crypto_book
 
+=================================
+Get indices snapshot
+=================================
+
+- `Indices snapshot`_
+
+.. automethod:: massive.RESTClient.list_snapshot_indices
+
+.. automethod:: massive.RESTClient.get_snapshot_indices
+
 .. _Stocks snapshot all tickers: https://massive.com/docs/stocks/get_v3_snapshot
 .. _Options snapshot all tickers: https://massive.com/docs/options/get_v3_snapshot
 .. _Forex snapshot all tickers: https://massive.com/docs/forex/get_v3_snapshot
@@ -76,3 +86,4 @@ Get crypto L2 book snapshot
 .. _Crypto snapshot ticker: https://massive.com/docs/crypto/get_v2_snapshot_locale_global_markets_crypto_tickers__ticker
 .. _Options snapshot option contract: https://massive.com/docs/options/get_v3_snapshot_options__underlyingasset___optioncontract
 .. _Crypto snapshot ticker full book (L2): https://massive.com/docs/crypto/get_v2_snapshot_locale_global_markets_crypto_tickers__ticker__book
+.. _Indices snapshot: https://massive.com/docs/indices/get_v3_snapshot_indices

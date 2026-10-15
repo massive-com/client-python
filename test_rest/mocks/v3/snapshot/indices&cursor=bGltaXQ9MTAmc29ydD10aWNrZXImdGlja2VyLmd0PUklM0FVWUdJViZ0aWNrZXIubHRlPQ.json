@@ -1,0 +1,42 @@
+{
+  "results": [
+    {
+      "value": 28.685000000000002,
+      "last_updated": 1792081393146000000,
+      "timeframe": "REAL-TIME",
+      "name": "PROSHARES ULTRA BASIC MATERIALS ETF",
+      "ticker": "I:UYMIV",
+      "market_status": "regular_trading",
+      "type": "indices",
+      "session": {
+        "change": 0.924,
+        "change_percent": 3.328,
+        "close": 28.6859,
+        "high": 29.0102,
+        "low": 27.8834,
+        "open": 27.8855,
+        "previous_close": 27.761200000000002
+      }
+    },
+    {
+      "value": 19.25,
+      "last_updated": 1792008000219000000,
+      "timeframe": "REAL-TIME",
+      "name": "Cboe VIX Jan Futures 4pm EST Mark Index",
+      "ticker": "I:UZF",
+      "market_status": "regular_trading",
+      "type": "indices",
+      "session": {
+        "change": 0,
+        "change_percent": 0,
+        "close": 19.25,
+        "high": 19.25,
+        "low": 19.25,
+        "open": 19.25,
+        "previous_close": 19.25
+      }
+    }
+  ],
+  "status": "OK",
+  "request_id": "0ade2056b75a64c1bbf1fe9fca8f20ed"
+}
