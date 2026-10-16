@@ -244,6 +244,17 @@ class SnapshotClient(BaseClient):
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
     ) -> Union[List[IndicesSnapshot], HTTPResponse]:
+        """
+        Get snapshots for indices. Returns a single page of results; use
+        list_snapshot_indices to paginate through all of them.
+        - https://massive.com/docs/indices/get_v3_snapshot_indices
+
+        :param ticker_any_of: Comma-separated list of tickers, up to a maximum of 250.
+        :param params: Any additional query params
+        :param raw: returns the raw HTTP response if true, else the response is deserialized into a structured object
+        :param options: request options
+        :return: list of IndicesSnapshot
+        """
         url = f"/v3/snapshot/indices"
 
         return self._get(
@@ -252,5 +263,49 @@ class SnapshotClient(BaseClient):
             deserializer=IndicesSnapshot.from_dict,
             raw=raw,
             result_key="results",
+            options=options,
+        )
+
+    def list_snapshot_indices(
+        self,
+        ticker: Optional[str] = None,
+        ticker_any_of: Optional[Union[str, List[str]]] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        order: Optional[Union[str, Order]] = None,
+        limit: Optional[int] = None,
+        sort: Optional[str] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[IndicesSnapshot], HTTPResponse]:
+        """
+        Get snapshots for indices, following pagination.
+        - https://massive.com/docs/indices/get_v3_snapshot_indices
+
+        :param ticker: A single index ticker, e.g. I:SPX.
+        :param ticker_any_of: Comma-separated list of tickers, up to a maximum of 250. If no tickers are passed then all
+            results will be returned in a paginated manner.
+        :param ticker_lt: search for tickers less than
+        :param ticker_lte: search for tickers less than or equal to
+        :param ticker_gt: search for tickers greater than
+        :param ticker_gte: search for tickers greater than or equal to
+        :param order: Order results based on the sort field.
+        :param limit: Limit the size of the response per-page, max is 250.
+        :param sort: Sort field used for ordering. Default is ticker.
+        :param params: Any additional query params
+        :param raw: returns the raw HTTP response if true, else the response is deserialized into a structured object
+        :param options: request options
+        :return: iterator of IndicesSnapshot
+        """
+        url = f"/v3/snapshot/indices"
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_snapshot_indices, locals()),
+            result_key="results",
+            deserializer=IndicesSnapshot.from_dict,
+            raw=raw,
             options=options,
         )

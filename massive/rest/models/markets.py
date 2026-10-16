@@ -5,6 +5,7 @@ from ...modelclass import modelclass
 @modelclass
 class MarketCurrencies:
     "Contains currency market status data."
+
     crypto: Optional[str] = None
     fx: Optional[str] = None
 
@@ -16,6 +17,7 @@ class MarketCurrencies:
 @modelclass
 class MarketExchanges:
     "Contains exchange market status data."
+
     nasdaq: Optional[str] = None
     nyse: Optional[str] = None
     otc: Optional[str] = None
@@ -28,6 +30,7 @@ class MarketExchanges:
 @modelclass
 class MarketIndices:
     "Contains indices market status data."
+
     s_and_p: Optional[str] = None
     societe_generale: Optional[str] = None
     cgi: Optional[str] = None
@@ -47,6 +50,7 @@ class MarketIndices:
 @modelclass
 class MarketHoliday:
     "MarketHoliday contains data for upcoming market holidays and their open/close times."
+
     close: Optional[str] = None
     date: Optional[str] = None
     exchange: Optional[str] = None
@@ -62,6 +66,7 @@ class MarketHoliday:
 @modelclass
 class MarketStatus:
     "MarketStatus contains data for the current trading status of the exchanges and overall financial markets."
+
     after_hours: Optional[bool] = None
     currencies: Optional[MarketCurrencies] = None
     early_hours: Optional[bool] = None

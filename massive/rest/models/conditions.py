@@ -5,6 +5,7 @@ from ...modelclass import modelclass
 @modelclass
 class SipMapping:
     "Contains data for a mapping to a symbol for each SIP that has a given condition."
+
     CTA: Optional[str] = None
     OPRA: Optional[str] = None
     UTP: Optional[str] = None
@@ -17,6 +18,7 @@ class SipMapping:
 @modelclass
 class Consolidated:
     "Contains data for aggregation rules on a consolidated (all exchanges) basis."
+
     updates_high_low: Optional[bool] = None
     updates_open_close: Optional[bool] = None
     updates_volume: Optional[bool] = None
@@ -29,6 +31,7 @@ class Consolidated:
 @modelclass
 class MarketCenter:
     "Contains data for aggregation rules on a per-market-center basis."
+
     updates_high_low: Optional[bool] = None
     updates_open_close: Optional[bool] = None
     updates_volume: Optional[bool] = None
@@ -41,6 +44,7 @@ class MarketCenter:
 @modelclass
 class UpdateRules:
     "Contains data for a list of aggregation rules."
+
     consolidated: Optional[Consolidated] = None
     market_center: Optional[MarketCenter] = None
 
@@ -63,6 +67,7 @@ class UpdateRules:
 @modelclass
 class Condition:
     "Condition contains data for a condition that Massive.com uses."
+
     abbreviation: Optional[str] = None
     asset_class: Optional[str] = None
     data_types: Optional[List[str]] = None

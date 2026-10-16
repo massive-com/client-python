@@ -5,6 +5,7 @@ from ...modelclass import modelclass
 @modelclass
 class Exchange:
     "Exchange contains data for a condition that Massive.com uses."
+
     acronym: Optional[str] = None
     asset_class: Optional[str] = None
     id: Optional[int] = None
