@@ -7,10 +7,10 @@ import json
 import asyncio
 import ssl
 import time
-import certifi
 from .models import *
 from websockets.asyncio.client import connect, ClientConnection
 from websockets.exceptions import ConnectionClosedOK, ConnectionClosedError
+from ..certs import ca_bundle_path
 from ..logging import get_logger
 import logging
 from ..exceptions import AuthError
@@ -35,6 +35,7 @@ class WebSocketClient:
         max_reconnects: Optional[int] = 5,
         secure: bool = True,
         custom_json: Optional[Any] = None,
+        ca_certs: Optional[str] = None,
         **kwargs,
     ):
         """
@@ -47,6 +48,7 @@ class WebSocketClient:
         :param subscriptions: List of subscription parameters.
         :param max_reconnects: How many times to reconnect on network outage before ending .connect event loop.
         :param custom_json: Optional module exposing loads/dumps functions (similar to Python's json module) to be used for JSON conversions.
+        :param ca_certs: Path to a CA bundle to verify TLS with. Defaults to the SSL_CERT_FILE or REQUESTS_CA_BUNDLE environment variable, then certifi.
         :return: A client.
         """
         if api_key is None:
@@ -78,6 +80,7 @@ class WebSocketClient:
         self.schedule_resub = True
         self._server_errors: Counter = Counter()
         self._server_errors_since = 0.0
+        self.ca_certs = ca_certs
         if custom_json:
             self.json = custom_json
         else:
@@ -102,11 +105,7 @@ class WebSocketClient:
         """
         reconnects = 0
         logger.debug("connect: %s", self.url)
-        # darwin needs some extra <3
-        ssl_context = None
-        if self.url.startswith("wss://"):
-            ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-            ssl_context.load_verify_locations(certifi.where())
+        ssl_context = self._ssl_context()
 
         last_exc = None
         async for s in connect(
@@ -189,6 +188,14 @@ class WebSocketClient:
             and reconnects > self.max_reconnects
         ):
             raise last_exc
+
+    def _ssl_context(self) -> Optional[ssl.SSLContext]:
+        # darwin needs some extra <3
+        if not self.url.startswith("wss://"):
+            return None
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        context.load_verify_locations(self.ca_certs or ca_bundle_path(logger))
+        return context
 
     def run(
         self,

@@ -1,4 +1,3 @@
-import certifi
 import json
 import urllib3
 import inspect
@@ -8,6 +7,7 @@ from typing import Optional, Any, Dict
 from datetime import datetime
 from importlib.metadata import version, PackageNotFoundError
 from .models.request import RequestOptionBuilder
+from ..certs import ca_bundle_path
 from ..logging import get_logger
 import logging
 from urllib.parse import urlencode, urlparse
@@ -34,6 +34,10 @@ class BaseClient:
         verbose: bool,
         trace: bool,
         custom_json: Optional[Any] = None,
+        maxsize: int = 10,
+        ca_certs: Optional[str] = None,
+        proxy: Optional[str] = None,
+        connection_pool_kw: Optional[Dict[str, Any]] = None,
     ):
         if api_key is None:
             raise AuthError(
@@ -73,14 +77,30 @@ class BaseClient:
 
         # https://urllib3.readthedocs.io/en/stable/reference/urllib3.poolmanager.html
         # https://urllib3.readthedocs.io/en/stable/reference/urllib3.connectionpool.html#urllib3.HTTPConnectionPool
-        self.client = urllib3.PoolManager(
-            num_pools=num_pools,
-            headers=self.headers,  # default headers sent with each request.
-            ca_certs=certifi.where(),
-            cert_reqs="CERT_REQUIRED",
-            retries=retry_strategy,  # use the customized Retry instance
-            timeout=self.timeout,  # set timeout for each request
-        )
+        pool_kw: Dict[str, Any] = {
+            "num_pools": num_pools,
+            # connections kept per host; urllib3 defaults to 1, which makes threaded
+            # clients reconnect (and redo the TLS handshake) for most requests
+            "maxsize": maxsize,
+            "headers": self.headers,  # default headers sent with each request.
+            "ca_certs": ca_certs or ca_bundle_path(logger),
+            "cert_reqs": "CERT_REQUIRED",
+            "retries": retry_strategy,  # use the customized Retry instance
+            "timeout": self.timeout,  # set timeout for each request
+        }
+        # any other urllib3 pool options, which take precedence over the defaults
+        pool_kw.update(connection_pool_kw or {})
+        self.client: urllib3.PoolManager
+        if proxy:
+            # https://urllib3.readthedocs.io/en/stable/advanced-usage.html#proxies
+            proxy_auth = urllib3.util.parse_url(proxy).auth
+            if proxy_auth:
+                pool_kw.setdefault(
+                    "proxy_headers", urllib3.make_headers(proxy_basic_auth=proxy_auth)
+                )
+            self.client = urllib3.ProxyManager(proxy, **pool_kw)
+        else:
+            self.client = urllib3.PoolManager(**pool_kw)
 
         if verbose:
             logger.setLevel(logging.DEBUG)

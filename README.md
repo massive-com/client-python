@@ -135,6 +135,99 @@ print(len(options_chain))
 
 Also, please refer to the API documentation to get a full understanding of how the API works and the supported arguments. All required arguments are annotated with red asterisks " * " and argument examples are set.
 
+## Network Configuration
+
+Options for corporate networks, proxies, and multithreaded use. They apply to both `RESTClient` and `WebSocketClient` unless noted.
+
+### Custom CA certificates (`certificate verify failed`)
+
+If you're behind a corporate firewall that inspects TLS traffic, requests can fail with `SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed`. Point the client at your company's CA bundle.
+
+**With environment variables (no code changes):**
+
+```bash
+export SSL_CERT_FILE=/path/to/corporate-ca-bundle.pem
+# or, if you already set this for the requests library:
+export REQUESTS_CA_BUNDLE=/path/to/corporate-ca-bundle.pem
+```
+
+**In code:**
+
+```python
+from massive import RESTClient, WebSocketClient
+
+client = RESTClient(ca_certs="/path/to/corporate-ca-bundle.pem")
+ws_client = WebSocketClient(ca_certs="/path/to/corporate-ca-bundle.pem")
+```
+
+The client uses the first one it finds: `ca_certs`, then `SSL_CERT_FILE`, then `REQUESTS_CA_BUNDLE`, then the bundled [certifi](https://pypi.org/project/certifi/) certificates. If an environment variable points to a file that doesn't exist, it's skipped and a warning is logged.
+
+The bundle replaces certifi, so it must also include the public root certificates. If you only have your company's root certificate, add it to certifi's bundle:
+
+```bash
+cat "$(python -m certifi)" corporate-root.pem > corporate-ca-bundle.pem
+```
+
+### Proxies
+
+**REST:** pass the proxy URL. `RESTClient` doesn't read `HTTPS_PROXY` on its own, so existing setups keep connecting the same way.
+
+```python
+import os
+from massive import RESTClient
+
+client = RESTClient(proxy="http://proxy.example.com:8080")
+
+# with a username and password
+client = RESTClient(proxy="http://user:password@proxy.example.com:8080")
+
+# use the proxy from your environment, like the requests library does
+client = RESTClient(proxy=os.environ.get("HTTPS_PROXY"))
+```
+
+**WebSocket:** `WebSocketClient` already uses the proxy from `HTTPS_PROXY` / `HTTP_PROXY` (and respects `NO_PROXY`). To set one explicitly, or to turn it off, pass `proxy` to `run()` or `connect()`:
+
+```python
+ws_client = WebSocketClient(subscriptions=["T.AAPL"])
+ws_client.run(handle_msg, proxy="http://user:password@proxy.example.com:8080")
+# ws_client.run(handle_msg, proxy=None)  # connect directly, ignoring HTTPS_PROXY
+```
+
+**Behind a proxy that inspects TLS**, you'll usually need both:
+
+```python
+client = RESTClient(
+    proxy="http://proxy.example.com:8080",
+    ca_certs="/path/to/corporate-ca-bundle.pem",
+)
+```
+
+### Using the REST client from multiple threads
+
+`RESTClient` can be shared across threads. It keeps up to `maxsize` connections (default 10) open for reuse, so set it to at least the number of threads making requests at the same time. Otherwise, extra threads open new connections and redo the TLS handshake on most requests.
+
+```python
+from concurrent.futures import ThreadPoolExecutor
+from massive import RESTClient
+
+client = RESTClient(maxsize=20)
+tickers = ["AAPL", "MSFT", "NVDA", "AMZN"]
+
+with ThreadPoolExecutor(max_workers=20) as pool:
+    results = list(pool.map(lambda t: client.get_previous_close_agg(t), tickers))
+```
+
+Note that `num_pools` doesn't help here: it's the number of different *hosts* the client keeps connections for, and the client only talks to one.
+
+### Other connection options
+
+Any other [urllib3 pool option](https://urllib3.readthedocs.io/en/stable/reference/urllib3.connectionpool.html#urllib3.HTTPConnectionPool) can be passed with `connection_pool_kw`. These take precedence over the client's defaults, so avoid overriding `headers`, which carries your API key.
+
+```python
+# wait for a free connection instead of opening extra ones beyond maxsize
+client = RESTClient(maxsize=4, connection_pool_kw={"block": True})
+```
+
 ## Debugging with RESTClient
 
 Sometimes you may find it useful to see the actual request and response details while working with the API. The `RESTClient` allows for this through its `trace=True` option.

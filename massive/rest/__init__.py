@@ -20,7 +20,9 @@ from .reference import (
     ContractsClient,
 )
 from .vX import VXClient
-from typing import Optional, Any
+from .base import logger
+from ..certs import ca_bundle_path
+from typing import Optional, Any, Dict
 import os
 
 BASE = "https://api.massive.com"
@@ -60,7 +62,22 @@ class RESTClient(
         verbose: bool = False,
         trace: bool = False,
         custom_json: Optional[Any] = None,
+        maxsize: int = 10,
+        ca_certs: Optional[str] = None,
+        proxy: Optional[str] = None,
+        connection_pool_kw: Optional[Dict[str, Any]] = None,
     ):
+        """
+        :param maxsize: Connections kept open per host, for reuse across threads.
+        :param ca_certs: Path to a CA bundle to verify TLS with. Defaults to the
+            SSL_CERT_FILE or REQUESTS_CA_BUNDLE environment variable, then certifi.
+        :param proxy: Proxy URL to send requests through, e.g. "http://user:pass@proxy:8080".
+            Environment proxy variables (HTTPS_PROXY etc.) are not used.
+        :param connection_pool_kw: Other urllib3 PoolManager options. They override
+            the client's defaults.
+        """
+        # resolve once, so the main and vx clients share it and warn only once
+        ca_certs = ca_certs or ca_bundle_path(logger)
         super().__init__(
             api_key=api_key,
             connect_timeout=connect_timeout,
@@ -72,6 +89,10 @@ class RESTClient(
             verbose=verbose,
             trace=trace,
             custom_json=custom_json,
+            maxsize=maxsize,
+            ca_certs=ca_certs,
+            proxy=proxy,
+            connection_pool_kw=connection_pool_kw,
         )
         self.vx = VXClient(
             api_key=api_key,
@@ -84,4 +105,8 @@ class RESTClient(
             verbose=verbose,
             trace=trace,
             custom_json=custom_json,
+            maxsize=maxsize,
+            ca_certs=ca_certs,
+            proxy=proxy,
+            connection_pool_kw=connection_pool_kw,
         )
