@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11']
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} Unit test ${{ matrix.python-version }}
     steps:

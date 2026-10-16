@@ -7,7 +7,7 @@ Unlike the Go, JS, and JVM clients, this SDK is **hand-written**. No code is gen
 ## Essential commands
 
 ```bash
-poetry install         # Install dependencies (Python 3.9+)
+poetry install         # Install dependencies (Python 3.10+)
 make test              # Run REST and WebSocket tests
 make test_rest         # REST tests only
 make lint              # black --check + mypy (what CI runs)
@@ -57,7 +57,7 @@ The OpenAPI spec at https://api.massive.com/openapi is the source of truth for p
 
 ## Conventions
 
-- Keep Python 3.9 compatibility: use `typing.Optional`, `Union`, `List`, `Dict`, not `X | Y`.
+- Keep Python 3.10 compatibility, and match the existing style: `typing.Optional`, `Union`, `List`, `Dict`, not `X | Y`.
 - Format with black (defaults). Code must pass mypy.
 - Don't break public APIs. When an endpoint gets a new version, keep the old method and add a versioned one (e.g. `list_trades_v4`). Adding model fields is always fine. `client.vx` is experimental.
 - API keys come from the `MASSIVE_API_KEY` env var. Never hardcode a key in code, tests, or examples.
