@@ -6,6 +6,7 @@ from .aggs import Agg
 @modelclass
 class IndicatorValue:
     "Contains one datum for indicators with a single value."
+
     timestamp: Optional[int] = None
     value: Optional[float] = None
 
@@ -20,6 +21,7 @@ class IndicatorValue:
 @modelclass
 class MACDIndicatorValue:
     "Contains one datum for all MACD values."
+
     timestamp: Optional[int] = None
     value: Optional[float] = None
     signal: Optional[float] = None
@@ -38,6 +40,7 @@ class MACDIndicatorValue:
 @modelclass
 class IndicatorUnderlying:
     "Contains the URL to call to get the aggs used for building the indicator."
+
     url: Optional[str] = None
     aggregates: Optional[List[Agg]] = None
 
@@ -52,6 +55,7 @@ class IndicatorUnderlying:
 @modelclass
 class SingleIndicatorResults:
     "Contains indicator values and Underlying."
+
     values: Optional[List[IndicatorValue]] = None
     underlying: Optional[IndicatorUnderlying] = None
 
@@ -71,6 +75,7 @@ RSIIndicatorResults = SingleIndicatorResults
 @modelclass
 class MACDIndicatorResults:
     "Contains indicator values and Underlying."
+
     values: Optional[List[MACDIndicatorValue]] = None
     underlying: Optional[IndicatorUnderlying] = None
 

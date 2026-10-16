@@ -6,6 +6,7 @@ from .tickers import Branding
 @modelclass
 class Session:
     "Contains Session data for the summaries endpoint."
+
     change: Optional[float] = None
     change_percent: Optional[float] = None
     early_trading_change: Optional[float] = None
@@ -27,6 +28,7 @@ class Session:
 @modelclass
 class Options:
     "Contains options data for the summaries endpoint"
+
     contract_type: Optional[str] = None
     exercise_style: Optional[str] = None
     expiration_date: Optional[str] = None
@@ -42,6 +44,7 @@ class Options:
 @modelclass
 class SummaryResult:
     "Contains summary result data for a list of tickers"
+
     price: Optional[float] = None
     name: Optional[str] = None
     ticker: Optional[str] = None

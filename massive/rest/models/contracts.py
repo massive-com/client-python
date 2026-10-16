@@ -5,6 +5,7 @@ from ...modelclass import modelclass
 @modelclass
 class Underlying:
     "Underlying contains data for an underlying or deliverable associated with an option contract."
+
     amount: Optional[float] = None
     type: Optional[str] = None
     underlying: Optional[str] = None
@@ -17,6 +18,7 @@ class Underlying:
 @modelclass
 class OptionsContract:
     "OptionsContract contains data for a specified ticker symbol."
+
     additional_underlyings: Optional[List[Underlying]] = None
     cfi: Optional[str] = None
     contract_type: Optional[str] = None

@@ -5,6 +5,7 @@ from ...modelclass import modelclass
 @modelclass
 class Quote:
     "Quote contains quote data for a specified ticker symbol."
+
     ask_exchange: Optional[int] = None
     ask_price: Optional[float] = None
     ask_size: Optional[float] = None
@@ -27,6 +28,7 @@ class Quote:
 @modelclass
 class LastQuote:
     "LastQuote contains data for the most recent NBBO (Quote) tick for a given stock."
+
     ticker: Optional[str] = None
     trf_timestamp: Optional[int] = None
     sequence_number: Optional[int] = None
@@ -65,6 +67,7 @@ class LastQuote:
 @modelclass
 class ForexQuote:
     "Contains data for a forex quote."
+
     ask: Optional[float] = None
     bid: Optional[float] = None
     exchange: Optional[int] = None
@@ -78,6 +81,7 @@ class ForexQuote:
 @modelclass
 class LastForexQuote:
     "ForexLastQuote contains data for the last quote tick for a forex currency pair."
+
     last: Optional[ForexQuote] = None
     symbol: Optional[str] = None
 
@@ -92,6 +96,7 @@ class LastForexQuote:
 @modelclass
 class RealTimeCurrencyConversion:
     "RealTimeCurrencyConversion contains data for currency conversions using the latest market conversion rates."
+
     converted: Optional[float] = None
     from_: Optional[str] = None
     initial_amount: Optional[float] = None

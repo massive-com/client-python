@@ -5,6 +5,7 @@ from ...modelclass import modelclass
 @modelclass
 class Trade:
     "Trade contains trade data for a specified ticker symbol."
+
     conditions: Optional[List[int]] = None
     correction: Optional[int] = None
     exchange: Optional[int] = None
@@ -66,6 +67,7 @@ class LastTrade:
 @modelclass
 class CryptoTrade:
     "Contains data for a crypto trade."
+
     conditions: Optional[List[int]] = None
     exchange: Optional[int] = None
     price: Optional[float] = None

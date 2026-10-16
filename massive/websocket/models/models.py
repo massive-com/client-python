@@ -51,6 +51,7 @@ class EquityAgg:
 @modelclass
 class CurrencyAgg:
     "CurrencyAgg contains aggregate data for either forex currency pairs or crypto pairs."
+
     event_type: Optional[Union[str, EventType]] = None
     pair: Optional[str] = None
     open: Optional[float] = None
@@ -83,6 +84,7 @@ class CurrencyAgg:
 @modelclass
 class EquityTrade:
     "EquityTrade contains trade data for either stock tickers or option contracts."
+
     event_type: Optional[Union[str, EventType]] = None
     symbol: Optional[str] = None
     exchange: Optional[int] = None
@@ -119,6 +121,7 @@ class EquityTrade:
 @modelclass
 class CryptoTrade:
     "CryptoTrade contains trade data for a crypto pair."
+
     event_type: Optional[Union[str, EventType]] = None
     pair: Optional[str] = None
     exchange: Optional[int] = None
@@ -147,6 +150,7 @@ class CryptoTrade:
 @modelclass
 class EquityQuote:
     "EquityQuote contains quote data for either stock tickers or option contracts."
+
     event_type: Optional[Union[str, EventType]] = None
     symbol: Optional[str] = None
     bid_exchange_id: Optional[int] = None
@@ -187,6 +191,7 @@ class EquityQuote:
 @modelclass
 class ForexQuote:
     "ForexQuote contains quote data for a forex currency pair."
+
     event_type: Optional[Union[str, EventType]] = None
     pair: Optional[str] = None
     exchange_id: Optional[int] = None
@@ -209,6 +214,7 @@ class ForexQuote:
 @modelclass
 class CryptoQuote:
     "CryptoQuote contains quote data for a crypto pair."
+
     event_type: Optional[Union[str, EventType]] = None
     pair: Optional[str] = None
     bid_price: Optional[int] = None
@@ -237,6 +243,7 @@ class CryptoQuote:
 @modelclass
 class Imbalance:
     "Imbalance contains imbalance event data for a given stock ticker symbol."
+
     event_type: Optional[Union[str, EventType]] = None
     symbol: Optional[str] = None
     time_stamp: Optional[int] = None
@@ -267,6 +274,7 @@ class Imbalance:
 @modelclass
 class LimitUpLimitDown:
     "LimitUpLimitDown contains LULD event data for a given stock ticker symbol."
+
     event_type: Optional[Union[str, EventType]] = None
     symbol: Optional[str] = None
     high_price: Optional[float] = None
@@ -293,6 +301,7 @@ class LimitUpLimitDown:
 @modelclass
 class Level2Book:
     "Level2Book contains level 2 book data for a given crypto pair."
+
     event_type: Optional[Union[str, EventType]] = None
     pair: Optional[str] = None
     bid_prices: Optional[float] = None

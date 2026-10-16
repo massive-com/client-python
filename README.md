@@ -8,7 +8,7 @@ For details, see our [rebrand announcement blog post](https://massive.com/blog/p
 
 ## Prerequisites
 
-Before installing the Massive Python client, ensure your environment has Python 3.9 or higher.
+Before installing the Massive Python client, ensure your environment has Python 3.10 or higher.
 
 ## Install
 
