@@ -16,7 +16,7 @@ from ..exceptions import AuthError, BadResponse
 logger = get_logger("RESTClient")
 version_number = "unknown"
 try:
-    version_number = version("massive-api-client")
+    version_number = version("massive")
 except PackageNotFoundError:
     pass
 
