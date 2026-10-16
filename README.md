@@ -160,7 +160,7 @@ client = RESTClient(ca_certs="/path/to/corporate-ca-bundle.pem")
 ws_client = WebSocketClient(ca_certs="/path/to/corporate-ca-bundle.pem")
 ```
 
-The client uses the first one it finds: `ca_certs`, then `SSL_CERT_FILE`, then `REQUESTS_CA_BUNDLE`, then the bundled [certifi](https://pypi.org/project/certifi/) certificates.
+The client uses the first one it finds: `ca_certs`, then `SSL_CERT_FILE`, then `REQUESTS_CA_BUNDLE`, then the bundled [certifi](https://pypi.org/project/certifi/) certificates. If an environment variable points to a file that doesn't exist, it's skipped and a warning is logged.
 
 The bundle replaces certifi, so it must also include the public root certificates. If you only have your company's root certificate, add it to certifi's bundle:
 

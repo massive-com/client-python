@@ -194,7 +194,7 @@ class WebSocketClient:
         if not self.url.startswith("wss://"):
             return None
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-        context.load_verify_locations(self.ca_certs or ca_bundle_path())
+        context.load_verify_locations(self.ca_certs or ca_bundle_path(logger))
         return context
 
     def run(

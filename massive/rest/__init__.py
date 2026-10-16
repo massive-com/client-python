@@ -20,6 +20,8 @@ from .reference import (
     ContractsClient,
 )
 from .vX import VXClient
+from .base import logger
+from ..certs import ca_bundle_path
 from typing import Optional, Any, Dict
 import os
 
@@ -74,6 +76,8 @@ class RESTClient(
         :param connection_pool_kw: Other urllib3 PoolManager options. They override
             the client's defaults.
         """
+        # resolve once, so the main and vx clients share it and warn only once
+        ca_certs = ca_certs or ca_bundle_path(logger)
         super().__init__(
             api_key=api_key,
             connect_timeout=connect_timeout,

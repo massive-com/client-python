@@ -83,7 +83,7 @@ class BaseClient:
             # clients reconnect (and redo the TLS handshake) for most requests
             "maxsize": maxsize,
             "headers": self.headers,  # default headers sent with each request.
-            "ca_certs": ca_certs or ca_bundle_path(),
+            "ca_certs": ca_certs or ca_bundle_path(logger),
             "cert_reqs": "CERT_REQUIRED",
             "retries": retry_strategy,  # use the customized Retry instance
             "timeout": self.timeout,  # set timeout for each request
