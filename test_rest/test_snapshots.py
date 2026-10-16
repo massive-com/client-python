@@ -426,6 +426,88 @@ class SnapshotsTest(BaseTest):
         )
         self.assertEqual(snapshots, expected)
 
+    def test_list_snapshot_indices(self):
+        # two pages: the first page's next_url points at the second
+        snapshots = [s for s in self.c.list_snapshot_indices(ticker_gte="I:SPX")]
+        expected = [
+            IndicesSnapshot(
+                value=7717.17,
+                name="Standard & Poor's 500",
+                type="indices",
+                ticker="I:SPX",
+                market_status="regular_trading",
+                session=IndicesSession(
+                    change=-1.77,
+                    change_percent=-0.0229,
+                    close=7718.56,
+                    high=7738.21,
+                    low=7669.66,
+                    open=7687.31,
+                    previous_close=7718.9400000000005,
+                ),
+                last_updated=1792081393031000000,
+                timeframe="REAL-TIME",
+            ),
+            IndicesSnapshot(
+                value=82.5721,
+                name="PROSHARES S&P 500 EX-ENERGY ETF",
+                type="indices",
+                ticker="I:SPXEIV",
+                market_status="regular_trading",
+                session=IndicesSession(
+                    change=0.0058,
+                    change_percent=0.00702,
+                    close=82.583,
+                    high=82.8018,
+                    low=81.96520000000001,
+                    open=81.96520000000001,
+                    previous_close=82.5663,
+                ),
+                last_updated=1792081393415000000,
+                timeframe="REAL-TIME",
+            ),
+            IndicesSnapshot(
+                value=28.685000000000002,
+                name="PROSHARES ULTRA BASIC MATERIALS ETF",
+                type="indices",
+                ticker="I:UYMIV",
+                market_status="regular_trading",
+                session=IndicesSession(
+                    change=0.924,
+                    change_percent=3.328,
+                    close=28.6859,
+                    high=29.0102,
+                    low=27.8834,
+                    open=27.8855,
+                    previous_close=27.761200000000002,
+                ),
+                last_updated=1792081393146000000,
+                timeframe="REAL-TIME",
+            ),
+            IndicesSnapshot(
+                value=19.25,
+                name="Cboe VIX Jan Futures 4pm EST Mark Index",
+                type="indices",
+                ticker="I:UZF",
+                market_status="regular_trading",
+                session=IndicesSession(
+                    change=0,
+                    change_percent=0,
+                    close=19.25,
+                    high=19.25,
+                    low=19.25,
+                    open=19.25,
+                    previous_close=19.25,
+                ),
+                last_updated=1792008000219000000,
+                timeframe="REAL-TIME",
+            ),
+        ]
+        self.assertEqual(snapshots, expected)
+        # modelclass drops unknown kwargs, so check the fields exist explicitly
+        self.assertEqual(snapshots[0].last_updated, 1792081393031000000)
+        self.assertEqual(snapshots[0].timeframe, "REAL-TIME")
+
     def test_get_snapshot_indices(self):
         ticker_any_of = ["SPX", "APx", "APy"]
         summary_results = self.c.get_snapshot_indices(ticker_any_of)

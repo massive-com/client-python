@@ -67,6 +67,8 @@ class IndicesSnapshot:
     session: Optional[IndicesSession] = None
     error: Optional[str] = None
     message: Optional[str] = None
+    last_updated: Optional[int] = None
+    timeframe: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
@@ -81,6 +83,8 @@ class IndicesSnapshot:
             ),
             error=d.get("error", None),
             message=d.get("message", None),
+            last_updated=d.get("last_updated", None),
+            timeframe=d.get("timeframe", None),
         )
 
 

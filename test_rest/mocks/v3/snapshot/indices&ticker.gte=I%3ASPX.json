@@ -1,0 +1,43 @@
+{
+  "results": [
+    {
+      "value": 7717.17,
+      "last_updated": 1792081393031000000,
+      "timeframe": "REAL-TIME",
+      "name": "Standard & Poor's 500",
+      "ticker": "I:SPX",
+      "market_status": "regular_trading",
+      "type": "indices",
+      "session": {
+        "change": -1.77,
+        "change_percent": -0.0229,
+        "close": 7718.56,
+        "high": 7738.21,
+        "low": 7669.66,
+        "open": 7687.31,
+        "previous_close": 7718.9400000000005
+      }
+    },
+    {
+      "value": 82.5721,
+      "last_updated": 1792081393415000000,
+      "timeframe": "REAL-TIME",
+      "name": "PROSHARES S&P 500 EX-ENERGY ETF",
+      "ticker": "I:SPXEIV",
+      "market_status": "regular_trading",
+      "type": "indices",
+      "session": {
+        "change": 0.0058,
+        "change_percent": 0.00702,
+        "close": 82.583,
+        "high": 82.8018,
+        "low": 81.96520000000001,
+        "open": 81.96520000000001,
+        "previous_close": 82.5663
+      }
+    }
+  ],
+  "status": "OK",
+  "request_id": "62a572d0d04de8a7001f3c01a6d861ad",
+  "next_url": "https://api.massive.com/v3/snapshot/indices?cursor=bGltaXQ9MTAmc29ydD10aWNrZXImdGlja2VyLmd0PUklM0FVWUdJViZ0aWNrZXIubHRlPQ"
+}
