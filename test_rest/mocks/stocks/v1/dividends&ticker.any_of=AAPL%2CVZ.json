@@ -1,0 +1,34 @@
+{
+  "results": [
+    {
+      "id": "E1e778b36bcedb4d1589a970be52c16294ad4bc89c8627d56a3b970f6cf2a6e10",
+      "ticker": "AAPL",
+      "record_date": "2026-08-10",
+      "pay_date": "2026-08-13",
+      "declaration_date": "2026-07-30",
+      "ex_dividend_date": "2026-08-10",
+      "frequency": 4,
+      "cash_amount": 0.27,
+      "currency": "USD",
+      "distribution_type": "recurring",
+      "historical_adjustment_factor": 0.999138,
+      "split_adjusted_cash_amount": 0.27
+    },
+    {
+      "id": "Ebff20941049b81e8d1cc80d5ef0cf7b9e44318993597f922292327578e468954",
+      "ticker": "VZ",
+      "record_date": "2026-10-09",
+      "pay_date": "2026-11-02",
+      "declaration_date": "2026-09-09",
+      "ex_dividend_date": "2026-10-09",
+      "frequency": 4,
+      "cash_amount": 0.7075,
+      "currency": "USD",
+      "distribution_type": "recurring",
+      "historical_adjustment_factor": 0.984736,
+      "split_adjusted_cash_amount": 0.7075
+    }
+  ],
+  "status": "OK",
+  "request_id": "6a7e466379af0a71039d60cc78e72282"
+}

@@ -511,6 +511,8 @@ class SnapshotsTest(BaseTest):
     def test_get_snapshot_indices(self):
         ticker_any_of = ["SPX", "APx", "APy"]
         summary_results = self.c.get_snapshot_indices(ticker_any_of)
+        # the comma-separated str form must build the same request
+        self.assertEqual(self.c.get_snapshot_indices("SPX,APx,APy"), summary_results)
         expected = [
             IndicesSnapshot(
                 value=3822.39,

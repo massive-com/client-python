@@ -194,7 +194,10 @@ class BaseClient:
                             # using ., and not _ (removesuffix would work)
                             # but that is python 3.9+
                             argname = argname[: -len(f"_{ext}")] + f".{ext}"
-                    if argname.endswith("any_of"):
+                    # any_of accepts a comma-separated str (per the spec) or a
+                    # list of values; only join the latter, since joining a str
+                    # would split it into single characters
+                    if argname.endswith("any_of") and not isinstance(val, str):
                         val = ",".join(val)
                     params[argname] = val
 
