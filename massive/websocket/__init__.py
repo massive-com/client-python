@@ -18,6 +18,10 @@ from ..exceptions import AuthError
 env_key = "MASSIVE_API_KEY"
 logger = get_logger("WebSocketClient")
 
+# Status messages that mean things are working. Any other status (e.g. "error",
+# "max_connections", "slow_consumer", "force_disconnect") is logged as a warning.
+OK_STATUSES = {"connected", "auth_success", "success"}
+
 
 class WebSocketClient:
     def __init__(
@@ -116,6 +120,7 @@ class WebSocketClient:
             try:
                 msg = await s.recv()
                 logger.debug("connected: %s", msg)
+                self._log_server_statuses(self.json.loads(msg))
                 logger.debug("authing...")
                 await s.send(
                     self.json.dumps({"action": "auth", "params": self.api_key})
@@ -125,6 +130,9 @@ class WebSocketClient:
                 logger.debug("authed: %s", auth_msg)
                 if auth_msg_parsed[0]["status"] == "auth_failed":
                     raise AuthError(auth_msg_parsed[0]["message"])
+                # e.g. max_connections, which the server sends before closing
+                self._log_server_statuses(auth_msg_parsed)
+                self._flush_server_errors(force=True)
                 while True:
                     if self.schedule_resub:
                         logger.debug(
@@ -152,8 +160,7 @@ class WebSocketClient:
                         for m in msgJson:
                             if m["ev"] == "status":
                                 logger.debug("status: %s", m["message"])
-                                if m.get("status") == "error":
-                                    self._log_server_error(m["message"])
+                        self._log_server_statuses(msgJson)
                         cmsg = parse(msgJson, logger, self.market)
                     self._flush_server_errors()
 
@@ -161,10 +168,13 @@ class WebSocketClient:
                         await processor(cmsg)  # type: ignore
             except ConnectionClosedOK as e:
                 logger.debug("connection closed (OK): %s", e)
+                # the server sends a status (e.g. slow_consumer) before closing
+                self._flush_server_errors(force=True)
                 return
             except ConnectionClosedError as e:
                 last_exc = e
                 logger.debug("connection closed (ERR): %s", e)
+                self._flush_server_errors(force=True)
                 reconnects += 1
                 self.scheduled_subs = set(self.subs)
                 self.subs = set()
@@ -202,22 +212,26 @@ class WebSocketClient:
 
         asyncio.run(self.connect(handle_msg_wrapper, close_timeout, **kwargs))
 
-    def _log_server_error(self, message: str):
-        # status messages are dropped by parse(), so errors (e.g. subscriptions
-        # the server rejected) are logged here. The server can send one error per
-        # channel, so identical errors are counted and logged once a second.
-        if not self._server_errors:
-            self._server_errors_since = time.monotonic()
-        self._server_errors[message] += 1
+    def _log_server_statuses(self, msgs: List[Any]):
+        # status messages are dropped by parse(), so problems (e.g. subscriptions
+        # the server rejected, or why it disconnected) are logged here. The server
+        # can send one error per channel, so identical ones are counted and logged
+        # once a second.
+        for m in msgs:
+            if m.get("ev") != "status" or m.get("status") in OK_STATUSES:
+                continue
+            if not self._server_errors:
+                self._server_errors_since = time.monotonic()
+            self._server_errors[(m.get("status"), m.get("message"))] += 1
 
     def _flush_server_errors(self, force: bool = False):
         if not self._server_errors:
             return
         if not force and time.monotonic() - self._server_errors_since < 1:
             return
-        for message, count in self._server_errors.items():
+        for (status, message), count in self._server_errors.items():
             logger.warning(
-                "server error: %s%s", message, f" (x{count})" if count > 1 else ""
+                "server %s: %s%s", status, message, f" (x{count})" if count > 1 else ""
             )
         self._server_errors = Counter()
 

@@ -63,3 +63,35 @@ class StatusTest(BaseTest):
             await self.run_client("T.AAPL")
             logger.warning("sentinel")
         self.assertEqual(logs.output, ["WARNING:WebSocketClient:sentinel"])
+
+    async def test_disconnect_reason_is_logged(self):
+        # the server sends a status and then closes the connection normally
+        with self.assertLogs("WebSocketClient", level="WARNING") as logs:
+            c = WebSocketClient(api_key="", feed=f"localhost:{port}", secure=False)
+            c.subscribe("SLOW.X")
+            await asyncio.wait_for(c.connect(lambda msgs: asyncio.sleep(0)), 5)
+        self.assertEqual(
+            logs.output,
+            [
+                "WARNING:WebSocketClient:server slow_consumer: Disconnected slow consumer."
+            ],
+        )
+
+    async def test_auth_reply_status_is_logged(self):
+        # e.g. max_connections arrives as the reply to the auth message
+        c = WebSocketClient(
+            api_key="MAX-CONNECTIONS",
+            feed=f"localhost:{port}",
+            secure=False,
+            max_reconnects=0,
+        )
+        with self.assertLogs("WebSocketClient", level="WARNING") as logs:
+            with self.assertRaises(Exception):
+                await asyncio.wait_for(c.connect(lambda msgs: asyncio.sleep(0)), 5)
+        self.assertEqual(
+            logs.output,
+            [
+                "WARNING:WebSocketClient:server max_connections: "
+                "Maximum number of websocket connections exceeded."
+            ],
+        )
