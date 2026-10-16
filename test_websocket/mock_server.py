@@ -14,12 +14,41 @@ async def mock_server(websocket):
         message = json.loads(message)
         if "action" not in message:
             continue
+        if message["action"] == "auth" and message["params"] == "MAX-CONNECTIONS":
+            # emulate the server refusing a connection over the account's limit
+            await websocket.send(
+                '[{"ev":"status","status":"max_connections","message":"Maximum number of websocket connections exceeded."}]'
+            )
+            await websocket.close(code=1008)
+            return
         if message["action"] == "auth":
             await websocket.send(
                 '[{"ev":"status","status":"auth_success","message":"authenticated"}]'
             )
         elif message["action"] == "subscribe":
+            if message["params"] == "SLOW.X":
+                # emulate the server disconnecting a slow consumer
+                await websocket.send(
+                    '[{"ev":"status","status":"slow_consumer","message":"Disconnected slow consumer."}]'
+                )
+                await websocket.close(code=1000)
+                return
             for p in message["params"].split(","):
+                if p.startswith("ERR."):
+                    # emulate the server rejecting a subscription
+                    await websocket.send(
+                        json.dumps(
+                            [
+                                {
+                                    "ev": "status",
+                                    "status": "error",
+                                    "message": "Subscription limit reached for feed.",
+                                }
+                            ]
+                            * 2
+                        )
+                    )
+                    continue
                 subs.add(p)
                 await websocket.send(
                     json.dumps(

@@ -1,10 +1,12 @@
 import os
+from collections import Counter
 from enum import Enum
 from typing import Optional, Union, List, Set, Callable, Awaitable, Any
 import logging
 import json
 import asyncio
 import ssl
+import time
 import certifi
 from .models import *
 from websockets.asyncio.client import connect, ClientConnection
@@ -15,6 +17,10 @@ from ..exceptions import AuthError
 
 env_key = "MASSIVE_API_KEY"
 logger = get_logger("WebSocketClient")
+
+# Status messages that mean things are working. Any other status (e.g. "error",
+# "max_connections", "slow_consumer", "force_disconnect") is logged as a warning.
+OK_STATUSES = {"connected", "auth_success", "success"}
 
 
 class WebSocketClient:
@@ -70,6 +76,8 @@ class WebSocketClient:
             subscriptions = []
         self.scheduled_subs: Set[str] = set(subscriptions)
         self.schedule_resub = True
+        self._server_errors: Counter = Counter()
+        self._server_errors_since = 0.0
         if custom_json:
             self.json = custom_json
         else:
@@ -112,6 +120,7 @@ class WebSocketClient:
             try:
                 msg = await s.recv()
                 logger.debug("connected: %s", msg)
+                self._log_server_statuses(self.json.loads(msg))
                 logger.debug("authing...")
                 await s.send(
                     self.json.dumps({"action": "auth", "params": self.api_key})
@@ -121,6 +130,9 @@ class WebSocketClient:
                 logger.debug("authed: %s", auth_msg)
                 if auth_msg_parsed[0]["status"] == "auth_failed":
                     raise AuthError(auth_msg_parsed[0]["message"])
+                # e.g. max_connections, which the server sends before closing
+                self._log_server_statuses(auth_msg_parsed)
+                self._flush_server_errors(force=True)
                 while True:
                     if self.schedule_resub:
                         logger.debug(
@@ -139,6 +151,7 @@ class WebSocketClient:
                             await asyncio.wait_for(s.recv(), timeout=1)
                         )
                     except asyncio.TimeoutError:
+                        self._flush_server_errors()
                         continue
 
                     if not self.raw:
@@ -147,17 +160,21 @@ class WebSocketClient:
                         for m in msgJson:
                             if m["ev"] == "status":
                                 logger.debug("status: %s", m["message"])
-                                continue
+                        self._log_server_statuses(msgJson)
                         cmsg = parse(msgJson, logger, self.market)
+                    self._flush_server_errors()
 
                     if len(cmsg) > 0:
                         await processor(cmsg)  # type: ignore
             except ConnectionClosedOK as e:
                 logger.debug("connection closed (OK): %s", e)
+                # the server sends a status (e.g. slow_consumer) before closing
+                self._flush_server_errors(force=True)
                 return
             except ConnectionClosedError as e:
                 last_exc = e
                 logger.debug("connection closed (ERR): %s", e)
+                self._flush_server_errors(force=True)
                 reconnects += 1
                 self.scheduled_subs = set(self.subs)
                 self.subs = set()
@@ -194,6 +211,29 @@ class WebSocketClient:
             handle_msg(msgs)
 
         asyncio.run(self.connect(handle_msg_wrapper, close_timeout, **kwargs))
+
+    def _log_server_statuses(self, msgs: List[Any]):
+        # status messages are dropped by parse(), so problems (e.g. subscriptions
+        # the server rejected, or why it disconnected) are logged here. The server
+        # can send one error per channel, so identical ones are counted and logged
+        # once a second.
+        for m in msgs:
+            if m.get("ev") != "status" or m.get("status") in OK_STATUSES:
+                continue
+            if not self._server_errors:
+                self._server_errors_since = time.monotonic()
+            self._server_errors[(m.get("status"), m.get("message"))] += 1
+
+    def _flush_server_errors(self, force: bool = False):
+        if not self._server_errors:
+            return
+        if not force and time.monotonic() - self._server_errors_since < 1:
+            return
+        for (status, message), count in self._server_errors.items():
+            logger.warning(
+                "server %s: %s%s", status, message, f" (x{count})" if count > 1 else ""
+            )
+        self._server_errors = Counter()
 
     async def _subscribe(self, topics: Union[List[str], Set[str]]):
         if self.websocket is None or len(topics) == 0:
@@ -276,6 +316,7 @@ class WebSocketClient:
         Close the websocket connection.
         """
         logger.debug("closing")
+        self._flush_server_errors(force=True)
 
         if self.websocket:
             await self.websocket.close()
