@@ -135,6 +135,26 @@ print(len(options_chain))
 
 Also, please refer to the API documentation to get a full understanding of how the API works and the supported arguments. All required arguments are annotated with red asterisks " * " and argument examples are set.
 
+## Proxies, Certificates, and Connections
+
+Behind a corporate proxy or TLS inspection, point the clients at your CA bundle and proxy:
+
+```python
+from massive import RESTClient, WebSocketClient
+
+client = RESTClient(
+    proxy="http://user:pass@proxy.example.com:8080",  # REST doesn't read HTTPS_PROXY
+    ca_certs="/path/to/corporate-ca.pem",  # or set SSL_CERT_FILE / REQUESTS_CA_BUNDLE
+)
+
+ws_client = WebSocketClient(ca_certs="/path/to/corporate-ca.pem")
+ws_client.run(handle_msg, proxy="http://user:pass@proxy.example.com:8080")  # defaults to the system proxy
+```
+
+Both clients verify TLS with `ca_certs` if given, then the `SSL_CERT_FILE` or `REQUESTS_CA_BUNDLE` environment variable, then the bundled certifi certificates.
+
+`RESTClient` keeps up to `maxsize=10` connections open for reuse across threads. Other urllib3 pool options can be passed with `connection_pool_kw`.
+
 ## Debugging with RESTClient
 
 Sometimes you may find it useful to see the actual request and response details while working with the API. The `RESTClient` allows for this through its `trace=True` option.
