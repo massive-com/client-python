@@ -147,7 +147,7 @@ description = "Cross-platform colored terminal text."
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 groups = ["dev"]
-markers = "platform_system == \"Windows\" or sys_platform == \"win32\""
+markers = "sys_platform == \"win32\" or platform_system == \"Windows\""
 files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
@@ -588,14 +588,14 @@ test = ["appdirs (==1.4.4)", "pytest (>=7.2)", "pytest-cov (>=4)", "pytest-mock 
 
 [[package]]
 name = "pook"
-version = "2.1.4"
+version = "2.1.6"
 description = "HTTP traffic mocking and expectations made easy"
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "pook-2.1.4-py3-none-any.whl", hash = "sha256:3f273ab189874dd775a15c3fa1b1bf89f28b001d2619c5f909e4d3f7df66d36e"},
-    {file = "pook-2.1.4.tar.gz", hash = "sha256:2bcbc7d58d1d88b6f2da98c711f5391d5f690292bdd5ff2ccda927576500937a"},
+    {file = "pook-2.1.6-py3-none-any.whl", hash = "sha256:e14e710118a9193cb0e08bce2908309b9e0aa1b213b4a151c235c1f549f6eb55"},
+    {file = "pook-2.1.6.tar.gz", hash = "sha256:7cfcc98ffd1452d7174d0025fef7949549d8f2604a6f11de4d738647fa0ae9ec"},
 ]
 
 [package.dependencies]
@@ -1111,4 +1111,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "b2b83afcced4d2510ecac09337d1f74284926a3458095bd252de9e20b59a38bf"
+content-hash = "612ebec065cccb436c2766c3f8e1f57cbf15715400fcb92d20ac0b66a647af38"
