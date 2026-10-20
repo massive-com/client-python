@@ -1,9 +1,10 @@
 from websockets import serve  # type: ignore
 import asyncio
 import json
+from typing import Set
 
 port = 8765
-subs = set()
+subs: Set[str] = set()
 
 
 async def mock_server(websocket):
