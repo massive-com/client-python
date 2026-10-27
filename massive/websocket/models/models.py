@@ -1,4 +1,4 @@
-from typing import Optional, List, Union, NewType
+from typing import List, Optional, Union
 from .common import EventType
 from ...modelclass import modelclass
 
@@ -453,26 +453,21 @@ class FuturesAgg:
         )
 
 
-WebSocketMessage = NewType(
-    "WebSocketMessage",
-    List[
-        Union[
-            EquityAgg,
-            CurrencyAgg,
-            EquityTrade,
-            CryptoTrade,
-            EquityQuote,
-            ForexQuote,
-            CryptoQuote,
-            Imbalance,
-            LimitUpLimitDown,
-            Level2Book,
-            IndexValue,
-            LaunchpadValue,
-            FairMarketValue,
-            FuturesTrade,
-            FuturesQuote,
-            FuturesAgg,
-        ]
-    ],
-)
+WebSocketMessage = Union[
+    EquityAgg,
+    CurrencyAgg,
+    EquityTrade,
+    CryptoTrade,
+    EquityQuote,
+    ForexQuote,
+    CryptoQuote,
+    Imbalance,
+    LimitUpLimitDown,
+    Level2Book,
+    IndexValue,
+    LaunchpadValue,
+    FairMarketValue,
+    FuturesTrade,
+    FuturesQuote,
+    FuturesAgg,
+]
