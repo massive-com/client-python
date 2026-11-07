@@ -113,6 +113,13 @@ class BaseClient:
     def _decode(self, resp):
         return self.json.loads(resp.data.decode("utf-8"))
 
+    def _request_url(self, path: str, params: Optional[dict] = None) -> str:
+        """The URL a request goes to, for log messages. The API key is sent in a header, never in the URL."""
+        url = f"{self.BASE}{path}"
+        if params:
+            url += ("&" if "?" in path else "?") + urlencode(params)
+        return url
+
     def _get(
         self,
         path: str,
@@ -126,10 +133,8 @@ class BaseClient:
 
         headers = self._concat_headers(option.headers)
 
+        full_url = self._request_url(path, params)
         if self.trace:
-            full_url = f"{self.BASE}{path}"
-            if params:
-                full_url += f"?{urlencode(params)}"
             print_headers = headers.copy()
             if "Authorization" in print_headers:
                 print_headers["Authorization"] = print_headers["Authorization"].replace(
@@ -160,7 +165,7 @@ class BaseClient:
         try:
             obj = self._decode(resp)
         except ValueError as e:
-            logger.error("Error decoding json response: %s", e)
+            logger.error("Error decoding json response [%s]: %s", full_url, e)
             return []
 
         if result_key:
@@ -249,7 +254,11 @@ class BaseClient:
             try:
                 decoded = self._decode(resp)
             except ValueError as e:
-                logger.error("Error decoding json response: %s", e)
+                logger.error(
+                    "Error decoding json response [%s]: %s",
+                    self._request_url(path, params),
+                    e,
+                )
                 return []
 
             if result_key not in decoded:
