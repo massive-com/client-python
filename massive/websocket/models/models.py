@@ -375,6 +375,31 @@ class FairMarketValue:
 
 
 @modelclass
+class OptionsAdmin:
+    "OptionsAdmin contains an OPRA administrative message, such as a FLEX trade report, for a given options exchange. The message is the raw OPRA text, kept as-is since its format varies by exchange. The timestamp is the SIP timestamp in Unix nanoseconds, and retransmission is only set (True) on retransmitted messages."
+
+    event_type: Optional[Union[str, EventType]] = None
+    id: Optional[str] = None
+    exchange: Optional[int] = None
+    message: Optional[str] = None
+    timestamp: Optional[int] = None
+    sequence_number: Optional[int] = None
+    retransmission: Optional[bool] = None
+
+    @staticmethod
+    def from_dict(d):
+        return OptionsAdmin(
+            event_type=d.get("ev", None),
+            id=d.get("i", None),
+            exchange=d.get("x", None),
+            message=d.get("m", None),
+            timestamp=d.get("t", None),
+            sequence_number=d.get("q", None),
+            retransmission=d.get("rt", None),
+        )
+
+
+@modelclass
 class FuturesTrade:
     event_type: Optional[str] = None
     symbol: Optional[str] = None
@@ -470,6 +495,7 @@ WebSocketMessage = NewType(
             IndexValue,
             LaunchpadValue,
             FairMarketValue,
+            OptionsAdmin,
             FuturesTrade,
             FuturesQuote,
             FuturesAgg,
