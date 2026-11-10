@@ -1,5 +1,6 @@
 import json
 import concurrent.futures
+from typing import Any, Dict
 from massive import RESTClient
 
 # Initialize Massive API client
@@ -8,7 +9,7 @@ client = RESTClient(
 )  # Assuming you have MASSIVE_API_KEY environment variable set up
 
 # Initialize the data structure to hold SIC code groups
-sic_code_groups = {}
+sic_code_groups: Dict[str, Dict[str, Any]] = {}
 
 
 # https://en.wikipedia.org/wiki/Standard_Industrial_Classification

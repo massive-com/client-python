@@ -30,6 +30,7 @@ MARKET_EVENT_MAP: Dict[Market, Dict[str, Type[FromDictProtocol]]] = {
         "Q": EquityQuote,
         "FMV": FairMarketValue,
         "LV": LaunchpadValue,
+        "AD": OptionsAdmin,
     },
     Market.Indices: {
         "A": EquityAgg,
