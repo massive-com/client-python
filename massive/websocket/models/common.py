@@ -54,6 +54,7 @@ class EventType(Enum):
     LaunchpadValue = "LV"
     LaunchpadAggMin = "AM"
     BusinessFairMarketValue = "FMV"
+    OptionsAdmin = "AD"
     FuturesTrade = "T"
     FuturesQuote = "Q"
     FuturesAgg = "A"
