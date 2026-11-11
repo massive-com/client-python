@@ -351,12 +351,13 @@ class QuotesTest(BaseTest):
         conversion = self.c.get_real_time_currency_conversion("AUD", "USD", 100, 2)
         expected = RealTimeCurrencyConversion(
             converted=69.31,
-            from_=None,
+            from_="AUD",
             initial_amount=100,
             last=ForexQuote(
                 ask=1.4436264, bid=1.4427932, exchange=48, timestamp=1652195426000
             ),
             to="USD",
+            symbol="USD/AUD",
         )
 
         self.assertEqual(conversion, expected)

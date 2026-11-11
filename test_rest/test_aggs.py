@@ -108,6 +108,7 @@ class AggsTest(BaseTest):
                 timestamp=1651003200000,
                 volume=95595226.0,
                 vwap=158.6074,
+                transactions=899965,
             )
         ]
         self.assertEqual(aggs, expected)

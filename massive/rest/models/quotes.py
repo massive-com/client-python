@@ -103,13 +103,15 @@ class RealTimeCurrencyConversion:
     initial_amount: Optional[float] = None
     last: Optional[ForexQuote] = None
     to: Optional[str] = None
+    symbol: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
         return RealTimeCurrencyConversion(
             converted=d.get("converted", None),
-            from_=d.get("from_", None),
+            from_=d.get("from", d.get("from_")),
             initial_amount=d.get("initialAmount", None),
             last=None if "last" not in d else ForexQuote.from_dict(d["last"]),
             to=d.get("to", None),
+            symbol=d.get("symbol"),
         )

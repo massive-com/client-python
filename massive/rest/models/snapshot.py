@@ -170,6 +170,8 @@ class LastQuoteOptionContractSnapshot:
     last_updated: Optional[int] = None
     midpoint: Optional[float] = None
     timeframe: Optional[str] = None
+    ask_exchange: Optional[int] = None
+    bid_exchange: Optional[int] = None
 
     @staticmethod
     def from_dict(d):
