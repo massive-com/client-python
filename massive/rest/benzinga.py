@@ -139,6 +139,7 @@ class BenzingaClient(BaseClient):
         date_lt: Optional[Union[str, date]] = None,
         date_lte: Optional[Union[str, date]] = None,
         limit: Optional[int] = None,
+        date_any_of: Optional[Union[str, List[str]]] = None,
         params: Optional[Dict[str, Any]] = None,
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
