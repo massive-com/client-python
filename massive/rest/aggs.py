@@ -1,6 +1,13 @@
 from .base import BaseClient
 from typing import Optional, Any, Dict, List, Union, Iterator
-from .models import Agg, GroupedDailyAgg, DailyOpenCloseAgg, PreviousCloseAgg, Sort
+from .models import (
+    Agg,
+    GroupedDailyAgg,
+    DailyOpenCloseAgg,
+    CryptoDailyOpenCloseAgg,
+    PreviousCloseAgg,
+    Sort,
+)
 from urllib3 import HTTPResponse
 from datetime import datetime, date
 
@@ -185,6 +192,39 @@ class AggsClient(BaseClient):
             params=self._get_params(self.get_previous_close_agg, locals()),
             result_key="results",
             deserializer=PreviousCloseAgg.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def get_crypto_daily_open_close_agg(
+        self,
+        from_: str,
+        to: str,
+        date: Union[str, date],
+        adjusted: Optional[bool] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[CryptoDailyOpenCloseAgg, HTTPResponse]:
+        """
+        Get the open and close prices of a crypto pair on a certain date, with the opening and closing trades.
+
+        Endpoint: GET /v1/open-close/crypto/{from}/{to}/{date}
+
+        :param from_: The "from" symbol of the pair (e.g. BTC).
+        :param to: The "to" symbol of the pair (e.g. USD).
+        :param date: The date of the requested open/close in the format YYYY-MM-DD.
+        :param adjusted: Whether or not the results are adjusted for splits. By default, results are adjusted.
+        :param params: Any additional query params
+        :param raw: Return raw object instead of results object
+        :return: Crypto daily open close aggregate
+        """
+        url = f"/v1/open-close/crypto/{from_}/{to}/{date}"
+
+        return self._get(
+            path=url,
+            params=self._get_params(self.get_crypto_daily_open_close_agg, locals()),
+            deserializer=CryptoDailyOpenCloseAgg.from_dict,
             raw=raw,
             options=options,
         )

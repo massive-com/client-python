@@ -1,6 +1,6 @@
 from .base import BaseClient
-from typing import Optional, Any, Dict, Union, Iterator
-from .models import Trade, LastTrade, CryptoTrade, Sort, Order
+from typing import Optional, Any, Dict, List, Union, Iterator
+from .models import Trade, LastTrade, CryptoTrade, OptionsUnusualTrade, Sort, Order
 from urllib3 import HTTPResponse
 from datetime import datetime, date
 
@@ -99,6 +99,41 @@ class TradesClient(BaseClient):
             params=self._get_params(self.get_last_crypto_trade, locals()),
             result_key="last",
             deserializer=CryptoTrade.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_options_unusual_trades(
+        self,
+        ticker: Optional[str] = None,
+        ticker_any_of: Optional[Union[str, List[str]]] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        sip_timestamp: Optional[Union[str, int, datetime, date]] = None,
+        sip_timestamp_gt: Optional[Union[str, int, datetime, date]] = None,
+        sip_timestamp_gte: Optional[Union[str, int, datetime, date]] = None,
+        sip_timestamp_lt: Optional[Union[str, int, datetime, date]] = None,
+        sip_timestamp_lte: Optional[Union[str, int, datetime, date]] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[OptionsUnusualTrade], HTTPResponse]:
+        """
+        Unusual trades for US options contracts, flagged from real-time OPRA trade data.
+
+        Endpoint: GET /options/v1/unusual-trades
+        """
+        url = "/options/v1/unusual-trades"
+
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_options_unusual_trades, locals()),
+            result_key="results",
+            deserializer=OptionsUnusualTrade.from_dict,
             raw=raw,
             options=options,
         )

@@ -227,3 +227,70 @@ class EUMerchantHierarchy:
             sub_industry=d.get("sub_industry"),
             ticker=d.get("ticker"),
         )
+
+
+@modelclass
+class FedFundingConditions:
+    "Daily U.S. money-market funding conditions: policy rates, overnight reference rates and repo operations."
+
+    date: Optional[str] = None
+    fed_funds_target_lower: Optional[float] = None
+    fed_funds_target_upper: Optional[float] = None
+    interest_on_reserve_balances: Optional[float] = None
+    effective_fed_funds_rate: Optional[float] = None
+    effective_fed_funds_volume: Optional[float] = None
+    overnight_bank_funding_rate: Optional[float] = None
+    obfr_25th_percentile: Optional[float] = None
+    obfr_75th_percentile: Optional[float] = None
+    obfr_volume: Optional[float] = None
+    secured_overnight_financing_rate: Optional[float] = None
+    sofr_25th_percentile: Optional[float] = None
+    sofr_75th_percentile: Optional[float] = None
+    sofr_volume: Optional[float] = None
+    tri_party_general_collateral_rate: Optional[float] = None
+    tgcr_25th_percentile: Optional[float] = None
+    tgcr_75th_percentile: Optional[float] = None
+    tri_party_general_collateral_volume: Optional[float] = None
+    fed_overnight_repo_treasury_amount: Optional[float] = None
+    fed_overnight_reverse_repo_treasury_amount: Optional[float] = None
+    financial_commercial_paper_90d_rate: Optional[float] = None
+    nonfinancial_commercial_paper_90d_rate: Optional[float] = None
+
+    @staticmethod
+    def from_dict(d):
+        return FedFundingConditions(
+            date=d.get("date"),
+            fed_funds_target_lower=d.get("fed_funds_target_lower"),
+            fed_funds_target_upper=d.get("fed_funds_target_upper"),
+            interest_on_reserve_balances=d.get("interest_on_reserve_balances"),
+            effective_fed_funds_rate=d.get("effective_fed_funds_rate"),
+            effective_fed_funds_volume=d.get("effective_fed_funds_volume"),
+            overnight_bank_funding_rate=d.get("overnight_bank_funding_rate"),
+            obfr_25th_percentile=d.get("obfr_25th_percentile"),
+            obfr_75th_percentile=d.get("obfr_75th_percentile"),
+            obfr_volume=d.get("obfr_volume"),
+            secured_overnight_financing_rate=d.get("secured_overnight_financing_rate"),
+            sofr_25th_percentile=d.get("sofr_25th_percentile"),
+            sofr_75th_percentile=d.get("sofr_75th_percentile"),
+            sofr_volume=d.get("sofr_volume"),
+            tri_party_general_collateral_rate=d.get(
+                "tri_party_general_collateral_rate"
+            ),
+            tgcr_25th_percentile=d.get("tgcr_25th_percentile"),
+            tgcr_75th_percentile=d.get("tgcr_75th_percentile"),
+            tri_party_general_collateral_volume=d.get(
+                "tri_party_general_collateral_volume"
+            ),
+            fed_overnight_repo_treasury_amount=d.get(
+                "fed_overnight_repo_treasury_amount"
+            ),
+            fed_overnight_reverse_repo_treasury_amount=d.get(
+                "fed_overnight_reverse_repo_treasury_amount"
+            ),
+            financial_commercial_paper_90d_rate=d.get(
+                "financial_commercial_paper_90d_rate"
+            ),
+            nonfinancial_commercial_paper_90d_rate=d.get(
+                "nonfinancial_commercial_paper_90d_rate"
+            ),
+        )

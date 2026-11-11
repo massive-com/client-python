@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from ...modelclass import modelclass
 
 
@@ -119,4 +119,60 @@ class PreviousCloseAgg:
             d.get("t", None),
             d.get("v", None),
             d.get("vw", None),
+        )
+
+
+@modelclass
+class CryptoOpenCloseTrade:
+    "An opening or closing trade for a crypto pair on a given day."
+
+    conditions: Optional[List[int]] = None
+    id: Optional[str] = None
+    price: Optional[float] = None
+    size: Optional[float] = None
+    timestamp: Optional[int] = None
+    exchange: Optional[int] = None
+
+    @staticmethod
+    def from_dict(d):
+        return CryptoOpenCloseTrade(
+            conditions=d.get("c"),
+            id=d.get("i"),
+            price=d.get("p"),
+            size=d.get("s"),
+            timestamp=d.get("t"),
+            exchange=d.get("x"),
+        )
+
+
+@modelclass
+class CryptoDailyOpenCloseAgg:
+    "Contains the open and close prices of a crypto pair on a given day, with the opening and closing trades."
+
+    symbol: Optional[str] = None
+    is_utc: Optional[bool] = None
+    day: Optional[str] = None
+    open: Optional[float] = None
+    close: Optional[float] = None
+    open_trades: Optional[List[CryptoOpenCloseTrade]] = None
+    closing_trades: Optional[List[CryptoOpenCloseTrade]] = None
+
+    @staticmethod
+    def from_dict(d):
+        return CryptoDailyOpenCloseAgg(
+            symbol=d.get("symbol"),
+            is_utc=d.get("isUTC"),
+            day=d.get("day"),
+            open=d.get("open"),
+            close=d.get("close"),
+            open_trades=(
+                [CryptoOpenCloseTrade.from_dict(x) for x in d["openTrades"]]
+                if d.get("openTrades") is not None
+                else None
+            ),
+            closing_trades=(
+                [CryptoOpenCloseTrade.from_dict(x) for x in d["closingTrades"]]
+                if d.get("closingTrades") is not None
+                else None
+            ),
         )
