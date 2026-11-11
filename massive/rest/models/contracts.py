@@ -78,32 +78,3 @@ class OptionsOpenInterest:
             date=d.get("date"),
             open_interest=d.get("open_interest"),
         )
-
-
-@modelclass
-class OptionsUnderlyingOpenInterest:
-    "Daily options open interest rolled up across all contracts for an underlying ticker."
-
-    underlying_ticker: Optional[str] = None
-    date: Optional[str] = None
-    open_interest: Optional[int] = None
-    open_interest_calls: Optional[int] = None
-    open_interest_puts: Optional[int] = None
-    previous_open_interest: Optional[int] = None
-    open_interest_change: Optional[int] = None
-    open_interest_change_calls: Optional[int] = None
-    open_interest_change_puts: Optional[int] = None
-
-    @staticmethod
-    def from_dict(d):
-        return OptionsUnderlyingOpenInterest(
-            underlying_ticker=d.get("underlying_ticker"),
-            date=d.get("date"),
-            open_interest=d.get("open_interest"),
-            open_interest_calls=d.get("open_interest_calls"),
-            open_interest_puts=d.get("open_interest_puts"),
-            previous_open_interest=d.get("previous_open_interest"),
-            open_interest_change=d.get("open_interest_change"),
-            open_interest_change_calls=d.get("open_interest_change_calls"),
-            open_interest_change_puts=d.get("open_interest_change_puts"),
-        )

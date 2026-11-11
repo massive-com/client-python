@@ -37,7 +37,6 @@ from .models import (
     FilingForm4,
     FilingIndex,
     OptionsOpenInterest,
-    OptionsUnderlyingOpenInterest,
     InsiderActivity,
     InsiderHolding,
 )
@@ -1271,48 +1270,6 @@ class ContractsClient(BaseClient):
             params=self._get_params(self.list_options_open_interest, locals()),
             result_key="results",
             deserializer=OptionsOpenInterest.from_dict,
-            raw=raw,
-            options=options,
-        )
-
-    def list_options_open_interest_by_underlying(
-        self,
-        underlying_ticker: Optional[str] = None,
-        underlying_ticker_any_of: Optional[Union[str, List[str]]] = None,
-        underlying_ticker_gt: Optional[str] = None,
-        underlying_ticker_gte: Optional[str] = None,
-        underlying_ticker_lt: Optional[str] = None,
-        underlying_ticker_lte: Optional[str] = None,
-        date: Optional[Union[str, date]] = None,
-        date_gt: Optional[Union[str, date]] = None,
-        date_gte: Optional[Union[str, date]] = None,
-        date_lt: Optional[Union[str, date]] = None,
-        date_lte: Optional[Union[str, date]] = None,
-        open_interest: Optional[int] = None,
-        open_interest_gt: Optional[int] = None,
-        open_interest_gte: Optional[int] = None,
-        open_interest_lt: Optional[int] = None,
-        open_interest_lte: Optional[int] = None,
-        limit: Optional[int] = None,
-        sort: Optional[Union[str, Sort]] = None,
-        params: Optional[Dict[str, Any]] = None,
-        raw: bool = False,
-        options: Optional[RequestOptionBuilder] = None,
-    ) -> Union[Iterator[OptionsUnderlyingOpenInterest], HTTPResponse]:
-        """
-        Daily US options open interest rolled up across each underlying ticker's contracts, split into calls and puts.
-
-        Endpoint: GET /options/vX/open-interest/underlying
-        """
-        url = "/options/vX/open-interest/underlying"
-
-        return self._paginate(
-            path=url,
-            params=self._get_params(
-                self.list_options_open_interest_by_underlying, locals()
-            ),
-            result_key="results",
-            deserializer=OptionsUnderlyingOpenInterest.from_dict,
             raw=raw,
             options=options,
         )

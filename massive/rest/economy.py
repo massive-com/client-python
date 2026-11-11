@@ -10,7 +10,6 @@ from .models.economy import (
     FedLaborMarket,
     EUMerchantAggregate,
     EUMerchantHierarchy,
-    FedFundingConditions,
 )
 from .models.common import Sort, Order
 from .models.request import RequestOptionBuilder
@@ -269,35 +268,5 @@ class EconomyClient(BaseClient):
             deserializer=EUMerchantHierarchy.from_dict,
             raw=raw,
             result_key="results",
-            options=options,
-        )
-
-    def list_funding_conditions(
-        self,
-        date: Optional[Union[str, date]] = None,
-        date_gt: Optional[Union[str, date]] = None,
-        date_gte: Optional[Union[str, date]] = None,
-        date_lt: Optional[Union[str, date]] = None,
-        date_lte: Optional[Union[str, date]] = None,
-        limit: Optional[int] = None,
-        sort: Optional[Union[str, Sort]] = None,
-        params: Optional[Dict[str, Any]] = None,
-        raw: bool = False,
-        options: Optional[RequestOptionBuilder] = None,
-    ) -> Union[Iterator[FedFundingConditions], HTTPResponse]:
-        """
-        Daily U.S. money-market funding conditions from the Federal Reserve and the New York Fed: policy rates,
-        overnight reference rates (EFFR, OBFR, SOFR, TGCR) and repo operations.
-
-        Endpoint: GET /fed/v1/funding-conditions
-        """
-        url = "/fed/v1/funding-conditions"
-
-        return self._paginate(
-            path=url,
-            params=self._get_params(self.list_funding_conditions, locals()),
-            result_key="results",
-            deserializer=FedFundingConditions.from_dict,
-            raw=raw,
             options=options,
         )
