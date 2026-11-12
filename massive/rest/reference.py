@@ -36,6 +36,9 @@ from .models import (
     FilingForm3,
     FilingForm4,
     FilingIndex,
+    OptionsOpenInterest,
+    InsiderActivity,
+    InsiderHolding,
 )
 from urllib3 import HTTPResponse
 from datetime import date
@@ -552,6 +555,7 @@ class ContractsClient(BaseClient):
         limit: Optional[int] = None,
         sort: Optional[Union[str, Sort]] = None,
         order: Optional[Union[str, Order]] = None,
+        ticker: Optional[str] = None,
         params: Optional[Dict[str, Any]] = None,
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
@@ -603,6 +607,14 @@ class ContractsClient(BaseClient):
         limit: Optional[int] = None,
         sort: Optional[Union[str, Sort]] = None,
         order: Optional[Union[str, Order]] = None,
+        ticker_any_of: Optional[Union[str, List[str]]] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        days_to_cover_any_of: Optional[Union[str, List[str]]] = None,
+        settlement_date_any_of: Optional[Union[str, List[str]]] = None,
+        avg_daily_volume_any_of: Optional[Union[str, List[str]]] = None,
         params: Optional[Dict[str, Any]] = None,
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
@@ -666,6 +678,13 @@ class ContractsClient(BaseClient):
         limit: Optional[int] = None,
         sort: Optional[Union[str, Sort]] = None,
         order: Optional[Union[str, Order]] = None,
+        ticker_any_of: Optional[Union[str, List[str]]] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        date_any_of: Optional[Union[str, List[str]]] = None,
+        short_volume_ratio_any_of: Optional[Union[str, List[str]]] = None,
         params: Optional[Dict[str, Any]] = None,
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,
@@ -1203,6 +1222,126 @@ class ContractsClient(BaseClient):
             params=self._get_params(self.list_stocks_filings_form_4, locals()),
             result_key="results",
             deserializer=FilingForm4.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_options_open_interest(
+        self,
+        ticker: Optional[str] = None,
+        ticker_any_of: Optional[Union[str, List[str]]] = None,
+        ticker_gt: Optional[str] = None,
+        ticker_gte: Optional[str] = None,
+        ticker_lt: Optional[str] = None,
+        ticker_lte: Optional[str] = None,
+        root: Optional[str] = None,
+        root_any_of: Optional[Union[str, List[str]]] = None,
+        root_gt: Optional[str] = None,
+        root_gte: Optional[str] = None,
+        root_lt: Optional[str] = None,
+        root_lte: Optional[str] = None,
+        contract_type: Optional[str] = None,
+        contract_type_any_of: Optional[Union[str, List[str]]] = None,
+        expiration_date: Optional[Union[str, date]] = None,
+        expiration_date_gt: Optional[Union[str, date]] = None,
+        expiration_date_gte: Optional[Union[str, date]] = None,
+        expiration_date_lt: Optional[Union[str, date]] = None,
+        expiration_date_lte: Optional[Union[str, date]] = None,
+        date: Optional[Union[str, date]] = None,
+        date_gt: Optional[Union[str, date]] = None,
+        date_gte: Optional[Union[str, date]] = None,
+        date_lt: Optional[Union[str, date]] = None,
+        date_lte: Optional[Union[str, date]] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[OptionsOpenInterest], HTTPResponse]:
+        """
+        Daily open interest for US options contracts, as reported by OPRA.
+
+        Endpoint: GET /options/v1/open-interest
+        """
+        url = "/options/v1/open-interest"
+
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_options_open_interest, locals()),
+            result_key="results",
+            deserializer=OptionsOpenInterest.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_stocks_insider_activity(
+        self,
+        tickers: Optional[str] = None,
+        tickers_all_of: Optional[Union[str, List[str]]] = None,
+        tickers_any_of: Optional[Union[str, List[str]]] = None,
+        issuer_cik: Optional[str] = None,
+        issuer_cik_any_of: Optional[Union[str, List[str]]] = None,
+        transaction_date: Optional[Union[str, date]] = None,
+        transaction_date_gt: Optional[Union[str, date]] = None,
+        transaction_date_gte: Optional[Union[str, date]] = None,
+        transaction_date_lt: Optional[Union[str, date]] = None,
+        transaction_date_lte: Optional[Union[str, date]] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[InsiderActivity], HTTPResponse]:
+        """
+        Daily insider trading activity per issuer: open-market purchases and sales by directors, officers and 10%+
+        shareholders, aggregated from SEC Form 4 and Form 5 filings.
+
+        Endpoint: GET /stocks/insiders/vX/activity
+        """
+        url = "/stocks/insiders/vX/activity"
+
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_insider_activity, locals()),
+            result_key="results",
+            deserializer=InsiderActivity.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_stocks_insider_holdings(
+        self,
+        tickers: Optional[str] = None,
+        tickers_all_of: Optional[Union[str, List[str]]] = None,
+        tickers_any_of: Optional[Union[str, List[str]]] = None,
+        issuer_cik: Optional[str] = None,
+        issuer_cik_any_of: Optional[Union[str, List[str]]] = None,
+        owner_cik: Optional[str] = None,
+        owner_cik_any_of: Optional[Union[str, List[str]]] = None,
+        last_filing_date: Optional[Union[str, date]] = None,
+        last_filing_date_gt: Optional[Union[str, date]] = None,
+        last_filing_date_gte: Optional[Union[str, date]] = None,
+        last_filing_date_lt: Optional[Union[str, date]] = None,
+        last_filing_date_lte: Optional[Union[str, date]] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[InsiderHolding], HTTPResponse]:
+        """
+        Insiders of each issuer, one row per reporting owner, with their current reported holdings from SEC
+        Forms 3, 4 and 5.
+
+        Endpoint: GET /stocks/insiders/vX/holdings
+        """
+        url = "/stocks/insiders/vX/holdings"
+
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_stocks_insider_holdings, locals()),
+            result_key="results",
+            deserializer=InsiderHolding.from_dict,
             raw=raw,
             options=options,
         )

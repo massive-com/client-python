@@ -107,6 +107,7 @@ class PreviousCloseAgg:
     timestamp: Optional[float] = None
     volume: Optional[float] = None
     vwap: Optional[float] = None
+    transactions: Optional[int] = None
 
     @staticmethod
     def from_dict(d):
@@ -119,4 +120,5 @@ class PreviousCloseAgg:
             d.get("t", None),
             d.get("v", None),
             d.get("vw", None),
+            d.get("n", None),
         )

@@ -77,3 +77,34 @@ class CryptoTrade:
     @staticmethod
     def from_dict(d):
         return CryptoTrade(**d)
+
+
+@modelclass
+class OptionsUnusualTrade:
+    "An unusual trade for a US options contract."
+
+    ticker: Optional[str] = None
+    underlying_ticker: Optional[str] = None
+    root: Optional[str] = None
+    sip_timestamp: Optional[int] = None
+    sequence_number: Optional[int] = None
+    price: Optional[float] = None
+    size: Optional[int] = None
+    exchange: Optional[int] = None
+    conditions: Optional[List[int]] = None
+    flags: Optional[List[str]] = None
+
+    @staticmethod
+    def from_dict(d):
+        return OptionsUnusualTrade(
+            ticker=d.get("ticker"),
+            underlying_ticker=d.get("underlying_ticker"),
+            root=d.get("root"),
+            sip_timestamp=d.get("sip_timestamp"),
+            sequence_number=d.get("sequence_number"),
+            price=d.get("price"),
+            size=d.get("size"),
+            exchange=d.get("exchange"),
+            conditions=d.get("conditions"),
+            flags=d.get("flags"),
+        )

@@ -112,6 +112,7 @@ class TickerDetails:
     name: Optional[str] = None
     phone_number: Optional[str] = None
     primary_exchange: Optional[str] = None
+    round_lot: Optional[int] = None
     share_class_figi: Optional[str] = None
     share_class_shares_outstanding: Optional[int] = None
     sic_code: Optional[str] = None
@@ -147,6 +148,7 @@ class TickerDetails:
             name=d.get("name", None),
             phone_number=d.get("phone_number", None),
             primary_exchange=d.get("primary_exchange", None),
+            round_lot=d.get("round_lot", None),
             share_class_figi=d.get("share_class_figi", None),
             share_class_shares_outstanding=d.get(
                 "share_class_shares_outstanding", None

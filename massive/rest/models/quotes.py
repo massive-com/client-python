@@ -52,12 +52,13 @@ class LastQuote:
             sequence_number=d.get("q", None),
             sip_timestamp=d.get("t", None),
             participant_timestamp=d.get("y", None),
-            ask_price=d.get("P", None),
+            # stocks send P/p; forex snapshot quotes send a/b
+            ask_price=d.get("P", d.get("a")),
             ask_size=d.get("S", None),
             ask_exchange=d.get("X", None),
             conditions=d.get("c", None),
             indicators=d.get("i", None),
-            bid_price=d.get("p", None),
+            bid_price=d.get("p", d.get("b")),
             bid_size=d.get("s", None),
             bid_exchange=d.get("x", None),
             tape=d.get("z", None),
@@ -102,13 +103,15 @@ class RealTimeCurrencyConversion:
     initial_amount: Optional[float] = None
     last: Optional[ForexQuote] = None
     to: Optional[str] = None
+    symbol: Optional[str] = None
 
     @staticmethod
     def from_dict(d):
         return RealTimeCurrencyConversion(
             converted=d.get("converted", None),
-            from_=d.get("from_", None),
+            from_=d.get("from", d.get("from_")),
             initial_amount=d.get("initialAmount", None),
             last=None if "last" not in d else ForexQuote.from_dict(d["last"]),
             to=d.get("to", None),
+            symbol=d.get("symbol"),
         )

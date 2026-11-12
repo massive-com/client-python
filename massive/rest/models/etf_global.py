@@ -84,6 +84,7 @@ class EtfGlobalConstituent:
     asset_class: Optional[str] = None
     composite_ticker: Optional[str] = None
     constituent_name: Optional[str] = None
+    constituent_rank: Optional[int] = None
     constituent_ticker: Optional[str] = None
     country_of_exchange: Optional[str] = None
     currency_traded: Optional[str] = None
@@ -105,6 +106,7 @@ class EtfGlobalConstituent:
             asset_class=d.get("asset_class"),
             composite_ticker=d.get("composite_ticker"),
             constituent_name=d.get("constituent_name"),
+            constituent_rank=d.get("constituent_rank"),
             constituent_ticker=d.get("constituent_ticker"),
             country_of_exchange=d.get("country_of_exchange"),
             currency_traded=d.get("currency_traded"),

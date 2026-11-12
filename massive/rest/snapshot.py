@@ -35,6 +35,7 @@ class SnapshotClient(BaseClient):
         ticker_lte: Optional[str] = None,
         ticker_gt: Optional[str] = None,
         ticker_gte: Optional[str] = None,
+        ticker: Optional[str] = None,
         params: Optional[Dict[str, Any]] = None,
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,

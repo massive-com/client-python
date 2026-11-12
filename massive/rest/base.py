@@ -208,16 +208,18 @@ class BaseClient:
                 elif isinstance(val, datetime):
                     val = int(val.timestamp() * self.time_mult(datetime_res))
                 if val is not None:
-                    for ext in ["lt", "lte", "gt", "gte", "any_of"]:
+                    for ext in ["lt", "lte", "gt", "gte", "any_of", "all_of"]:
                         if argname.endswith(f"_{ext}"):
                             # lop off ext, then rebuild argname with ext,
                             # using ., and not _ (removesuffix would work)
                             # but that is python 3.9+
                             argname = argname[: -len(f"_{ext}")] + f".{ext}"
-                    # any_of accepts a comma-separated str (per the spec) or a
-                    # list of values; only join the latter, since joining a str
-                    # would split it into single characters
-                    if argname.endswith("any_of") and not isinstance(val, str):
+                    # any_of/all_of accept a comma-separated str (per the spec)
+                    # or a list of values; only join the latter, since joining
+                    # a str would split it into single characters
+                    if argname.endswith(("any_of", "all_of")) and not isinstance(
+                        val, str
+                    ):
                         val = ",".join(val)
                     params[argname] = val
 

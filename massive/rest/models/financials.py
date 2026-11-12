@@ -1306,3 +1306,91 @@ class FilingIndex:
             issuer_name=d.get("issuer_name"),
             ticker=d.get("ticker"),
         )
+
+
+@modelclass
+class InsiderActivity:
+    "Daily insider trading activity for an issuer, aggregated across all of its insiders' open-market purchases and sales."
+
+    issuer_cik: Optional[str] = None
+    issuer_name: Optional[str] = None
+    tickers: Optional[List[str]] = None
+    transaction_date: Optional[str] = None
+    last_filing_date: Optional[str] = None
+    purchase_count: Optional[int] = None
+    purchaser_count: Optional[int] = None
+    purchase_shares: Optional[float] = None
+    purchase_value: Optional[float] = None
+    sale_count: Optional[int] = None
+    seller_count: Optional[int] = None
+    sale_shares: Optional[float] = None
+    sale_value: Optional[float] = None
+    net_shares: Optional[float] = None
+    net_value: Optional[float] = None
+    planned_purchase_value: Optional[float] = None
+    planned_sale_value: Optional[float] = None
+
+    @staticmethod
+    def from_dict(d):
+        return InsiderActivity(
+            issuer_cik=d.get("issuer_cik"),
+            issuer_name=d.get("issuer_name"),
+            tickers=d.get("tickers"),
+            transaction_date=d.get("transaction_date"),
+            last_filing_date=d.get("last_filing_date"),
+            purchase_count=d.get("purchase_count"),
+            purchaser_count=d.get("purchaser_count"),
+            purchase_shares=d.get("purchase_shares"),
+            purchase_value=d.get("purchase_value"),
+            sale_count=d.get("sale_count"),
+            seller_count=d.get("seller_count"),
+            sale_shares=d.get("sale_shares"),
+            sale_value=d.get("sale_value"),
+            net_shares=d.get("net_shares"),
+            net_value=d.get("net_value"),
+            planned_purchase_value=d.get("planned_purchase_value"),
+            planned_sale_value=d.get("planned_sale_value"),
+        )
+
+
+@modelclass
+class InsiderHolding:
+    "An insider of an issuer (one reporting owner per issuer) with their current reported holdings."
+
+    issuer_cik: Optional[str] = None
+    issuer_name: Optional[str] = None
+    tickers: Optional[List[str]] = None
+    owner_cik: Optional[str] = None
+    owner_name: Optional[str] = None
+    officer_title: Optional[str] = None
+    roles: Optional[List[str]] = None
+    shares_owned: Optional[float] = None
+    shares_owned_direct: Optional[float] = None
+    shares_owned_indirect: Optional[float] = None
+    ownership_pct: Optional[float] = None
+    position_count: Optional[int] = None
+    filing_count: Optional[int] = None
+    first_filing_date: Optional[str] = None
+    last_filing_date: Optional[str] = None
+    oldest_position_date: Optional[str] = None
+
+    @staticmethod
+    def from_dict(d):
+        return InsiderHolding(
+            issuer_cik=d.get("issuer_cik"),
+            issuer_name=d.get("issuer_name"),
+            tickers=d.get("tickers"),
+            owner_cik=d.get("owner_cik"),
+            owner_name=d.get("owner_name"),
+            officer_title=d.get("officer_title"),
+            roles=d.get("roles"),
+            shares_owned=d.get("shares_owned"),
+            shares_owned_direct=d.get("shares_owned_direct"),
+            shares_owned_indirect=d.get("shares_owned_indirect"),
+            ownership_pct=d.get("ownership_pct"),
+            position_count=d.get("position_count"),
+            filing_count=d.get("filing_count"),
+            first_filing_date=d.get("first_filing_date"),
+            last_filing_date=d.get("last_filing_date"),
+            oldest_position_date=d.get("oldest_position_date"),
+        )

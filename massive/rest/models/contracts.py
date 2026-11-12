@@ -51,3 +51,30 @@ class OptionsContract:
             ticker=d.get("ticker", None),
             underlying_ticker=d.get("underlying_ticker", None),
         )
+
+
+@modelclass
+class OptionsOpenInterest:
+    "Daily open interest for a single options contract."
+
+    ticker: Optional[str] = None
+    underlying_ticker: Optional[str] = None
+    root: Optional[str] = None
+    contract_type: Optional[str] = None
+    expiration_date: Optional[str] = None
+    strike_price: Optional[float] = None
+    date: Optional[str] = None
+    open_interest: Optional[int] = None
+
+    @staticmethod
+    def from_dict(d):
+        return OptionsOpenInterest(
+            ticker=d.get("ticker"),
+            underlying_ticker=d.get("underlying_ticker"),
+            root=d.get("root"),
+            contract_type=d.get("contract_type"),
+            expiration_date=d.get("expiration_date"),
+            strike_price=d.get("strike_price"),
+            date=d.get("date"),
+            open_interest=d.get("open_interest"),
+        )
