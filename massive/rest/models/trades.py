@@ -108,3 +108,26 @@ class OptionsUnusualTrade:
             conditions=d.get("conditions"),
             flags=d.get("flags"),
         )
+
+
+@modelclass
+class OptionsAdminMessage:
+    "An OPRA administrative message, such as a FLEX option print or an operational notice."
+
+    id: Optional[str] = None
+    timestamp: Optional[int] = None
+    exchange: Optional[int] = None
+    message: Optional[str] = None
+    sequence_number: Optional[int] = None
+    retransmission: Optional[bool] = None
+
+    @staticmethod
+    def from_dict(d):
+        return OptionsAdminMessage(
+            id=d.get("id"),
+            timestamp=d.get("timestamp"),
+            exchange=d.get("exchange"),
+            message=d.get("message"),
+            sequence_number=d.get("sequence_number"),
+            retransmission=d.get("retransmission"),
+        )

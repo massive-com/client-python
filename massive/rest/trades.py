@@ -1,6 +1,14 @@
 from .base import BaseClient
 from typing import Optional, Any, Dict, List, Union, Iterator
-from .models import Trade, LastTrade, CryptoTrade, OptionsUnusualTrade, Sort, Order
+from .models import (
+    Trade,
+    LastTrade,
+    CryptoTrade,
+    OptionsUnusualTrade,
+    OptionsAdminMessage,
+    Sort,
+    Order,
+)
 from urllib3 import HTTPResponse
 from datetime import datetime, date
 
@@ -134,6 +142,35 @@ class TradesClient(BaseClient):
             params=self._get_params(self.list_options_unusual_trades, locals()),
             result_key="results",
             deserializer=OptionsUnusualTrade.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_options_admin_messages(
+        self,
+        timestamp_gt: Optional[Union[str, int, datetime, date]] = None,
+        timestamp_gte: Optional[Union[str, int, datetime, date]] = None,
+        timestamp_lt: Optional[Union[str, int, datetime, date]] = None,
+        timestamp_lte: Optional[Union[str, int, datetime, date]] = None,
+        exchange: Optional[int] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[OptionsAdminMessage], HTTPResponse]:
+        """
+        OPRA administrative messages, including FLEX option prints and quotes, operational notices, and other free-text messages.
+
+        Endpoint: GET /options/v1/admin-messages
+        """
+        url = "/options/v1/admin-messages"
+
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_options_admin_messages, locals()),
+            result_key="results",
+            deserializer=OptionsAdminMessage.from_dict,
             raw=raw,
             options=options,
         )
