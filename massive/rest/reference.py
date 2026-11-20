@@ -39,6 +39,9 @@ from .models import (
     OptionsOpenInterest,
     OptionsUnderlyingOpenInterest,
     OptionsAnalytics,
+    OptionsUnderlyingAnalytics,
+    OptionsExpirationAnalytics,
+    OptionsStrikeAnalytics,
     InsiderActivity,
     InsiderHolding,
 )
@@ -1303,9 +1306,9 @@ class ContractsClient(BaseClient):
         """
         Daily US options open interest rolled up across each underlying ticker's contracts, split into calls and puts.
 
-        Endpoint: GET /options/vX/open-interest/underlying
+        Endpoint: GET /options/v1/open-interest/underlying
         """
-        url = "/options/vX/open-interest/underlying"
+        url = "/options/v1/open-interest/underlying"
 
         return self._paginate(
             path=url,
@@ -1350,6 +1353,113 @@ class ContractsClient(BaseClient):
             params=self._get_params(self.list_options_analytics, locals()),
             result_key="results",
             deserializer=OptionsAnalytics.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_options_analytics_by_underlying(
+        self,
+        underlying_ticker: Optional[str] = None,
+        underlying_ticker_any_of: Optional[Union[str, List[str]]] = None,
+        date: Optional[Union[str, date]] = None,
+        date_gt: Optional[Union[str, date]] = None,
+        date_gte: Optional[Union[str, date]] = None,
+        date_lt: Optional[Union[str, date]] = None,
+        date_lte: Optional[Union[str, date]] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[OptionsUnderlyingAnalytics], HTTPResponse]:
+        """
+        Daily options analytics per underlying ticker: open interest, put/call ratio, gamma and delta exposure, call and put walls, and gamma flip.
+
+        Endpoint: GET /options/v1/analytics/underlying
+        """
+        url = "/options/v1/analytics/underlying"
+
+        return self._paginate(
+            path=url,
+            params=self._get_params(
+                self.list_options_analytics_by_underlying, locals()
+            ),
+            result_key="results",
+            deserializer=OptionsUnderlyingAnalytics.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_options_analytics_by_expiration(
+        self,
+        underlying_ticker: Optional[str] = None,
+        underlying_ticker_any_of: Optional[Union[str, List[str]]] = None,
+        expiration_date: Optional[Union[str, date]] = None,
+        expiration_date_gt: Optional[Union[str, date]] = None,
+        expiration_date_gte: Optional[Union[str, date]] = None,
+        expiration_date_lt: Optional[Union[str, date]] = None,
+        expiration_date_lte: Optional[Union[str, date]] = None,
+        date: Optional[Union[str, date]] = None,
+        date_gt: Optional[Union[str, date]] = None,
+        date_gte: Optional[Union[str, date]] = None,
+        date_lt: Optional[Union[str, date]] = None,
+        date_lte: Optional[Union[str, date]] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[OptionsExpirationAnalytics], HTTPResponse]:
+        """
+        Daily options analytics per underlying ticker and expiration date: open interest, max pain, and gamma and delta exposure.
+
+        Endpoint: GET /options/v1/analytics/expiration
+        """
+        url = "/options/v1/analytics/expiration"
+
+        return self._paginate(
+            path=url,
+            params=self._get_params(
+                self.list_options_analytics_by_expiration, locals()
+            ),
+            result_key="results",
+            deserializer=OptionsExpirationAnalytics.from_dict,
+            raw=raw,
+            options=options,
+        )
+
+    def list_options_analytics_by_strike(
+        self,
+        underlying_ticker: Optional[str] = None,
+        underlying_ticker_any_of: Optional[Union[str, List[str]]] = None,
+        strike_price: Optional[float] = None,
+        strike_price_gt: Optional[float] = None,
+        strike_price_gte: Optional[float] = None,
+        strike_price_lt: Optional[float] = None,
+        strike_price_lte: Optional[float] = None,
+        date: Optional[Union[str, date]] = None,
+        date_gt: Optional[Union[str, date]] = None,
+        date_gte: Optional[Union[str, date]] = None,
+        date_lt: Optional[Union[str, date]] = None,
+        date_lte: Optional[Union[str, date]] = None,
+        limit: Optional[int] = None,
+        sort: Optional[Union[str, Sort]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        raw: bool = False,
+        options: Optional[RequestOptionBuilder] = None,
+    ) -> Union[Iterator[OptionsStrikeAnalytics], HTTPResponse]:
+        """
+        Daily options analytics per underlying ticker and strike price, summed over all expirations: open interest, and gamma and delta exposure.
+
+        Endpoint: GET /options/v1/analytics/strike
+        """
+        url = "/options/v1/analytics/strike"
+
+        return self._paginate(
+            path=url,
+            params=self._get_params(self.list_options_analytics_by_strike, locals()),
+            result_key="results",
+            deserializer=OptionsStrikeAnalytics.from_dict,
             raw=raw,
             options=options,
         )
