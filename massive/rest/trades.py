@@ -155,6 +155,7 @@ class TradesClient(BaseClient):
         exchange: Optional[int] = None,
         limit: Optional[int] = None,
         sort: Optional[Union[str, Sort]] = None,
+        timestamp: Optional[Union[str, int, datetime, date]] = None,
         params: Optional[Dict[str, Any]] = None,
         raw: bool = False,
         options: Optional[RequestOptionBuilder] = None,

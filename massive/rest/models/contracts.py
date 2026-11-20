@@ -160,3 +160,122 @@ class OptionsAnalytics:
             open_interest=d.get("open_interest"),
             volume=d.get("volume"),
         )
+
+
+@modelclass
+class OptionsUnderlyingAnalytics:
+    "Daily options analytics for an underlying ticker: open interest, put/call ratio, gamma and delta exposure, call and put walls, and gamma flip."
+
+    underlying_ticker: Optional[str] = None
+    date: Optional[str] = None
+    underlying_price: Optional[float] = None
+    open_interest: Optional[int] = None
+    open_interest_calls: Optional[int] = None
+    open_interest_puts: Optional[int] = None
+    put_call_ratio: Optional[float] = None
+    open_interest_with_greeks: Optional[int] = None
+    excluded_open_interest: Optional[int] = None
+    gamma_exposure: Optional[float] = None
+    gamma_exposure_calls: Optional[float] = None
+    gamma_exposure_puts: Optional[float] = None
+    delta_exposure: Optional[float] = None
+    call_wall: Optional[float] = None
+    put_wall: Optional[float] = None
+    gamma_flip: Optional[float] = None
+
+    @staticmethod
+    def from_dict(d):
+        return OptionsUnderlyingAnalytics(
+            underlying_ticker=d.get("underlying_ticker"),
+            date=d.get("date"),
+            underlying_price=d.get("underlying_price"),
+            open_interest=d.get("open_interest"),
+            open_interest_calls=d.get("open_interest_calls"),
+            open_interest_puts=d.get("open_interest_puts"),
+            put_call_ratio=d.get("put_call_ratio"),
+            open_interest_with_greeks=d.get("open_interest_with_greeks"),
+            excluded_open_interest=d.get("excluded_open_interest"),
+            gamma_exposure=d.get("gamma_exposure"),
+            gamma_exposure_calls=d.get("gamma_exposure_calls"),
+            gamma_exposure_puts=d.get("gamma_exposure_puts"),
+            delta_exposure=d.get("delta_exposure"),
+            call_wall=d.get("call_wall"),
+            put_wall=d.get("put_wall"),
+            gamma_flip=d.get("gamma_flip"),
+        )
+
+
+@modelclass
+class OptionsExpirationAnalytics:
+    "Daily options analytics for an underlying ticker and expiration date: open interest, max pain, and gamma and delta exposure."
+
+    underlying_ticker: Optional[str] = None
+    expiration_date: Optional[str] = None
+    date: Optional[str] = None
+    underlying_price: Optional[float] = None
+    open_interest: Optional[int] = None
+    open_interest_calls: Optional[int] = None
+    open_interest_puts: Optional[int] = None
+    open_interest_with_greeks: Optional[int] = None
+    excluded_open_interest: Optional[int] = None
+    max_pain: Optional[float] = None
+    gamma_exposure: Optional[float] = None
+    gamma_exposure_calls: Optional[float] = None
+    gamma_exposure_puts: Optional[float] = None
+    delta_exposure: Optional[float] = None
+
+    @staticmethod
+    def from_dict(d):
+        return OptionsExpirationAnalytics(
+            underlying_ticker=d.get("underlying_ticker"),
+            expiration_date=d.get("expiration_date"),
+            date=d.get("date"),
+            underlying_price=d.get("underlying_price"),
+            open_interest=d.get("open_interest"),
+            open_interest_calls=d.get("open_interest_calls"),
+            open_interest_puts=d.get("open_interest_puts"),
+            open_interest_with_greeks=d.get("open_interest_with_greeks"),
+            excluded_open_interest=d.get("excluded_open_interest"),
+            max_pain=d.get("max_pain"),
+            gamma_exposure=d.get("gamma_exposure"),
+            gamma_exposure_calls=d.get("gamma_exposure_calls"),
+            gamma_exposure_puts=d.get("gamma_exposure_puts"),
+            delta_exposure=d.get("delta_exposure"),
+        )
+
+
+@modelclass
+class OptionsStrikeAnalytics:
+    "Daily options analytics for an underlying ticker and strike price, summed over all expirations: open interest, and gamma and delta exposure."
+
+    underlying_ticker: Optional[str] = None
+    strike_price: Optional[float] = None
+    date: Optional[str] = None
+    underlying_price: Optional[float] = None
+    open_interest: Optional[int] = None
+    open_interest_calls: Optional[int] = None
+    open_interest_puts: Optional[int] = None
+    open_interest_with_greeks: Optional[int] = None
+    excluded_open_interest: Optional[int] = None
+    gamma_exposure: Optional[float] = None
+    gamma_exposure_calls: Optional[float] = None
+    gamma_exposure_puts: Optional[float] = None
+    delta_exposure: Optional[float] = None
+
+    @staticmethod
+    def from_dict(d):
+        return OptionsStrikeAnalytics(
+            underlying_ticker=d.get("underlying_ticker"),
+            strike_price=d.get("strike_price"),
+            date=d.get("date"),
+            underlying_price=d.get("underlying_price"),
+            open_interest=d.get("open_interest"),
+            open_interest_calls=d.get("open_interest_calls"),
+            open_interest_puts=d.get("open_interest_puts"),
+            open_interest_with_greeks=d.get("open_interest_with_greeks"),
+            excluded_open_interest=d.get("excluded_open_interest"),
+            gamma_exposure=d.get("gamma_exposure"),
+            gamma_exposure_calls=d.get("gamma_exposure_calls"),
+            gamma_exposure_puts=d.get("gamma_exposure_puts"),
+            delta_exposure=d.get("delta_exposure"),
+        )

@@ -343,6 +343,8 @@ class UniversalSnapshotSession:
     vwap: Optional[float] = None
     last_updated: Optional[int] = None
     fractional_volume: Optional[str] = None
+    overnight_trading_change: Optional[float] = None
+    overnight_trading_change_percent: Optional[float] = None
 
     @staticmethod
     def from_dict(d):
@@ -365,6 +367,8 @@ class UniversalSnapshotSession:
             vwap=d.get("vwap"),
             last_updated=d.get("last_updated"),
             fractional_volume=d.get("decimal_volume"),
+            overnight_trading_change=d.get("overnight_trading_change"),
+            overnight_trading_change_percent=d.get("overnight_trading_change_percent"),
         )
 
 
