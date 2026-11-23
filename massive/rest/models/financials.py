@@ -1004,6 +1004,7 @@ class Filing13F:
     voting_authority_none: Optional[int] = None
     voting_authority_shared: Optional[int] = None
     voting_authority_sole: Optional[int] = None
+    filer_name: Optional[str] = None
 
     @staticmethod
     def from_dict(d: Optional[Dict[str, Any]]) -> "Filing13F":
@@ -1030,6 +1031,7 @@ class Filing13F:
             voting_authority_none=d.get("voting_authority_none"),
             voting_authority_shared=d.get("voting_authority_shared"),
             voting_authority_sole=d.get("voting_authority_sole"),
+            filer_name=d.get("filer_name"),
         )
 
 
